@@ -1,0 +1,24 @@
+/*resizeable*/
+/*
+html, body {
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+}
+.blocklySvg {
+    height: 100%;
+    width: 100%;
+}
+*/
+
+/*fixed size*/
+body {
+    background-color: #fff;
+    font-family: sans-serif;
+}
+h1 {
+    font-weight: normal;
+    font-size: 140%;
+}

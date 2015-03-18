@@ -1,0 +1,30 @@
+mixin xml(id)
+    xml#id(style='display: none')
+mixin block(name)
+    block(type=name)
+doctype html
+html
+    head
+        meta(charset='utf-8')
+        title Blockly Demo: Fixed Blockly
+        script(src='blockly/blockly_compressed.js')
+        script(src='blockly/blocks_compressed.js')
+        script(src='blockly/msg/js/en.js')
+        style.
+            body {
+                background-color: #fff;
+                font-family: sans-serif;
+            }
+            h1 {
+                font-weight: normal;
+                font-size: 140%;
+            }
+    body
+        h1
+            a(href='https://developers.google.com/blockly/') Blockly
+        p This is a simple demo of injecting Blockly into a fixed-sized &apos;div&apos; element.
+        div#blocklyDiv(style='height: 480px; width: 600px;')
+        include toolbox.html
+        script.
+            Blockly.inject(document.getElementById('blocklyDiv'),
+                    {toolbox: document.getElementById('toolbox')});
