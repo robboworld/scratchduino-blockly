@@ -11,12 +11,24 @@ var messagesRUS = "blockly/msg/js/ru.js";
 var messagesEN = "blockly/msg/js/en.js";
 var jquery = "scripts/jquery-1.11.2.min.js";
 var blocklyInit = "scripts/blockly_init.js";
+var roboEngineBlocks = "blockly/blocks/robo_engine.js";
+var roboEngineJsGen = "blockly/generators/javascript/robo_engine.js";
 
 router.get('/', function (req, res) {
     res.render('workflow',
         {
             title: 'Express',
-            jsFiles: [jquery,bootstrapJs, blocklyJs, jsCompressedJs, blocksJs,messagesRUS,blocklyInit],
+            jsFiles: [
+                jquery,
+                bootstrapJs,
+                blocklyJs,
+                jsCompressedJs,
+                blocksJs,
+                messagesRUS,
+                blocklyInit,
+                roboEngineBlocks,
+                roboEngineJsGen
+            ],
             cssFiles: [bootstrapCss]
         });
 });
