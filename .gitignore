@@ -30,3 +30,6 @@ resources/templates.list
 build/
 build.properties
 junit*.properties
+
+#Custom directives
+node_modules
