@@ -16,6 +16,12 @@ $(document).ready(
         Blockly.addChangeListener(myUpdateFunction);
 
         $("#launchCodeButton").click(function(){
+            $.ajax({
+                type: 'GET',
+                url: '/scratch/on',
+                contentType: 'application/json; charset=utf-8',
+                success: alert("sucess")
+            });
             eval(code);
             $(this).removeClass("btn-primary");
             $(this).addClass("btn-success");
