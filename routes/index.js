@@ -12,7 +12,9 @@ var messagesEN = "blockly/msg/js/en.js";
 var jquery = "scripts/jquery-1.11.2.min.js";
 var blocklyInit = "scripts/blockly_init.js";
 var roboEngineBlocks = "blockly/blocks/robo_engine.js";
+var controlsBlocks = "blockly/blocks/controls.js";
 var roboEngineJsGen = "blockly/generators/javascript/robo_engine.js";
+var controlsJsGen = "blockly/generators/javascript/controls.js";
 var jsInterpreter = "JS-Interpreter/acorn_interpreter.js";
 
 router.get('/', function (req, res) {
@@ -28,7 +30,9 @@ router.get('/', function (req, res) {
                 messagesRUS,
                 blocklyInit,
                 roboEngineBlocks,
+                controlsBlocks,
                 roboEngineJsGen,
+                controlsJsGen,
                 jsInterpreter
             ],
             cssFiles: [bootstrapCss]

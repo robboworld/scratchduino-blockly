@@ -16,11 +16,16 @@ $(document).ready(
         Blockly.addChangeListener(myUpdateFunction);
 
         $("#launchCodeButton").click(function(){
-            alert("HELLO!!");
-            alert(code);
-            var myInterpreter = new Interpreter(code);
-            myInterpreter.run();
-        })
+            eval(code);
+            $(this).removeClass("btn-primary");
+            $(this).addClass("btn-success");
+            //var myInterpreter = new Interpreter(code);
+            //myInterpreter.run();
+        });
+        $("#stopExecutionButton").click(function(){
+            $("#launchCodeButton").removeClass("btn-success");
+            $("#launchCodeButton").addClass("btn-primary");
+        });
     }
 
 );
