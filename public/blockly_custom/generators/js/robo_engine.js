@@ -10,7 +10,7 @@ Blockly.JavaScript['engine_turn_on_sec'] = function(block) {
 
 Blockly.JavaScript['engine_turned_on'] = function(block) {
     // TODO: Assemble JavaScript into code variable.
-    var code = 'engine_turned_on';
+    var code = '';
     return code;
 };
 
@@ -30,12 +30,10 @@ Blockly.JavaScript['engine_set_power'] = function(block) {
 Blockly.JavaScript['engine_direction'] = function(block) {
     // TODO: Assemble JavaScript into code variable.
     var key = block.getFieldValue('direction');
-    var code = "alert(\"hello"+key+"\");\n" +
-        "$.ajax({\n"+
+    var code = "$.ajax({\n"+
         "type: 'GET',\n"+
         "url: '/scratch/engine',\n"+
-        "data: { direction: key},\n"+
-        "success: alert(\"sent\")\n"+
+        "data: { direction: "+key+"},\n"+
     "});";
     return code;
 };

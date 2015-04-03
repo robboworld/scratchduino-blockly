@@ -8,24 +8,22 @@ var robot = require(".././public/serialAPI/robot");
 
 router.get("/engine", function(req, res) {
     var direction = req.query.direction;
-    res.send("engine " + direction);
     robot.move(direction);
+    res.send("engine " + direction);
 });
 
-router.get("/sensors", function(req, res) {
-    var number = req.query.number;
-    res.send("sensor " + number);
-    robot.sensor(number);
+router.get("/data", function(req, res) {
+    robot.data(res);
 });
 
 router.get("/on", function(req, res) {
-    res.send("on");
     robot.on();
+    res.send("on");
 });
 
 router.get("/off", function(req, res) {
-    res.send("off");
     robot.off();
+    res.send("off");
 });
 
 module.exports = router;
