@@ -13,8 +13,8 @@ var jquery = "scripts/jquery-1.11.2.min.js";
 var blocklyInit = "scripts/blockly_init.js";
 var roboEngineBlocks = "blockly_custom/blocks/robo_engine.js";
 var controlsBlocks = "blockly_custom/blocks/controls.js";
-var roboEngineJsGen = "blockly_custom/generators/javascript/robo_engine.js";
-var controlsJsGen = "blockly_custom/generators/javascript/controls.js";
+var roboEngineJsGen = "blockly_custom/generators/js/robo_engine.js";
+var controlsJsGen = "blockly_custom/generators/js/controls.js";
 var jsInterpreter = "JS-Interpreter/acorn_interpreter.js";
 
 router.get('/', function (req, res) {

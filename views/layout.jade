@@ -4,8 +4,10 @@ html
         title= title
         each path in cssFiles
             link(rel='stylesheet', href=path)
+
         each path in jsFiles
             script(type='text/javascript', src=path)
+
         link(rel='stylesheet', href='/css/style.css')
     body
         block content
