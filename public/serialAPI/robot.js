@@ -7,8 +7,14 @@ var debug = require("debug")("robot");
 
 //TODO: How to detect an actual port?
 var portName = "\\\\.\\COM3";
-var dataBuffer = "";
-var lastByte = "\x00";
+
+var dataBuffer = {
+    data: "",
+    lastByte: "\x00",
+    resetData: function() {
+        this.data = "";
+    }
+};
 
 var result;
 
@@ -27,14 +33,40 @@ serialport.on("close", function(err) {
 });
 
 serialport.on("data", function(data) {
+
+    //TODO: Set request timeout
     debug("recieved: " + data);
     dataBuffer += data;
-    if (dataBuffer.length == 14) {
-        console.log(dataBuffer);
-        result.send(dataBuffer);
-        dataBuffer = "";
+
+    if (dataBuffer.length == 14 && result) {
+        //console.log(dataBuffer);
+        result.send(dataToJSON(dataBuffer));
+        result = null;
+        dataBuffer.resetData();
     }
+
 });
+
+function dataToJSON(data) {
+
+    var json = {
+        sensor_1: 0,
+        sensor_2: 0,
+        sensor_3: 0,
+        sensor_4: 0,
+        sensor_5: 0
+    };
+
+    var i = 5;
+    for (var val in json) {
+        //TODO: First bit for previous byte
+        val = data.charAt(i);
+        i += 2;
+    };
+
+    return json.stringify();
+
+};
 
 serialport.on("error", function(err) {
     //
@@ -63,7 +95,8 @@ var RIGHT = "\xC0";
 var LEFT = "\xA0";
 var STOP = "\x00";
 
-exports.move = function(direction) {
+exports.move = function(direction, res) {
+    result = res;
 
     var directionByte;
     switch(direction) {
@@ -82,14 +115,12 @@ exports.move = function(direction) {
     }
 
     serialport.write(new Buffer(directionByte, "binary"), function(err, res) {
-        //debug("write: " + directionByte);
-        //console.log("write: " + directionByte);
         lastByte = directionByte;
     });
 };
 
 exports.data = function(res) {
-    serialport.write(new Buffer(lastByte, "binary"));
     result = res;
-    return dataBuffer;
+
+    serialport.write(new Buffer(lastByte, "binary"));
 };
