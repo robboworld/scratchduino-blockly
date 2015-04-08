@@ -1,0 +1,85 @@
+doctype html
+html
+    head
+        meta(charset='utf-8')
+        title Scratch Panel
+        script(type='text/javascript', src="scripts/jquery-1.11.2.min.js")
+    body
+    button#on On
+    button#off Off
+    br
+    button#resume Resume
+    button#pause Pause
+    br
+    button#forward Forward
+    button#back Back
+    button#right Right
+    button#left Left
+    button#stop Stop
+    script.
+        function res(data, status) {
+            alert("Data: " + data + "\nStatus: " + status);
+        };
+        document.getElementById("on").onclick = function() {
+            $.get(
+                    "/scratch/on",
+                    {},
+                    res
+            );
+        };
+        document.getElementById("off").onclick = function() {
+            $.get(
+                    "/scratch/off",
+                    {},
+                    res
+            );
+        };
+        document.getElementById("resume").onclick = function() {
+            $.get(
+                    "/scratch/resume",
+                    {},
+                    res
+            );
+        };
+        document.getElementById("pause").onclick = function() {
+            $.get(
+                    "/scratch/pause",
+                    {},
+                    res
+            );
+        };
+        document.getElementById("forward").onclick = function() {
+            $.getJSON(
+                    "/scratch/engine",
+                    {direction: "4"},
+                    res
+            );
+        };
+        document.getElementById("back").onclick = function() {
+            $.getJSON(
+                    "/scratch/engine",
+                    {direction: "1"},
+                    res
+            );
+        };
+        document.getElementById("left").onclick = function() {
+            $.getJSON(
+                    "/scratch/engine",
+                    {direction: "2"},
+                    res
+            );
+        };
+        document.getElementById("right").onclick = function() {
+            $.getJSON(
+                    "/scratch/engine",
+                    {direction: "3"},
+                    res
+            );
+        };
+        document.getElementById("stop").onclick = function() {
+            $.getJSON(
+                    "/scratch/engine",
+                    {direction: "0"},
+                    res
+            );
+        };
