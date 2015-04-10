@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title></title>
+    <each path in cssFiles>
+      <link rel="stylesheet">
+    </each>
+    <each path in jsFiles>
+      <script type="text/javascript"></script>
+    </each>
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+    <div class="page-header">
+      <h1>Blockly for ScratchDuino</h1>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="panel panel-default">
+            <div class="panel-heading">Инструкции</div>
+            <div class="panel-body">
+              <div id="blocklyDiv" style="height: 480px; width: 600px;"></div><xml id="toolbox" style="display: none">
+    <block type="controls_if"></block>
+    <block type="controls_repeat_ext"></block>
+    <block type="logic_compare"></block>
+    <block type="math_number"></block>
+    <block type="math_arithmetic"></block>
+    <block type="text"></block>
+    <block type="text_print"></block>
+</xml>
+            </div>
+          </div>
+        </div>
+        <!--div.col-lg-4
+        div.panel.panel-default
+            div.panel-heading Программа
+            div.panel-body
+                h1 column2
+        -->
+        <div class="col-lg-4">
+          <div class="panel panel-default">
+            <div class="panel-heading">Сцена</div>
+            <div class="panel-body">
+              <h1>column3</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      Blockly.inject(document.getElementById('blocklyDiv'),
+      {toolbox: document.getElementById('toolbox')});
+    </script>
+  </body>
+</html>
