@@ -28,56 +28,6 @@ var serialport = new SerialPort(portName, {
     stopbits: 1
 }, false);
 
-serialport.on("open", function(err) {
-    //Will never be called
-});
-
-serialport.on("close", function(err) {
-    //Will never be called
-});
-
-serialport.on("error", function(err) {
-    //
-});
-
-serialport.on("data", function(data) {
-
-    //TODO: Set request timeout
-    debug("received: " + data);
-    dataBuffer.data += data;
-    console.log(data instanceof Buffer);
-    console.log(data.toString("binary"));
-
-    // 14 received bytes means end of transaction of data from robot.
-    if (dataBuffer.data.length == 14 && result) {
-        result.send(dataToJSON(dataBuffer.data));
-        result = null;
-        dataBuffer.resetData();
-    }
-
-});
-
-function dataToJSON(data) {
-
-    var json = {
-        sensor_1: 0,
-        sensor_2: 0,
-        sensor_3: 0,
-        sensor_4: 0,
-        sensor_5: 0
-    };
-
-    var i = 5;
-    for (var val in json) {
-        //TODO: First bit for previous byte
-        val = data.charCodeAt(i);
-        //TODO: Chto za hernya?
-        //console.log(data.charCodeAt(i).toString(2) + "  " + data.toString(2));
-        i += 2;
-    };
-
-    return JSON.stringify(json);
-};
 
 exports.openConn = function(res) {
     if (serialport.isOpen()) {
@@ -97,7 +47,65 @@ exports.openConn = function(res) {
             //TODO: response message
             res.send("OK");
         };
+
+        serialport.on("open", function(err) {
+            //Will never be called
+        });
+
+        serialport.on("close", function(err) {
+            //Will never be called
+        });
+
+        serialport.on("error", function(err) {
+            //
+        });
+
+        serialport.on("data", onDataCallback);
     });
+};
+
+function onDataCallback(data) {
+
+    //TODO: Set request timeout
+    debug("received: " + data);
+    dataBuffer.data += data.toString("hex");
+
+    //TODO: Find another method to check whether transaction completed
+    // 14 received bytes (14*2 numbers in hex) means end of transaction of data from robot.
+    if (dataBuffer.data.length == 28 && result) {
+        result.send(dataToJSON(dataBuffer.data));
+        result = null;
+        dataBuffer.resetData();
+    }
+
+};
+
+function dataToJSON(data) {
+
+    var json = {
+        sensor_1: 0,
+        sensor_2: 0,
+        sensor_3: 0,
+        sensor_4: 0,
+        sensor_5: 0
+    };
+
+    console.log(data);
+    var i = 8; //Sensor_0 first byte is expected to be on this index
+    for (var val in json) {
+        var high = parseInt(data.substr(i, 2), 16);
+        var low = parseInt(data.substr(i+2, 2), 16);
+
+        // Get first byte of high
+        high &= 0x01;
+        // And append it as high byte of low
+        low = (high << 7) | low;
+        val = low;
+
+        i += 4;
+    };
+
+    return JSON.stringify(json);
 };
 
 exports.pauseConn = function() {
