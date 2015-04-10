@@ -4,7 +4,7 @@
 
 var express = require("express");
 var router = express.Router();
-var robot = require(".././public/serialAPI/robot");
+var robot = require(".././public/serial/robot");
 
 router.get("/", function(req, res) {
     res.render("scratch_panel");
@@ -38,7 +38,6 @@ router.get("/resume", function(req, res) {
     res.send("Not enabled");
 });
 
-// Will delete ALL event listeners of serialport
 router.get("/off", function(req, res) {
     robot.closeConn(res);
 });

@@ -4,13 +4,13 @@
 
 var SerialPort = require("serialport").SerialPort;
 var debug = require("debug")("robot");
+var portSearcher = require("./comports_win32");
 
 //TODO: How to detect an actual port?
 var portName = "\\\\.\\COM3";
 
 //TODO: Debugging/Logging
 //TODO: Disconnection processing (see SerialPort.prototype.disconnected)
-//TODO: What to do with pause/resume on Win?
 
 var dataBuffer = {
     data: "",
@@ -34,7 +34,7 @@ exports.openConn = function(res) {
         //TODO: Fix message to send
         res.send("Already opened");
         return;
-    }
+    };
 
     //TODO: Pause after opening
     serialport.open(function(err) {
@@ -90,7 +90,6 @@ function dataToJSON(data) {
         sensor_5: 0
     };
 
-    console.log(data);
     var i = 8; //Sensor_0 first byte is expected to be on this index
     for (var val in json) {
         var high = parseInt(data.substr(i, 2), 16);
@@ -100,8 +99,7 @@ function dataToJSON(data) {
         high &= 0x01;
         // And append it as high byte of low
         low = (high << 7) | low;
-        val = low;
-
+        json[val] = low.toString();
         i += 4;
     };
 
@@ -117,7 +115,7 @@ exports.resumeConn = function() {
 };
 
 exports.closeConn = function(res) {
-    //Should only be called before end of session
+
     serialport.close(function(err) {
         debug("close");
         console.log("close: " + err);
