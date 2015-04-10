@@ -6,7 +6,8 @@ var SerialPort = require("serialport").SerialPort;
 var debug = require("debug")("robot");
 
 //TODO: How to detect an actual port?
-var portName = "\\\\.\\COM3";
+//var portName = "\\\\.\\COM3";
+var portName = "/dev/ttyACM0";
 
 //TODO: Debugging/Logging
 //TODO: Disconnection processing (see SerialPort.prototype.disconnected)
@@ -100,7 +101,7 @@ function dataToJSON(data) {
         high &= 0x01;
         // And append it as high byte of low
         low = (high << 7) | low;
-        val = low;
+        json[val] = low;
 
         i += 4;
     };

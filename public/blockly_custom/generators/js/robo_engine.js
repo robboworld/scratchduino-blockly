@@ -62,7 +62,12 @@ Blockly.JavaScript['reload_sensor_values'] = function(block) {
         "type: 'GET',\n"+
         "url: '/scratch/data',\n"+
         "success: function(json){" +
-            "alert(json);"+
+            "var o = JSON.parse(json);"+
+            "document.getElementById(\"sensor1\").value = o[\"sensor_1\"];"+
+            "document.getElementById(\"sensor2\").value = o[\"sensor_2\"];"+
+            "document.getElementById(\"sensor3\").value = o[\"sensor_3\"];"+
+            "document.getElementById(\"sensor4\").value = o[\"sensor_4\"];"+
+            "document.getElementById(\"sensor5\").value = o[\"sensor_5\"];"+
         "}\n"+
         "});";
     return code;

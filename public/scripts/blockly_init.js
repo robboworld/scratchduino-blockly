@@ -3,6 +3,9 @@
  */
 
 var curELNumber = 0;
+
+var HASHIDS_SALT = "Windows must die";
+var hashids = new Hashids(HASHIDS_SALT);
 function getNextEventListenerNumber() {
     return curELNumber++;
 }
@@ -61,6 +64,7 @@ String.prototype.format = function() {
     return formatted;
 };
 
+
 $(document).ready(
     function () {
         Blockly.inject(document.getElementById('blocklyDiv'),
@@ -68,12 +72,59 @@ $(document).ready(
         window.setTimeout(BlocklyStorage.restoreBlocks, 0);
         BlocklyStorage.backupOnUnload();
 
+
+        function backup_blocks() {
+            var name = prompt("Введите название для скетча");
+            if(name){
+                var date = new Date().valueOf();
+                var id = hashids.encode(date);
+                $.ajax({
+                    type: 'GET',
+                    url: '/addHash',
+                    data:{
+                        blocklyHash: id,
+                        hashName: name
+                    },
+                    sucess: function(json){
+                        if(typeof(Storage)!=="undefined")
+                        {
+                            var xml = Blockly.Xml.workspaceToDom( Blockly.mainWorkspace );
+                            var txt = new XMLSerializer().serializeToString(xml);
+                            localStorage.setItem(id,Blockly.Xml.domToText( xml ));
+                            //console.log("backuped");
+                        } else {
+                            // Sorry! No web storage support..
+                        }
+                        alert("Success! Hash is: "+id);
+                    }
+                });
+            }
+
+        }
+
+        function restore_blocks() {
+            if(typeof(Storage)!=="undefined"){
+                if(localStorage.data!=null){
+                    var xml = Blockly.Xml.textToDom(localStorage.data);
+                    alert(xml.toString());
+                    //Blockly.Xml.domToWorkspace( Blockly.mainWorkspace, xml );
+                    //console.log("restored");
+                }
+            } else {
+                // Sorry! No web storage support..
+            }
+        }
+
         function myUpdateFunction() {
             code = Blockly.JavaScript.workspaceToCode();
             document.getElementById('jsOutput').value = code;
         }
 
+
         Blockly.addChangeListener(myUpdateFunction);
+
+        $("#saveProgram").click(backup_blocks);
+        $("#loadProgram").click(backup_blocks);
 
         $("#launchCodeButton").click(function () {
             $("#stopExecutionButton").trigger('click');

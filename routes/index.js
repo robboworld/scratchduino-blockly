@@ -8,6 +8,7 @@ var blocklyJs = "blockly/blockly_compressed.js";
 var jsCompressedJs = "blockly/javascript_compressed.js";
 var blocksJs = "blockly/blocks_compressed.js";
 var storageJs = "blockly/appengine/storage.js";
+var hashids = "hashids.min.js";
 var messagesRUS = "blockly/msg/js/ru.js";
 var messagesEN = "blockly/msg/js/en.js";
 var jquery = "scripts/jquery-1.11.2.min.js";
@@ -29,6 +30,7 @@ router.get('/', function (req, res) {
                 jsCompressedJs,
                 blocksJs,
                 messagesRUS,
+                hashids,
                 blocklyInit,
                 roboEngineBlocks,
                 controlsBlocks,
@@ -39,6 +41,22 @@ router.get('/', function (req, res) {
             ],
             cssFiles: [bootstrapCss]
         });
+});
+
+var fs = require('fs');
+router.get("/addHash", function(req, res) {
+    var hash = req.query.blocklyHash;
+    var name = req.query.hashName;
+    fs.appendFile("scratchduinoBlockly_hashes", hash+" : "+name+"\n", function(err) {
+        if(err) {
+            console.log(err);
+            res.send("fail");
+        } else {
+            console.log("Файл сохранен.");
+            res.send("ok");
+        }
+    });
+
 });
 
 module.exports = router;
