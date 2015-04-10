@@ -7,6 +7,7 @@ var bootstrapJs = "bootstrap/js/bootstrap.min.js";
 var blocklyJs = "blockly/blockly_compressed.js";
 var jsCompressedJs = "blockly/javascript_compressed.js";
 var blocksJs = "blockly/blocks_compressed.js";
+var storageJs = "blockly/appengine/storage.js";
 var messagesRUS = "blockly/msg/js/ru.js";
 var messagesEN = "blockly/msg/js/en.js";
 var jquery = "scripts/jquery-1.11.2.min.js";
@@ -33,7 +34,8 @@ router.get('/', function (req, res) {
                 controlsBlocks,
                 roboEngineJsGen,
                 controlsJsGen,
-                jsInterpreter
+                jsInterpreter,
+                storageJs
             ],
             cssFiles: [bootstrapCss]
         });

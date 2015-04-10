@@ -64,7 +64,9 @@ String.prototype.format = function() {
 $(document).ready(
     function () {
         Blockly.inject(document.getElementById('blocklyDiv'),
-            {toolbox: document.getElementById('toolbox')});
+            {toolbox: document.getElementById('toolbox')})
+        window.setTimeout(BlocklyStorage.restoreBlocks, 0);
+        BlocklyStorage.backupOnUnload();
 
         function myUpdateFunction() {
             code = Blockly.JavaScript.workspaceToCode();
@@ -85,11 +87,17 @@ $(document).ready(
 
             $(this).removeClass("btn-primary");
             $(this).addClass("btn-success");
+            $(this).blur();
         });
         $("#stopExecutionButton").click(function () {
             clearAllListeners();
             $("#launchCodeButton").removeClass("btn-success");
             $("#launchCodeButton").addClass("btn-primary");
+            $("#sensor1").val("");
+            $("#sensor2").val("");
+            $("#sensor3").val("");
+            $("#sensor4").val("");
+            $("#sensor5").val("");
         });
     }
 );

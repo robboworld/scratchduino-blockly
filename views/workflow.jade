@@ -1,15 +1,27 @@
 extends layout
 
 block content
-    div.page-header
-        h1 Blockly for ScratchDuino
+    header#top.navbar.navbar-static-top(role='banner')
+        div.container
+            div.navbar-header
+                a.navbar-brand(href='../', style="font-size:40px") Blockly for ScratchDuino
+            nav.collapse.navbar-collapse.bs-navbar-collapse
+                form.navbar-form.navbar-right
+                    div.form-group
+                        button#saveProgram.btn-sm.btn-primary(type="submit",style="margin-right: 10px",onclick="BlocklyStorage.link()") Сохранить программу
+                            span.glyphicon.glyphicon-download(aria-hidden="true",style="margin-left: 4px")
+                form.navbar-form.navbar-right
+                    div.form-group
+                        button#loadProgram.btn-sm.btn-default(type="submit") Загрузить программу
+                            span.glyphicon.glyphicon-upload(aria-hidden="true",style="margin-left: 4px")
+
     div.container-fluid
         div.row
             div.col-lg-8
                 div.panel.panel-default
                     div.panel-heading Программа
                     div.panel-body
-                        div#blocklyDiv(style="height: 480px")
+                        div#blocklyDiv(style="height: 600px")
                         include toolbox.html
             //div.col-lg-4
                 div.panel.panel-default
@@ -20,7 +32,7 @@ block content
                 div.row
                     div.panel.panel-default
                         div.panel-heading Вывод
-                        div.panel-body
+                        div.panel-body(style="height: 300px")
                             textarea#jsOutput(style="width: 100%; height: 100%;")
                 div.row(style="margin-bottom: 15px")
                     button#launchCodeButton.btn-lg.btn-primary(style="margin-right: 10px") Запустить
@@ -29,7 +41,28 @@ block content
                     div.panel.panel-default
                         div.panel-heading Сцена
                         div.panel-body
-                            h1 Здесь, предположительно будут спрайты
-    //-script.
+                            h1 Значения сенсоров
+                            form.form-horizontal
+                                div.form-group
+                                    label.col-sm-4.control-label(for="sensor1") Сенсор 1
+                                    div.col-sm-8
+                                        input#sensor1.form-control(type="text")
+                                div.form-group
+                                    label.col-sm-4.control-label(for="sensor2") Сенсор 2
+                                    div.col-sm-8
+                                        input#sensor2.form-control(type="text")
+                                div.form-group
+                                    label.col-sm-4.control-label(for="sensor3") Сенсор 3
+                                    div.col-sm-8
+                                        input#sensor3.form-control(type="text")
+                                div.form-group
+                                    label.col-sm-4.control-label(for="sensor4") Сенсор 4
+                                    div.col-sm-8
+                                        input#sensor4.form-control(type="text")
+                                div.form-group
+                                    label.col-sm-4.control-label(for="sensor5") Сенсор 5
+                                    div.col-sm-8
+                                        input#sensor5.form-control(type="text")
+    //-script.                      
         Blockly.inject(document.getElementById('blocklyDiv'),
         {toolbox: document.getElementById('toolbox')});

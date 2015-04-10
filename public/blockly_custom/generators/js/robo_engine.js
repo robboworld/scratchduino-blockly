@@ -48,3 +48,22 @@ Blockly.JavaScript['test'] = function(block) {
     return code;
 };
 
+Blockly.JavaScript['sensor_value'] = function(block) {
+    var dropdown_sensor_number = block.getFieldValue('sensor_number');
+    // TODO: Assemble JavaScript into code variable.
+    var code = '...';
+    // TODO: Change ORDER_NONE to the correct strength.
+    return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['reload_sensor_values'] = function(block) {
+    // TODO: Assemble JavaScript into code variable.
+    var code = "$.ajax({\n"+
+        "type: 'GET',\n"+
+        "url: '/scratch/data',\n"+
+        "success: function(json){" +
+            "alert(json);"+
+        "}\n"+
+        "});";
+    return code;
+};
