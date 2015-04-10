@@ -17,7 +17,11 @@ Blockly.JavaScript['engine_turned_on'] = function(block) {
 
 Blockly.JavaScript['engine_turned_off'] = function(block) {
     // TODO: Assemble JavaScript into code variable.
-    var code = 'engine_turned_off';
+    var code = "$.ajax({\n"+
+        "type: 'GET',\n"+
+        "url: '/scratch/engine',\n"+
+        "data: { direction: '0'},\n"+
+        "});";
     return code;
 };
 

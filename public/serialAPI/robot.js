@@ -45,10 +45,11 @@ serialport.on("data", function(data) {
     //TODO: Set request timeout
     debug("received: " + data);
     dataBuffer.data += data;
+    console.log(data instanceof Buffer);
+    console.log(data.toString("binary"));
 
     // 14 received bytes means end of transaction of data from robot.
     if (dataBuffer.data.length == 14 && result) {
-        console.log(dataToJSON(dataBuffer.data));
         result.send(dataToJSON(dataBuffer.data));
         result = null;
         dataBuffer.resetData();
@@ -71,7 +72,7 @@ function dataToJSON(data) {
         //TODO: First bit for previous byte
         val = data.charCodeAt(i);
         //TODO: Chto za hernya?
-        console.log(data.charCodeAt(i).toString(2) + "  " + data.charCodeAt(i-1).toString(2));
+        //console.log(data.charCodeAt(i).toString(2) + "  " + data.toString(2));
         i += 2;
     };
 
@@ -108,7 +109,7 @@ exports.resumeConn = function() {
 };
 
 exports.closeConn = function(res) {
-    //TODO: Port do not open after closing
+    //Should only be called before end of session
     serialport.close(function(err) {
         debug("close");
         console.log("close: " + err);
@@ -130,6 +131,7 @@ var LEFT = "\xA0";
 var STOP = "\x00";
 
 exports.move = function(direction, res) {
+    //TODO: Ignore if connection not opened
     result = res;
 
     var directionByte;
@@ -148,14 +150,22 @@ exports.move = function(direction, res) {
             break;
     }
 
-    serialport.write(new Buffer(directionByte, "binary"), function(err, res) {
+    serialport.write(new Buffer(directionByte, "binary"), function(err) {
         // Logging
         dataBuffer.lastByte = directionByte;
+        serialport.drain(function(err) {
+
+        });
     });
 };
 
 exports.data = function(res) {
     result = res;
 
-    serialport.write(new Buffer(dataBuffer.lastByte, "binary"));
+    serialport.write(new Buffer(dataBuffer.lastByte, "binary"), function(err) {
+        // Logging
+        serialport.drain(function(err) {
+
+        });
+    });
 };

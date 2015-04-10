@@ -78,8 +78,7 @@ $(document).ready(
             $.ajax({
                 type: 'GET',
                 url: '/scratch/on',
-                contentType: 'application/json; charset=utf-8',
-                success: alert("sucess")
+                contentType: 'application/json; charset=utf-8'
             });
 
             eval(code);

@@ -16,6 +16,8 @@ html
     button#right Right
     button#left Left
     button#stop Stop
+    br
+    button#data Data
     script.
         function res(data, status) {
             alert("Data: " + data + "\nStatus: " + status);
@@ -80,6 +82,12 @@ html
             $.getJSON(
                     "/scratch/engine",
                     {direction: "0"},
+                    res
+            );
+        };
+        document.getElementById("data").onclick = function () {
+            $.getJSON(
+                    "/scratch/data",
                     res
             );
         };
