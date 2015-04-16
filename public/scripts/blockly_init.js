@@ -85,7 +85,7 @@ $(document).ready(
                         blocklyHash: id,
                         hashName: name
                     },
-                    sucess: function(json){
+                    success: function(json){
                         if(typeof(Storage)!=="undefined")
                         {
                             var xml = Blockly.Xml.workspaceToDom( Blockly.mainWorkspace );
@@ -115,6 +115,22 @@ $(document).ready(
             }
         }
 
+        function request_ports() {
+            $.ajax({
+                url: 'scratch/ports',
+                contentType: 'application/json; charset=utf-8',
+                success: function(res) {
+                    alert(res);
+                    $.ajax({
+                        url: 'scratch/set_port',
+                        data: {
+                            port: JSON.parse(res)[0].name
+                        }
+                    });
+                }
+            });
+        };
+
         function myUpdateFunction() {
             code = Blockly.JavaScript.workspaceToCode();
             document.getElementById('jsOutput').value = code;
@@ -125,6 +141,7 @@ $(document).ready(
 
         $("#saveProgram").click(backup_blocks);
         $("#loadProgram").click(backup_blocks);
+        $("#changePorts").click(request_ports);
 
         $("#launchCodeButton").click(function () {
             $("#stopExecutionButton").trigger('click');
@@ -144,6 +161,13 @@ $(document).ready(
             clearAllListeners();
             $("#launchCodeButton").removeClass("btn-success");
             $("#launchCodeButton").addClass("btn-primary");
+
+            $.ajax({
+                type: 'GET',
+                url: '/scratch/off',
+                contentType: 'application/json; charset=utf-8'
+            });
+
             $("#sensor1").val("");
             $("#sensor2").val("");
             $("#sensor3").val("");

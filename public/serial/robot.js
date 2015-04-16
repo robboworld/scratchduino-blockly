@@ -2,32 +2,60 @@
  * Created by Pais on 27.03.2015.
  */
 
-var SerialPort = require("serialport").SerialPort;
+var SerialFactory = require("serialport");
+var SerialPort = SerialFactory.SerialPort;
 var debug = require("debug")("robot");
-var portSearcher = require("./comports_win32");
 
-//TODO: How to detect an actual port?
-var portName = "\\\\.\\COM3";
+var portName = "";
+var serialport;
 
-//TODO: Debugging/Logging
+exports.findPorts = function(res) {
+
+    SerialFactory.list(function(err, list) {
+
+        if (err) {
+            // TODO: Fix response message
+            res.send("error: " + err);
+        };
+
+        var ports = [];
+        // Take only 'name' property of result
+        for (var i = 0; i < list.length; i++) {
+            // TODO: selection by manufacturer?
+            ports.push({name: list[i].comName});
+        };
+
+        res.send(JSON.stringify(ports));
+    });
+
+};
+
+exports.setPort = function(name) {
+    portName = name;
+
+    //TODO: destroy previous instance of serailport
+    serialport = new SerialPort(portName, {
+        baudrate: 38400,
+        databits: 8,
+        stopbits: 1
+    }, false);
+};
+
+// Response from router. Will be handled until all data from robot received.
+var result;
+
+//TODO: Check serialport variable defined
+//TODO: Process not opened port
+//TODO: Logging
 //TODO: Disconnection processing (see SerialPort.prototype.disconnected)
 
 var dataBuffer = {
     data: "",
-    lastByte: "\x00",
+    lastByte: "\x00", //Default value
     resetData: function() {
         this.data = "";
     }
 };
-
-var result;
-
-var serialport = new SerialPort(portName, {
-    baudrate: 38400,
-    databits: 8,
-    stopbits: 1
-}, false);
-
 
 exports.openConn = function(res) {
     if (serialport.isOpen()) {
@@ -107,14 +135,30 @@ function dataToJSON(data) {
 };
 
 exports.pauseConn = function() {
+
+    if (!serialport.isOpen()) {
+        return;
+    };
+
     serialport.pause();
 };
 
 exports.resumeConn = function() {
+
+    if (!serialport.isOpen()) {
+        return;
+    };
+
     serialport.resume();
 };
 
 exports.closeConn = function(res) {
+
+    if (!serialport.isOpen()) {
+        //TODO: Fix message to send
+        res.send("Already closed");
+        return;
+    };
 
     serialport.close(function(err) {
         debug("close");
@@ -137,7 +181,13 @@ var LEFT = "\xA0";
 var STOP = "\x00";
 
 exports.move = function(direction, res) {
-    //TODO: Ignore if connection not opened
+
+    if (!serialport.isOpen()) {
+        //TODO: Fix message to send
+        res.send("Port is not open");
+        return;
+    };
+
     result = res;
 
     var directionByte;
@@ -160,18 +210,25 @@ exports.move = function(direction, res) {
         // Logging
         dataBuffer.lastByte = directionByte;
         serialport.drain(function(err) {
-
+            //
         });
     });
 };
 
 exports.data = function(res) {
+
+    if (!serialport.isOpen()) {
+        //TODO: Fix message to send
+        res.send("Port is not open");
+        return;
+    };
+
     result = res;
 
     serialport.write(new Buffer(dataBuffer.lastByte, "binary"), function(err) {
         // Logging
         serialport.drain(function(err) {
-
+            //
         });
     });
 };
