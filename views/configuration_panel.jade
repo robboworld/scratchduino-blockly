@@ -1,0 +1,23 @@
+//
+   Created by Pais on 17.04.2015.
+
+doctype html
+html
+    head
+        title="Configuration"
+        script(type='text/javascript', src="scripts/jquery-1.11.2.min.js")
+        script(type='text/javascript', src="bootstrap/js/bootstrap.min.js")
+        script(type='text/javascript', src="scripts/configuration_ready.js")
+        link(rel='stylesheet', href="bootstrap/css/bootstrap.min.css")
+        link(rel='stylesheet', href='/css/style.css')
+    body
+        block content
+            text Выбор порта:
+            div.btn-group
+                button#portName.btn Не выбран
+                button.btn.dropdown-toggle(data-toggle='dropdown')
+                    span.caret
+                ul#portsList.dropdown-menu
+                    li#divider.divider
+                    li#last
+                        a#refreshPorts Обновить список портов

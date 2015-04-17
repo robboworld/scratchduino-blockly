@@ -115,20 +115,8 @@ $(document).ready(
             }
         }
 
-        function request_ports() {
-            $.ajax({
-                url: 'scratch/ports',
-                contentType: 'application/json; charset=utf-8',
-                success: function(res) {
-                    alert(res);
-                    $.ajax({
-                        url: 'scratch/set_port',
-                        data: {
-                            port: JSON.parse(res)[0].name
-                        }
-                    });
-                }
-            });
+        function to_configuration_page() {
+            document.location.href = "/configuration";
         };
 
         function myUpdateFunction() {
@@ -141,15 +129,25 @@ $(document).ready(
 
         $("#saveProgram").click(backup_blocks);
         $("#loadProgram").click(backup_blocks);
-        $("#changePorts").click(request_ports);
+        $("#configureRobot").click(to_configuration_page);
 
         $("#launchCodeButton").click(function () {
-            $("#stopExecutionButton").trigger('click');
             $.ajax({
                 type: 'GET',
                 url: '/scratch/on',
-                contentType: 'application/json; charset=utf-8'
+                contentType: 'application/json; charset=utf-8',
+                success: function(message) {
+                    // TODO: Resonse message will bw fixed
+                    if (message == "No serial port selected.") {
+                        alert("Робот не настроен!");
+                        clearAllListeners();
+                        $("#launchCodeButton").removeClass("btn-success");
+                        $("#launchCodeButton").addClass("btn-primary");
+                    };
+                }
             });
+
+            $("#stopExecutionButton").trigger('click');
 
             eval(code);
 

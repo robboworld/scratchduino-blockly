@@ -3,15 +3,15 @@
  */
 
 var SerialFactory = require("serialport");
-var SerialPort = SerialFactory.SerialPort;
+var SerialPort = require("serialport").SerialPort;
 var debug = require("debug")("robot");
 
 var portName = "";
 var serialport;
 
-exports.findPorts = function(res) {
+exports.findPorts = function (res) {
 
-    SerialFactory.list(function(err, list) {
+    SerialFactory.list(function (err, list) {
 
         if (err) {
             // TODO: Fix response message
@@ -30,10 +30,17 @@ exports.findPorts = function(res) {
 
 };
 
-exports.setPort = function(name) {
+exports.setPort = function (name) {
     portName = name;
 
-    //TODO: destroy previous instance of serailport
+    // Destroy previous instance of serailport
+    if (serialport) {
+        serialport.close(function (err) {
+            // Logging
+        });
+        delete serialport;
+    }
+
     serialport = new SerialPort(portName, {
         baudrate: 38400,
         databits: 8,
@@ -41,55 +48,79 @@ exports.setPort = function(name) {
     }, false);
 };
 
+
+//TODO: Hardware button push
+//TODO: Disconnection processing
+//TODO: Check serialport variable defined
+//TODO: Logging
+
 // Response from router. Will be handled until all data from robot received.
 var result;
-
-//TODO: Check serialport variable defined
-//TODO: Process not opened port
-//TODO: Logging
-//TODO: Disconnection processing (see SerialPort.prototype.disconnected)
 
 var dataBuffer = {
     data: "",
     lastByte: "\x00", //Default value
-    resetData: function() {
+    resetData: function () {
         this.data = "";
     }
 };
 
-exports.openConn = function(res) {
+exports.openConn = function (res) {
+
+    if (!serialport) {
+        // TODO: Fix message to send
+        res.send("No serial port selected.");
+        return;
+    };
+
     if (serialport.isOpen()) {
         //TODO: Fix message to send
         res.send("Already opened");
         return;
-    };
+    }
+    ;
 
-    //TODO: Pause after opening
-    serialport.open(function(err) {
-        debug("open");
-        console.log("open: " + err);
+    // Arduino need some time to think about... something important, i suppose.
+    setTimeout(
+        serialport.open(function (err) {
+            debug("open");
+            console.log("open: " + err);
 
-        if (err) {
-            res.send(err);
-        } else {
-            //TODO: response message
-            res.send("OK");
-        };
+            serialport.on("open", function (err) {
 
-        serialport.on("open", function(err) {
-            //Will never be called
-        });
+                // Logging
+                console.log("serialport.open emitted. Error: " + err);
+                // TODO: some response to client
+            });
 
-        serialport.on("close", function(err) {
-            //Will never be called
-        });
+            serialport.on("close", function (err) {
+                //May be called in disconnection callback
 
-        serialport.on("error", function(err) {
-            //
-        });
+                // Logging
+                console.log("serialport.close emitted. Error: " + err);
+                // TODO: some response to client
+            });
 
-        serialport.on("data", onDataCallback);
-    });
+            serialport.on("error", function (err) {
+
+                // Logging
+                console.log("serialport.error emitted. Error: " + err);
+                //TODO: some response to client
+            });
+
+            serialport.on("data", onDataCallback);
+
+            serialport.on('disconnect', onDisconnectedCallback);
+
+            if (err) {
+                res.send(err);
+            } else {
+                //TODO: response message
+                res.send("OK");
+            }
+            ;
+
+        }), 500);
 };
 
 function onDataCallback(data) {
@@ -121,7 +152,7 @@ function dataToJSON(data) {
     var i = 8; //Sensor_0 first byte is expected to be on this index
     for (var val in json) {
         var high = parseInt(data.substr(i, 2), 16);
-        var low = parseInt(data.substr(i+2, 2), 16);
+        var low = parseInt(data.substr(i + 2, 2), 16);
 
         // Get first byte of high
         high &= 0x01;
@@ -129,38 +160,53 @@ function dataToJSON(data) {
         low = (high << 7) | low;
         json[val] = low.toString();
         i += 4;
-    };
+    }
+    ;
 
     return JSON.stringify(json);
 };
 
-exports.pauseConn = function() {
+function onDisconnectedCallback(err) {
 
-    if (!serialport.isOpen()) {
+    console.log(err);
+
+    this.emit('close', err);
+}
+
+exports.pauseConn = function () {
+
+    if (!serialport || !serialport.isOpen()) {
         return;
     };
 
     serialport.pause();
 };
 
-exports.resumeConn = function() {
+exports.resumeConn = function () {
 
-    if (!serialport.isOpen()) {
+    if (!serialport || !serialport.isOpen()) {
         return;
     };
 
     serialport.resume();
 };
 
-exports.closeConn = function(res) {
+exports.closeConn = function (res) {
+
+    if (!serialport) {
+        // TODO: Fix message to send
+        res.send("No serial port selected.");
+        return;
+    };
 
     if (!serialport.isOpen()) {
         //TODO: Fix message to send
         res.send("Already closed");
         return;
-    };
+    }
+    ;
 
-    serialport.close(function(err) {
+    serialport.close(function (err) {
         debug("close");
         console.log("close: " + err);
 
@@ -169,7 +215,8 @@ exports.closeConn = function(res) {
         } else {
             //TODO: response message
             res.send("OK");
-        };
+        }
+        ;
     });
 };
 
@@ -180,54 +227,73 @@ var RIGHT = "\xC0";
 var LEFT = "\xA0";
 var STOP = "\x00";
 
-exports.move = function(direction, res) {
+exports.move = function (direction, res) {
+
+    if (!serialport) {
+        // TODO: Fix message to send
+        res.send("No serial port selected.");
+        return;
+    };
 
     if (!serialport.isOpen()) {
         //TODO: Fix message to send
         res.send("Port is not open");
         return;
-    };
+    }
+    ;
 
     result = res;
 
     var directionByte;
-    switch(direction) {
-        case "0": directionByte = STOP;
+    switch (direction) {
+        case "0":
+            directionByte = STOP;
             break;
-        case "1": directionByte = BACK;
+        case "1":
+            directionByte = BACK;
             break;
-        case "2": directionByte = LEFT;
+        case "2":
+            directionByte = LEFT;
             break;
-        case "3": directionByte = RIGHT;
+        case "3":
+            directionByte = RIGHT;
             break;
-        case "4": directionByte = FORWARD;
+        case "4":
+            directionByte = FORWARD;
             break;
         default:
             break;
     }
 
-    serialport.write(new Buffer(directionByte, "binary"), function(err) {
+    serialport.write(new Buffer(directionByte, "binary"), function (err) {
         // Logging
         dataBuffer.lastByte = directionByte;
-        serialport.drain(function(err) {
+        serialport.drain(function (err) {
             //
         });
     });
 };
 
-exports.data = function(res) {
+exports.data = function (res) {
+
+    if (!serialport) {
+        // TODO: Fix message to send
+        res.send("No serial port selected.");
+        return;
+    };
 
     if (!serialport.isOpen()) {
         //TODO: Fix message to send
         res.send("Port is not open");
         return;
-    };
+    }
+    ;
 
     result = res;
 
-    serialport.write(new Buffer(dataBuffer.lastByte, "binary"), function(err) {
+    serialport.write(new Buffer(dataBuffer.lastByte, "binary"), function (err) {
         // Logging
-        serialport.drain(function(err) {
+        serialport.drain(function (err) {
             //
         });
     });

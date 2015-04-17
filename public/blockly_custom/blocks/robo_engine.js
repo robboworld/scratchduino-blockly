@@ -83,7 +83,7 @@ Blockly.Blocks['engine_direction'] = {
             .setAlign(Blockly.ALIGN_CENTRE)
             .appendField("мотор в");
         this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([["влево", "2"], ["вправо", "3"], ["вперёд", "4"],["назад", "1"]]), "direction");
+            .appendField(new Blockly.FieldDropdown([["вперёд", "4"],["назад", "1"],["влево", "2"], ["вправо", "3"]]), "direction");
         this.setInputsInline(true);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
