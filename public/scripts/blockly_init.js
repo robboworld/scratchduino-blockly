@@ -140,20 +140,19 @@ $(document).ready(
                     // TODO: Resonse message will bw fixed
                     if (message == "No serial port selected.") {
                         alert("Робот не настроен!");
-                        clearAllListeners();
-                        $("#launchCodeButton").removeClass("btn-success");
-                        $("#launchCodeButton").addClass("btn-primary");
+
+                        return;
                     };
+
+                    $("#stopExecutionButton").trigger('click');
+
+                    eval(code);
+
+                    $(this).removeClass("btn-primary");
+                    $(this).addClass("btn-success");
+                    $(this).blur();
                 }
             });
-
-            $("#stopExecutionButton").trigger('click');
-
-            eval(code);
-
-            $(this).removeClass("btn-primary");
-            $(this).addClass("btn-success");
-            $(this).blur();
         });
         $("#stopExecutionButton").click(function () {
             clearAllListeners();
