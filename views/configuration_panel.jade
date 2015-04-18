@@ -12,6 +12,13 @@ html
         link(rel='stylesheet', href='/css/style.css')
     body
         block content
+            img(src='img/Robot_panel_mini.png' usemap='#robot_map')
+            map#robot_map(name="robot_map")
+                area#bot_left(shape='poly' href='' coords='114, 276, 114, 293, 125, 300, 126, 312, 114, 318, 114, 335, 70, 335, 53, 317, 45, 311, 45, 300, 57, 291, 56, 274')
+                area#bot_right(shape='poly' href='' coords='241, 335, 226, 320, 216, 312, 216, 301, 227, 292, 227, 277, 286, 277, 286, 294, 295, 301, 296, 312, 285, 321, 285, 336')
+                area#top_right(shape='poly' href='' coords='253, 147, 253, 131, 241, 124, 241, 112, 252, 105, 252, 88, 295, 88, 313, 106, 322, 115, 321, 124, 310, 132, 310, 147')
+                area#top_center(shape='poly' href='' coords='143, 95, 143, 79, 133, 70, 133, 59, 144, 52, 144, 35, 188, 35, 205, 52, 213, 63, 213, 72, 202, 79, 202, 95')
+                area#top_left(shape='poly' href='' coords='38, 148, 38, 132, 27, 127, 27, 113, 38, 107, 38, 90, 82, 89, 98, 108, 106, 117, 106, 125, 95, 133, 95, 149')
             text Выбор порта:
             div.btn-group
                 button#portName.btn Не выбран

@@ -137,7 +137,8 @@ $(document).ready(
                 url: '/scratch/on',
                 contentType: 'application/json; charset=utf-8',
                 success: function(message) {
-                    // TODO: Resonse message will bw fixed
+                    // TODO: Response message will bw fixed
+                    // TODO: What if robot not using in program?
                     if (message == "No serial port selected.") {
                         alert("Робот не настроен!");
 

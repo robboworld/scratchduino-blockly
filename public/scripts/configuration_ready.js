@@ -6,7 +6,6 @@ $(document).ready(
     function() {
 
         // TODO: Asynchronous refreshing?
-        // TODO: Add list refreshing
         function requestPorts() {
             $.ajax({
                 type: "GET",
@@ -27,12 +26,15 @@ $(document).ready(
 
             clearList();
 
+            if (!ports.length) {
+                var li = createListItem("Нет доступных портов", null);
+                $("#divider").before(li);
+
+                $("#portName").text("Не выбран");
+            }
+
             for (var i = 0; i < ports.length; i++) {
-                var li = document.createElement("li");
-                var a = document.createElement("a");
-                a.innerText = ports[i].name;
-                a.onclick = onPortSelected;
-                li.appendChild(a);
+                var li = createListItem(ports[i].name, onPortSelected);
                 $("#divider").before(li);
             }
 
@@ -44,6 +46,17 @@ $(document).ready(
                     portsList.removeChild(portsList.children[i]);
                 };
             };
+
+            function createListItem(text, onClickFunc) {
+                var li = document.createElement("li");
+                var a = document.createElement("a");
+
+                a.innerText = text;
+                a.onclick = onClickFunc;
+                li.appendChild(a);
+
+                return li;
+            }
 
             function onPortSelected() {
                 var self = this;
@@ -60,7 +73,28 @@ $(document).ready(
             };
         };
 
+        function onClickArea() {
+
+            // Get top right corner of area
+            var coords = this.coords.split(",");
+            var x_coords = coords.filter(function(elem, index) {
+                return !(index % 2);
+            });
+            var y_coords = coords.filter(function(elem, index) {
+                return (index % 2);
+            });
+            var x_corner = Math.max.apply(null, x_coords);
+            var y_corner = Math.max.apply(null, y_coords);
+
+            alert(x_corner + ", " + y_corner);
+            // TODO: dropdown list
+        }
+
+        // TODO: Add image map window resizing processing (see: https://github.com/stowball/jQuery-rwdImageMaps)
+        // TODO: Try to process image resizing with map
+        // TODO: Add area hover event (see: http://www.outsharked.com/imagemapster/)
         $("#refreshPorts").click(requestPorts);
+        $("map#robot_map area").click(onClickArea);
         requestPorts();
     }
 );
