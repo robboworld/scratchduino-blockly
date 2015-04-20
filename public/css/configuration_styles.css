@@ -1,0 +1,16 @@
+#contextMenu {
+    position: absolute;
+    display: none
+}
+
+.contextMenuItem {
+    margin-left: 20px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    marin-top: 10px
+}
+
+.contextMenuInput {
+    float: right;
+    margin-left: 10px;
+}

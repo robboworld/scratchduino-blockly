@@ -73,23 +73,34 @@ $(document).ready(
             };
         };
 
-        function onClickArea() {
+        //function createSensorSettingsList(sensor_index) {
+        //
+        //    // Get top right corner of area
+        //    var coords = this.coords.split(",");
+        //    var x_coords = coords.filter(function(elem, index) {
+        //        return !(index % 2);
+        //    });
+        //    var y_coords = coords.filter(function(elem, index) {
+        //        return (index % 2);
+        //    });
+        //    var x_corner = Math.max.apply(null, x_coords);
+        //    var y_corner = Math.min.apply(null, y_coords);
+        //
+        //    // TODO: dropdown list
+        //
+        //}
 
-            // Get top right corner of area
-            var coords = this.coords.split(",");
-            var x_coords = coords.filter(function(elem, index) {
-                return !(index % 2);
+        function onClickArea(e) {
+            $("#contextMenu").css({
+                display: "block",
+                left: e.pageX,
+                top: e.pageY
             });
-            var y_coords = coords.filter(function(elem, index) {
-                return (index % 2);
-            });
-            var x_corner = Math.max.apply(null, x_coords);
-            var y_corner = Math.max.apply(null, y_coords);
 
-            alert(x_corner + ", " + y_corner);
-            // TODO: dropdown list
+            return false;
         }
 
+        // TODO: action on #portName button click
         // TODO: Add image map window resizing processing (see: https://github.com/stowball/jQuery-rwdImageMaps)
         // TODO: Try to process image resizing with map
         // TODO: Add area hover event (see: http://www.outsharked.com/imagemapster/)
