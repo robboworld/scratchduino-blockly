@@ -25,14 +25,27 @@ html
                 button.btn.dropdown-toggle(data-toggle='dropdown')
                     span.caret
                 ul#portsList.dropdown-menu
-                    li#divider.divider
-                    li#last
+                    li#portsDivider.divider
+                    li
                         a#refreshPorts Обновить список портов
             div#contextMenu.dropdown
                 ul.dropdown-menu(role="menu" style="display: block; position: static")
+                    li#header.contextMenuItem
+                        text.contextMenuText №
+                        select.select
+                            option 1
+                            option 2
+                            option 3
+                            option 4
+                            option 5
+                        span.glyphicon.glyphicon-remove.contextMenuRight(title = "Закрыть")
+                    li.divider
+                    li.contextMenuItem
+                        text.contextMenuText Название
+                        input.contextMenuRight(type="text")
                     li.contextMenuItem.btn-group
                         text.dropdown-toggle(data-toggle='dropdown') Тип
-                        ul.dropdown-menu.dropdown-menu-right
+                        ul.dropdown-menu
                             li
                                 a Касания
                             li
@@ -42,14 +55,14 @@ html
                             li
                                 a Глаз
                     li.contextMenuItem
-                        text Название
-                        input.contextMenuInput
-                    li.contextMenuItem
-                        text Номер
-                        input.contextMenuInput
-                    li.contextMenuItem
-                        text Пороги срабатывания
+                        text.contextMenuText Пороги срабатывания
+                        span.glyphicon.glyphicon-plus.contextMenuRight
+                        ul#thresholdsList
                     li.divider
                     li
-                        a Сохранить
+                        a#save Сохранить
+                            span.glyphicon.glyphicon-ok.floatRight
+                    li
+                        a#remove Удалить
+                            span.glyphicon.glyphicon-trash.floatRight
 

@@ -10,7 +10,15 @@
     marin-top: 10px
 }
 
-.contextMenuInput {
+.contextMenuText {
+    margin-right: 5px;
+}
+
+.contextMenuRight {
     float: right;
-    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.floatRight {
+    float: right;
 }

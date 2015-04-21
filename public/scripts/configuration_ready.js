@@ -23,19 +23,20 @@ $(document).ready(
         function successPort(json) {
 
             var ports = JSON.parse(json);
+            var portsDivider = $("#portsDivider");
 
             clearList();
 
             if (!ports.length) {
                 var li = createListItem("Нет доступных портов", null);
-                $("#divider").before(li);
+                portsDivider.before(li);
 
                 $("#portName").text("Не выбран");
             }
 
             for (var i = 0; i < ports.length; i++) {
                 var li = createListItem(ports[i].name, onPortSelected);
-                $("#divider").before(li);
+                portsDivider.before(li);
             }
 
             function clearList() {
@@ -73,22 +74,24 @@ $(document).ready(
             };
         };
 
-        //function createSensorSettingsList(sensor_index) {
-        //
-        //    // Get top right corner of area
-        //    var coords = this.coords.split(",");
-        //    var x_coords = coords.filter(function(elem, index) {
-        //        return !(index % 2);
-        //    });
-        //    var y_coords = coords.filter(function(elem, index) {
-        //        return (index % 2);
-        //    });
-        //    var x_corner = Math.max.apply(null, x_coords);
-        //    var y_corner = Math.min.apply(null, y_coords);
-        //
-        //    // TODO: dropdown list
-        //
-        //}
+        function closeContextMenu() {
+            $("#contextMenu").hide();
+        };
+
+        function saveContextMenu() {
+            closeContextMenu();
+            //
+        };
+
+        function removeContextMenu() {
+            closeContextMenu();
+            //
+        };
+
+        function addThreshold() {
+            var threshold = document.createElement("li");
+            //
+        };
 
         function onClickArea(e) {
             $("#contextMenu").css({
@@ -98,14 +101,18 @@ $(document).ready(
             });
 
             return false;
-        }
+        };
 
         // TODO: action on #portName button click
         // TODO: Add image map window resizing processing (see: https://github.com/stowball/jQuery-rwdImageMaps)
         // TODO: Try to process image resizing with map
-        // TODO: Add area hover event (see: http://www.outsharked.com/imagemapster/)
+        // TODO: Add area state changing when sensor choosed
+        $("#contextMenu #header span").click(closeContextMenu);
+        $("#contextMenu #save").click(saveContextMenu);
+        $("#contextMenu #remove").click(removeContextMenu);
+        $("#contextMenu .glyphicon-plus").click(addThreshold);
         $("#refreshPorts").click(requestPorts);
-        $("map#robot_map area").click(onClickArea);
+        $("#robot_map area").click(onClickArea);
         requestPorts();
     }
 );
