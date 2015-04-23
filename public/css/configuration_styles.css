@@ -22,3 +22,8 @@
 .floatRight {
     float: right;
 }
+
+.inputSmall {
+    height: 20px;
+    width: 160px;
+}

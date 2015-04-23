@@ -132,6 +132,10 @@ $(document).ready(
         $("#configureRobot").click(to_configuration_page);
 
         $("#launchCodeButton").click(function () {
+
+            var self = $(this);
+            $("#stopExecutionButton").trigger('click');
+
             $.ajax({
                 type: 'GET',
                 url: '/scratch/on',
@@ -145,13 +149,11 @@ $(document).ready(
                         return;
                     };
 
-                    $("#stopExecutionButton").trigger('click');
-
                     eval(code);
 
-                    $(this).removeClass("btn-primary");
-                    $(this).addClass("btn-success");
-                    $(this).blur();
+                    self.removeClass("btn-primary");
+                    self.addClass("btn-success");
+                    self.blur();
                 }
             });
         });

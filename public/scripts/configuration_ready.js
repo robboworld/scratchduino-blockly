@@ -74,45 +74,10 @@ $(document).ready(
             };
         };
 
-        function closeContextMenu() {
-            $("#contextMenu").hide();
-        };
-
-        function saveContextMenu() {
-            closeContextMenu();
-            //
-        };
-
-        function removeContextMenu() {
-            closeContextMenu();
-            //
-        };
-
-        function addThreshold() {
-            var threshold = document.createElement("li");
-            //
-        };
-
-        function onClickArea(e) {
-            $("#contextMenu").css({
-                display: "block",
-                left: e.pageX,
-                top: e.pageY
-            });
-
-            return false;
-        };
-
         // TODO: action on #portName button click
         // TODO: Add image map window resizing processing (see: https://github.com/stowball/jQuery-rwdImageMaps)
         // TODO: Try to process image resizing with map
-        // TODO: Add area state changing when sensor choosed
-        $("#contextMenu #header span").click(closeContextMenu);
-        $("#contextMenu #save").click(saveContextMenu);
-        $("#contextMenu #remove").click(removeContextMenu);
-        $("#contextMenu .glyphicon-plus").click(addThreshold);
         $("#refreshPorts").click(requestPorts);
-        $("#robot_map area").click(onClickArea);
         requestPorts();
     }
 );

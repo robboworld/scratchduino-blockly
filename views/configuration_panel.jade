@@ -32,7 +32,7 @@ html
                 ul.dropdown-menu(role="menu" style="display: block; position: static")
                     li#header.contextMenuItem
                         text.contextMenuText №
-                        select.select
+                        select#sensorNum.select
                             option 1
                             option 2
                             option 3
@@ -42,22 +42,18 @@ html
                     li.divider
                     li.contextMenuItem
                         text.contextMenuText Название
-                        input.contextMenuRight(type="text")
-                    li.contextMenuItem.btn-group
-                        text.dropdown-toggle(data-toggle='dropdown') Тип
-                        ul.dropdown-menu
-                            li
-                                a Касания
-                            li
-                                a Линии
-                            li
-                                a Света
-                            li
-                                a Глаз
+                        input#sensorNameInput.inputSmall.contextMenuRight(type="text")
+                    li.contextMenuItem
+                        text.dropdown-toggle(data-toggle='dropdown') Тип датчика
+                        select#sensorTypeSelect.contextMenuRight.select
+                            option Касания
+                            option Света
+                            option Линии
+                            option Камера
                     li.contextMenuItem
                         text.contextMenuText Пороги срабатывания
                         span.glyphicon.glyphicon-plus.contextMenuRight
-                        ul#thresholdsList
+                        ul#sensorThresholdsList
                     li.divider
                     li
                         a#save Сохранить
@@ -66,3 +62,4 @@ html
                         a#remove Удалить
                             span.glyphicon.glyphicon-trash.floatRight
 
+            script(type='text/javascript', src="scripts/sensors_menu_init.js")
