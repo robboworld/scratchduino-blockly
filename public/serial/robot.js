@@ -5,17 +5,21 @@
 var SerialFactory = require("serialport");
 var SerialPort = require("serialport").SerialPort;
 var debug = require("debug")("robot");
+// Response from router
+var responseKeeper = require("./response_keeper");
+var connectionWatcher = require("./connection_watcher");
 
 var portName = "";
 var serialport;
 
-exports.findPorts = function (res) {
+exports.findPorts = function(res) {
+
+    responseKeeper.addResponse(res);
 
     SerialFactory.list(function (err, list) {
 
         if (err) {
-            // TODO: Fix response message
-            res.send("error: " + err);
+            responseKeeper.send(err, 500);
         };
 
         var ports = [];
@@ -25,7 +29,7 @@ exports.findPorts = function (res) {
             ports.push({name: list[i].comName});
         };
 
-        res.send(JSON.stringify(ports));
+        responseKeeper.send(JSON.stringify(ports));
     });
 
 };
@@ -34,9 +38,9 @@ exports.setPort = function (name) {
     portName = name;
 
     // Destroy previous instance of serailport
-    if (serialport) {
-        serialport.close(function (err) {
-            // Logging
+    if (serialport && serialport.isOpen()) {
+        serialport.close(function() {
+            console.log("Previous connection closed");
         });
         delete serialport;
     }
@@ -48,14 +52,8 @@ exports.setPort = function (name) {
     }, false);
 };
 
-
 //TODO: Hardware button push
-//TODO: Disconnection processing
-//TODO: Check serialport variable defined
 //TODO: Logging
-
-// Response from router. Will be handled until all data from robot received.
-var result;
 
 var dataBuffer = {
     data: "",
@@ -67,74 +65,75 @@ var dataBuffer = {
 
 exports.openConn = function (res) {
 
+    responseKeeper.addResponse(res);
+
     if (!serialport) {
-        // TODO: Fix message to send
-        res.send("No serial port selected.");
+        responseKeeper.send("No serial port selected", 500);
         return;
     };
 
     if (serialport.isOpen()) {
-        //TODO: Fix message to send
-        res.send("Already opened");
+        responseKeeper.send("Already opened", 500);
         return;
     }
     ;
 
-    // Arduino need some time to think about... something important, i suppose.
-    setTimeout(
-        serialport.open(function (err) {
-            debug("open");
-            console.log("open: " + err);
+    serialport.open(function (err) {
+        debug("open");
+        console.log("open: " + err);
 
-            serialport.on("open", function (err) {
+        if (err) {
+            return;
+        }
 
-                // Logging
-                console.log("serialport.open emitted. Error: " + err);
-                // TODO: some response to client
-            });
+        serialport.on("close", function (err) {
+            //May be called in disconnection callback
+            // Logging
+            console.log("serialport.close emitted. Error: " + err);
+            // TODO: some response to client
+        });
 
-            serialport.on("close", function (err) {
-                //May be called in disconnection callback
+        serialport.on("error", function (err) {
+            // Logging
+            console.log("serialport.error emitted. Error: " + err);
+            //TODO: some response to client
+        });
 
-                // Logging
-                console.log("serialport.close emitted. Error: " + err);
-                // TODO: some response to client
-            });
+        process.on('uncaughtException', function (err) {
+            console.log('uncaught exception: ' + err);
+        });
 
-            serialport.on("error", function (err) {
+        serialport.on('disconnect', function () {
+            console.log('disconnected: ' + err);
+        });
 
-                // Logging
-                console.log("serialport.error emitted. Error: " + err);
-                //TODO: some response to client
-            });
+        serialport.on("data", onDataCallback);
 
-            serialport.on("data", onDataCallback);
-
-            serialport.on('disconnect', onDisconnectedCallback);
-
-            if (err) {
-                res.send(err);
-            } else {
-                //TODO: response message
-                res.send("OK");
-            }
-            ;
-
-        }), 500);
+        if (err) {
+            responseKeeper.send(err, 500)
+        } else {
+            // Arduino need some time to think about... something important, i suppose.
+            setTimeout(function () {
+                responseKeeper.send(/*OK 200*/);
+            }, 2000);
+        };
+    });
 };
 
 function onDataCallback(data) {
 
-    //TODO: Set request timeout
-    debug("received: " + data);
+    connectionWatcher.waitForData(responseKeeper, serialport);
+
     dataBuffer.data += data.toString("hex");
 
     //TODO: Find another method to check whether transaction completed
     // 14 received bytes (14*2 numbers in hex) means end of transaction of data from robot.
-    if (dataBuffer.data.length == 28 && result) {
-        result.send(dataToJSON(dataBuffer.data));
-        result = null;
+    if (dataBuffer.data.length == 28) {
+        if (dataBuffer.data.length == 28 && responseKeeper.isActivated()) {
+            responseKeeper.send(dataToJSON(dataBuffer.data));
+        }
         dataBuffer.resetData();
+        connectionWatcher.dataSendingComplete = true;
     }
 
 };
@@ -166,13 +165,6 @@ function dataToJSON(data) {
     return JSON.stringify(json);
 };
 
-function onDisconnectedCallback(err) {
-
-    console.log(err);
-
-    this.emit('close', err);
-}
-
 exports.pauseConn = function () {
 
     if (!serialport || !serialport.isOpen()) {
@@ -193,28 +185,18 @@ exports.resumeConn = function () {
 
 exports.closeConn = function (res) {
 
-    if (!serialport) {
-        // TODO: Fix message to send
-        res.send("No serial port selected.");
-        return;
-    };
+    responseKeeper.addResponse(res);
 
-    if (!serialport.isOpen()) {
-        //TODO: Fix message to send
-        res.send("Already closed");
-        return;
-    }
-    ;
+    if (!checkPortAvailable(responseKeeper)) return;
 
     serialport.close(function (err) {
         debug("close");
-        console.log("close: " + err);
+        console.log("close callback: " + err);
 
         if (err) {
-            res.send(err);
+            responseKeeper.send(err, 500);
         } else {
-            //TODO: response message
-            res.send("OK");
+            responseKeeper.send();
         }
         ;
     });
@@ -229,20 +211,9 @@ var STOP = "\x00";
 
 exports.move = function (direction, res) {
 
-    if (!serialport) {
-        // TODO: Fix message to send
-        res.send("No serial port selected.");
-        return;
-    };
+    responseKeeper.addResponse(res);
 
-    if (!serialport.isOpen()) {
-        //TODO: Fix message to send
-        res.send("Port is not open");
-        return;
-    }
-    ;
-
-    result = res;
+    if (!checkPortAvailable(responseKeeper)) return;
 
     var directionByte;
     switch (direction) {
@@ -265,31 +236,22 @@ exports.move = function (direction, res) {
             break;
     }
 
+    dataBuffer.lastByte = directionByte;
     serialport.write(new Buffer(directionByte, "binary"), function (err) {
         // Logging
-        dataBuffer.lastByte = directionByte;
         serialport.drain(function (err) {
             //
         });
     });
+
+    connectionWatcher.waitForData(responseKeeper, serialport);
 };
 
 exports.data = function (res) {
 
-    if (!serialport) {
-        // TODO: Fix message to send
-        res.send("No serial port selected.");
-        return;
-    };
+    responseKeeper.addResponse(res);
 
-    if (!serialport.isOpen()) {
-        //TODO: Fix message to send
-        res.send("Port is not open");
-        return;
-    }
-    ;
-
-    result = res;
+    if (!checkPortAvailable(responseKeeper)) return;
 
     serialport.write(new Buffer(dataBuffer.lastByte, "binary"), function (err) {
         // Logging
@@ -297,4 +259,20 @@ exports.data = function (res) {
             //
         });
     });
+
+    connectionWatcher.waitForData(responseKeeper, serialport);
 };
+
+function checkPortAvailable(resKeeper) {
+    if (!serialport) {
+        responseKeeper.send("No serial port selected", 500);
+        return false;
+    };
+
+    if (!serialport.isOpen()) {
+        responseKeeper.send("Port is not open", 500);
+        return false;
+    };
+
+    return true;
+}
