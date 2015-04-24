@@ -12,6 +12,10 @@ var connectionWatcher = require("./connection_watcher");
 var portName = "";
 var serialport;
 
+//process.on('uncaughtException', function (err) {
+//    console.log('uncaught exception: ' + err);
+//});
+
 exports.findPorts = function(res) {
 
     responseKeeper.addResponse(res);
@@ -69,20 +73,20 @@ exports.openConn = function (res) {
 
     if (!serialport) {
         responseKeeper.send("No serial port selected", 500);
-        return;
+        return false;
     };
 
     if (serialport.isOpen()) {
-        responseKeeper.send("Already opened", 500);
-        return;
-    }
-    ;
+        responseKeeper.send("Port is not open", 500);
+        return false;
+    };
 
     serialport.open(function (err) {
-        debug("open");
+
         console.log("open: " + err);
 
         if (err) {
+            responseKeeper.send(err, 500)
             return;
         }
 
@@ -99,30 +103,26 @@ exports.openConn = function (res) {
             //TODO: some response to client
         });
 
-        process.on('uncaughtException', function (err) {
-            console.log('uncaught exception: ' + err);
-        });
-
         serialport.on('disconnect', function () {
             console.log('disconnected: ' + err);
         });
 
         serialport.on("data", onDataCallback);
 
-        if (err) {
-            responseKeeper.send(err, 500)
-        } else {
-            // Arduino need some time to think about... something important, i suppose.
-            setTimeout(function () {
-                responseKeeper.send(/*OK 200*/);
-            }, 2000);
-        };
+        connectionWatcher.trigger = true;
+
+        // Arduino need some time to think about... something important, i suppose.
+        setTimeout(function () {
+            responseKeeper.send(/*OK 200*/);
+        }, 2000);
     });
+
+    connectionWatcher.waitPort(responseKeeper);
 };
 
 function onDataCallback(data) {
 
-    connectionWatcher.waitForData(responseKeeper, serialport);
+    connectionWatcher.waitDisconnetcion(responseKeeper, serialport);
 
     dataBuffer.data += data.toString("hex");
 
@@ -133,7 +133,7 @@ function onDataCallback(data) {
             responseKeeper.send(dataToJSON(dataBuffer.data));
         }
         dataBuffer.resetData();
-        connectionWatcher.dataSendingComplete = true;
+        connectionWatcher.trigger = true;
     }
 
 };
@@ -190,8 +190,9 @@ exports.closeConn = function (res) {
     if (!checkPortAvailable(responseKeeper)) return;
 
     serialport.close(function (err) {
-        debug("close");
         console.log("close callback: " + err);
+
+        connectionWatcher.trigger = true;
 
         if (err) {
             responseKeeper.send(err, 500);
@@ -200,6 +201,8 @@ exports.closeConn = function (res) {
         }
         ;
     });
+
+    connectionWatcher.waitPort(responseKeeper);
 };
 
 /*Direction constants*/
@@ -244,7 +247,7 @@ exports.move = function (direction, res) {
         });
     });
 
-    connectionWatcher.waitForData(responseKeeper, serialport);
+    connectionWatcher.waitDisconnetcion(responseKeeper, serialport);
 };
 
 exports.data = function (res) {
@@ -260,7 +263,7 @@ exports.data = function (res) {
         });
     });
 
-    connectionWatcher.waitForData(responseKeeper, serialport);
+    connectionWatcher.waitDisconnetcion(responseKeeper, serialport);
 };
 
 function checkPortAvailable(resKeeper) {

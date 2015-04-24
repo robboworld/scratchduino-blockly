@@ -7,13 +7,20 @@ var default_status = 200;
 
 // TODO: Another way to process multiple responses
 function ResponseKeeper() {
-    this.result = [];
+    this.result = null;
     this.message = default_message;
     this.status = default_status;
     self = this;
 
     this.addResponse = function(res) {
-        self.result.push(res);
+        if (res == null) return;
+
+        // If there is another awaiting connection, skip current
+        if (self.result == null) {
+            res.status(500).send("Too early");
+        };
+
+        self.result = res;
     };
     this.setStatus = function(status) {
         self.status = status;
@@ -25,18 +32,18 @@ function ResponseKeeper() {
         self.message += mess;
     };
     this.resetData = function() {
-        self.result.shift();
+        self.result = null;
         self.message = default_message;
         self.status = default_status;
     };
     this.send = function(mess, status) {
-        if (!self.result)
+        if (self.result == null)
             return;
 
         self.message = (mess) ? mess : self.message;
         self.status = (status) ? status : self.status;
 
-        self.result[0].status(self.status).send(self.message);
+        self.result.status(self.status).send(self.message);
 
         self.resetData();
     };
