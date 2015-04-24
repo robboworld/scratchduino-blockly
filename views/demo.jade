@@ -1,30 +1,17 @@
-mixin xml(id)
-    xml#id(style='display: none')
-mixin block(name)
-    block(type=name)
-doctype html
-html
-    head
-        meta(charset='utf-8')
-        title Blockly Demo: Fixed Blockly
-        script(src='blockly/blockly_compressed.js')
-        script(src='blockly/blocks_compressed.js')
-        script(src='blockly/msg/js/en.js')
-        style.
-            body {
-                background-color: #fff;
-                font-family: sans-serif;
-            }
-            h1 {
-                font-weight: normal;
-                font-size: 140%;
-            }
-    body
-        h1
-            a(href='https://developers.google.com/blockly/') Blockly
-        p This is a simple demo of injecting Blockly into a fixed-sized &apos;div&apos; element.
-        div#blocklyDiv(style='height: 480px; width: 600px;')
-        include toolbox.html
-        script.
-            Blockly.inject(document.getElementById('blocklyDiv'),
-                    {toolbox: document.getElementById('toolbox')});
+extends layout
+block content
+    h1 "Hello"
+    div#settingsModal.modal.fade(role='dialog', aria-labelledby='settingsModalLabel', aria-hidden='true')
+        div.modal-dialog
+            div.modal-content
+                div.modal-header
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') &times;
+                    h4#settingsModalLabel.modal-title Modal title
+                div.modal-body "Hello!"
+
+                div.modal-footer
+                    button.btn.btn-default(type='button', data-dismiss='modal') Close
+                    button.btn.btn-primary(type='button') Save changes
+
+    button#settings.btn-sm.btn-default(type="button",style="margin-right: 5px" data-toggle="modal" data-target="#settingsModal") Настройки

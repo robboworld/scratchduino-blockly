@@ -19,6 +19,10 @@ var roboEngineJsGen = "blockly_custom/generators/js/robo_engine.js";
 var controlsJsGen = "blockly_custom/generators/js/controls.js";
 var jsInterpreter = "JS-Interpreter/acorn_interpreter.js";
 
+var configReadyJs = "scripts/configuration_ready.js";
+var configStylesCss = "css/configuration_styles.css";
+var sensorsMenuInit = "scripts/sensors_menu_init.js";
+
 router.get('/', function (req, res) {
     res.render('workflow',
         {
@@ -37,9 +41,11 @@ router.get('/', function (req, res) {
                 roboEngineJsGen,
                 controlsJsGen,
                 jsInterpreter,
-                storageJs
+                storageJs,
+                configReadyJs,
+                sensorsMenuInit
             ],
-            cssFiles: [bootstrapCss]
+            cssFiles: [bootstrapCss, configStylesCss]
         });
 });
 
@@ -57,6 +63,18 @@ router.get("/addHash", function(req, res) {
         }
     });
 
+});
+
+router.get('/demo', function (req, res) {
+    res.render('demo',
+        {
+            title: 'Express',
+            jsFiles: [
+                jquery,
+                bootstrapJs
+            ],
+            cssFiles: [bootstrapCss]
+        });
 });
 
 module.exports = router;
