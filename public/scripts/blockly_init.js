@@ -188,11 +188,7 @@ $(document).ready(
                 contentType: 'application/json; charset=utf-8'
             });
 
-            $("#sensor1").val("");
-            $("#sensor2").val("");
-            $("#sensor3").val("");
-            $("#sensor4").val("");
-            $("#sensor5").val("");
+            $(".sensors").find("input[type = text]").val("");
         });
     }
 );

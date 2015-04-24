@@ -11,6 +11,7 @@ var storageJs = "blockly/appengine/storage.js";
 var messagesRUS = "blockly/msg/js/ru.js";
 var messagesEN = "blockly/msg/js/en.js";
 var jquery = "scripts/jquery-1.11.2.min.js";
+var jquery_maphighlight = "scripts/jquery.maphilight.min.js";
 var blocklyInit = "scripts/blockly_init.js";
 var roboEngineBlocks = "blockly_custom/blocks/robo_engine.js";
 var controlsBlocks = "blockly_custom/blocks/controls.js";
@@ -28,6 +29,7 @@ router.get('/', function (req, res) {
             title: 'ScratchDuino - Blockly',
             jsFiles: [
                 jquery,
+                jquery_maphighlight,
                 bootstrapJs,
                 blocklyJs,
                 jsCompressedJs,

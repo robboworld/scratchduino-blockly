@@ -3,7 +3,16 @@
  */
 
 $(document).ready(
-    function() {
+    function () {
+        $("#robot_image").maphilight();
+        var areas = $(".popoverArea");
+
+        /*$("#bot_left").popover({
+            title: "Настройка сенсора",
+            selector:  $("#bot_left"),
+            trigger: "click",
+            content: "ololo"
+        });*/
 
         // TODO: Asynchronous refreshing?
         function requestPorts() {
@@ -11,10 +20,10 @@ $(document).ready(
                 type: "GET",
                 url: "/scratch/ports",
                 contentType: 'application/json; charset=utf-8',
-                success: function(json) {
+                success: function (json) {
                     successPort(json);
                 },
-                error: function() {
+                error: function () {
                     //
                 }
             });
@@ -43,9 +52,10 @@ $(document).ready(
                 var portsList = document.getElementById("portsList");
 
                 // Delete all elements before divider and refresher
-                for(var i = 0;  portsList.children.length - 2; i++) {
+                for (var i = 0; portsList.children.length - 2; i++) {
                     portsList.removeChild(portsList.children[i]);
-                };
+                }
+                ;
             };
 
             function createListItem(text, onClickFunc) {
