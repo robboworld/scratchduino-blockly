@@ -4,13 +4,11 @@
 
 var curELNumber = 0;
 
-var HASHIDS_SALT = "Windows must die";
-var hashids = new Hashids(HASHIDS_SALT);
 function getNextEventListenerNumber() {
     return curELNumber++;
 }
 function clearListeners() {
-    addedEvListeners=[];
+    addedEvListeners = [];
     curELNumber = 0;
 }
 
@@ -55,65 +53,72 @@ function clearAllListeners() {
     clearListeners();
 }
 
-String.prototype.format = function() {
+String.prototype.format = function () {
     var formatted = this;
     for (var i = 0; i < arguments.length; i++) {
-        var regexp = new RegExp('\\{'+i+'\\}', 'gi');
+        var regexp = new RegExp('\\{' + i + '\\}', 'gi');
         formatted = formatted.replace(regexp, arguments[i]);
     }
     return formatted;
 };
 
+function uuid() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
+
+function loadSketch(name, hash) {
+    if (typeof(Storage) !== "undefined") {
+        var xml = localStorage.getItem(hash);
+        var dom = Blockly.Xml.textToDom(xml);
+        Blockly.mainWorkspace.clear();
+        Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, dom);
+        $("#loadSketchModal").modal("hide");
+    } else {
+        alert("Sorry, no local storage available");
+    }
+}
 
 $(document).ready(
     function () {
         Blockly.inject(document.getElementById('blocklyDiv'),
             {toolbox: document.getElementById('toolbox')})
         window.setTimeout(BlocklyStorage.restoreBlocks, 0);
-        BlocklyStorage.backupOnUnload();
-
 
         function backup_blocks() {
             var name = prompt("Введите название для скетча");
-            if(name){
-                var date = new Date().valueOf();
-                var id = hashids.encode(date);
+            if (name) {
+                var id = uuid();
                 $.ajax({
                     type: 'GET',
                     url: '/addHash',
-                    data:{
+                    data: {
                         blocklyHash: id,
                         hashName: name
                     },
-                    success: function(json){
-                        if(typeof(Storage)!=="undefined")
-                        {
-                            var xml = Blockly.Xml.workspaceToDom( Blockly.mainWorkspace );
+                    success: function (json) {
+                        if (typeof(Storage) !== "undefined") {
+                            var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
                             var txt = new XMLSerializer().serializeToString(xml);
-                            localStorage.setItem(id,Blockly.Xml.domToText( xml ));
+                            localStorage.setItem(id, Blockly.Xml.domToText(xml));
                             //console.log("backuped");
                         } else {
                             // Sorry! No web storage support..
                         }
-                        alert("Success! Hash is: "+id);
+                        alert("Success! Hash is: " + id);
+                    },
+                    error: function (e) {
+                        alert("Fail :(");
                     }
+
                 });
             }
 
         }
 
-        function restore_blocks() {
-            if(typeof(Storage)!=="undefined"){
-                if(localStorage.data!=null){
-                    var xml = Blockly.Xml.textToDom(localStorage.data);
-                    alert(xml.toString());
-                    //Blockly.Xml.domToWorkspace( Blockly.mainWorkspace, xml );
-                    //console.log("restored");
-                }
-            } else {
-                // Sorry! No web storage support..
-            }
-        }
 
         function to_configuration_page() {
             document.location.href = "/configuration";
@@ -128,7 +133,21 @@ $(document).ready(
         Blockly.addChangeListener(myUpdateFunction);
 
         $("#saveProgram").click(backup_blocks);
-        $("#loadProgram").click(backup_blocks);
+        $("#loadProgram").click(function (e) {
+            $.ajax({
+                type: 'GET',
+                url: '/getAllHashes',
+                success: function (html) {
+                    var modal = $("#loadSketchModal");
+                    modal.find(".modal-body").html(html);
+                    modal.modal("toggle")
+                },
+                error: function () {
+                    alert("Sorry, cannot load list of sketches");
+                }
+            });
+
+        });
         $("#configureRobot").click(to_configuration_page);
 
         $("#launchCodeButton").click(function () {
@@ -140,14 +159,15 @@ $(document).ready(
                 type: 'GET',
                 url: '/scratch/on',
                 contentType: 'application/json; charset=utf-8',
-                success: function(message) {
+                success: function (message) {
                     // TODO: Response message will bw fixed
                     // TODO: What if robot not using in program?
                     if (message == "No serial port selected.") {
                         alert("Робот не настроен!");
 
                         return;
-                    };
+                    }
+                    ;
 
                     eval(code);
 

@@ -8,7 +8,6 @@ var blocklyJs = "blockly/blockly_compressed.js";
 var jsCompressedJs = "blockly/javascript_compressed.js";
 var blocksJs = "blockly/blocks_compressed.js";
 var storageJs = "blockly/appengine/storage.js";
-var hashids = "hashids.min.js";
 var messagesRUS = "blockly/msg/js/ru.js";
 var messagesEN = "blockly/msg/js/en.js";
 var jquery = "scripts/jquery-1.11.2.min.js";
@@ -26,7 +25,7 @@ var sensorsMenuInit = "scripts/sensors_menu_init.js";
 router.get('/', function (req, res) {
     res.render('workflow',
         {
-            title: 'Express',
+            title: 'ScratchDuino - Blockly',
             jsFiles: [
                 jquery,
                 bootstrapJs,
@@ -34,7 +33,6 @@ router.get('/', function (req, res) {
                 jsCompressedJs,
                 blocksJs,
                 messagesRUS,
-                hashids,
                 blocklyInit,
                 roboEngineBlocks,
                 controlsBlocks,
@@ -50,11 +48,30 @@ router.get('/', function (req, res) {
 });
 
 var fs = require('fs');
-router.get("/addHash", function(req, res) {
+var filename = "scratchduinoBlockly_hashes.txt";
+var db;
+fs.readFile(filename, function (err, data) {
+    try {
+        db = JSON.parse(data);
+        console.log(JSON.stringify(db));
+    } catch (e) {
+        db = {
+            hashes: []
+        }
+    }
+});
+
+
+router.get("/addHash", function (req, res) {
     var hash = req.query.blocklyHash;
-    var name = req.query.hashName;
-    fs.appendFile("scratchduinoBlockly_hashes", hash+" : "+name+"\n", function(err) {
-        if(err) {
+    db.hashes[db.hashes.length] = {
+        n: req.query.hashName,
+        h: hash
+    };
+    var tmp = JSON.stringify(db);
+    console.log(tmp);
+    fs.writeFile(filename, tmp, function (err) {
+        if (err) {
             console.log(err);
             res.send("fail");
         } else {
@@ -64,6 +81,15 @@ router.get("/addHash", function(req, res) {
     });
 
 });
+
+router.get("/getAllHashes", function (req, res) {
+    //res.send(JSON.stringify(db.hashes));
+    res.render('sketch_list',
+        {
+            hashes: db.hashes
+        });
+});
+
 
 router.get('/demo', function (req, res) {
     res.render('demo',

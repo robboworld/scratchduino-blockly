@@ -82,6 +82,15 @@ block content
                     button.btn.btn-default(type='button', data-dismiss='modal') Close
                     button.btn.btn-primary(type='button') Save changes
 
+    div#loadSketchModal.modal.fade(role='dialog', aria-labelledby='loadSketchModalLabel', aria-hidden='true')
+        div.modal-dialog
+            div.modal-content
+                div.modal-header
+                    button.close(type='button', data-dismiss='modal', aria-label='Close')
+                        span(aria-hidden='true') &times;
+                    h4#myModalLabel.modal-title Сохранённые скетчи
+                div.modal-body
+
 //-script.                      |
 //Blockly.inject(document.getElementById('blocklyDiv'),|
 // {toolbox: document.getElementById('toolbox')});

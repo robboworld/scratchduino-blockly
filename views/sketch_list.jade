@@ -1,0 +1,10 @@
+table.table.table-hover
+    thead
+        tr
+            th Название
+            th Хеш
+    tbody
+        each row in hashes
+            tr(onclick="loadSketch(\'"+row.n+"\', \'"+row.h+"\');")
+                td.name= row.n
+                td.hash= row.h
