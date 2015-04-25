@@ -21,7 +21,7 @@ function loadSensorData(pos) {
         type: "GET",
         url: "/sensorSettings",
         data: {
-            pos: pos
+            pos: pos//todo check if number already exists
         },
         success: function (data) {
             var sensorData = JSON.parse(data).sensor;
@@ -29,14 +29,14 @@ function loadSensorData(pos) {
                 if (sensorData.active) {
                     $("#isActive").prop("checked", true);
                 }
-                if (sensorData.selectedNumber) {
-                    $("#selectedNumber").find("option[value="+sensorData.selectedNumber+"]").prop('selected', true);
+                if (sensorData.number) {
+                    $("#selectedNumber").find("option[value="+sensorData.number+"]").prop('selected', true);
                 }
-                if (sensorData.selectedName) {
-                    $("#selectedName").val(data.selectedName);
+                if (sensorData.name) {
+                    $("#selectedName").val(sensorData.name);
                 }
-                if (sensorData.selectedType) {
-                    $("#selectedType").find("option[value="+sensorData.selectedType+"]").prop('selected', true);
+                if (sensorData.type) {
+                    $("#selectedType").find("option[value="+sensorData.type+"]").prop('selected', true);
                 }
             }
             $("#positionDiv").html(pos);
@@ -100,9 +100,9 @@ $(document).ready(
             var btn = $("#saveSensorButton");
             var sens = {
                 active: $("#isActive").is(":checked"),
-                selectedNumber: $("#selectedNumber").val(),
-                selectedName: $("#selectedName").val(),
-                selectedType: $("#selectedType").val()
+                number: $("#selectedNumber").val(),
+                name: $("#selectedName").val(),
+                type: $("#selectedType").val()
             };
             $.ajax({
                 type: "GET",

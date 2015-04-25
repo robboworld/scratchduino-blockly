@@ -10,8 +10,8 @@ var blocksJs = "blockly/blocks_compressed.js";
 var storageJs = "blockly/appengine/storage.js";
 var messagesRUS = "blockly/msg/js/ru.js";
 var messagesEN = "blockly/msg/js/en.js";
-var jquery = "scripts/jquery-1.11.2.min.js";
-var jquery_maphighlight = "scripts/jquery.maphilight.min.js";
+var jquery = "plugins/jquery-1.11.2.min.js";
+var jquery_maphighlight = "plugins/jquery.maphilight.min.js";
 var blocklyInit = "scripts/blockly_init.js";
 var roboEngineBlocks = "blockly_custom/blocks/robo_engine.js";
 var controlsBlocks = "blockly_custom/blocks/controls.js";
@@ -55,29 +55,20 @@ router.get('/', function (req, res) {
         });
 });
 
-var fs = require('fs');
-var filename = "scratchduinoBlockly_hashes.txt";
+var my_database = require('../public/scripts/scratchduino_db');
 var db;
-fs.readFile(filename, function (err, data) {
-    try {
-        db = JSON.parse(data);
-        console.log(JSON.stringify(db));
-    } catch (e) {
-        db = {
-            hashes: [],
-            sensors: []
-        }
-    }
-});
 
-
+function updateDb() {
+    db = my_database.getDb();
+}
 router.get("/addHash", function (req, res) {
+    updateDb();
     var hash = req.query.blocklyHash;
     db.hashes[db.hashes.length] = {
         n: req.query.hashName,
         h: hash
     };
-    saveDb(res);
+    my_database.saveDb(res);
 });
 
 router.get("/getAllHashes", function (req, res) {
@@ -102,6 +93,7 @@ router.get('/demo', function (req, res) {
 });
 
 router.get("/sensorSettings", function (req, res) {
+    updateDb();
     //res.send(JSON.stringify(db.hashes));
     var pos = req.query.pos;
     var sensor = db.sensors[pos];
@@ -112,32 +104,21 @@ router.get("/sensorSettings", function (req, res) {
     }));
 });
 
-router.get("/saveSensor", function (req, res) {
-    var pos = req.query.pos;
-    console.log("pos is " + pos);
-    console.log("sens is " + req.query.sensor);
-    var sensor = JSON.parse(req.query.sensor);
-    console.log(req.query.sensor);
-    db.sensors[pos] = sensor;
-    saveDb(res);
+router.get("/allSensors", function (req, res) {
+    updateDb();
+    res.send(JSON.stringify(db.sensors));
 });
 
-function saveDb(res) {
-    var tmp = JSON.stringify(db);
-    console.log(tmp);
-    fs.writeFile(filename, tmp, function (err) {
-        if (err) {
-            console.log(err);
-            res.send("fail");
-        } else {
-            console.log("Файл сохранен.");
-            res.send("ok");
-        }
-    });
-}
+router.get("/saveSensor", function (req, res) {
+    updateDb();
+    var pos = req.query.pos;
+    db.sensors[pos] = JSON.parse(req.query.sensor);
+    my_database.saveDb(res);
+});
 
-router.get('/sensors', function(req, res) {
-   res.render('sensors_tuning');
+
+router.get('/sensors', function (req, res) {
+    res.render('sensors_tuning');
 });
 
 module.exports = router;

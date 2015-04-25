@@ -32,8 +32,8 @@ exports.findPorts = function(res) {
             // TODO: selection by manufacturer?
             ports.push({name: list[i].comName});
         };
-
-        responseKeeper.send(JSON.stringify(ports));
+        try{
+        responseKeeper.send(JSON.stringify(ports));} catch(err){}
     });
 
 };

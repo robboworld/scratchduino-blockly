@@ -8,14 +8,14 @@ var router = express.Router();
 var bootstrapCss = "bootstrap/css/bootstrap.min.css";
 var bootstrapJs = "bootstrap/js/bootstrap.min.js";
 var main_script = "scripts/configuration_script"
-var jquery = "scripts/jquery-1.11.2.min.js";
+var jquery = "plugins/jquery-1.11.2.min.js";
 
 router.get("/", function(req, res) {
     res.render("configuration_panel");
     //    , {
     //    title: "Configuration",
     //    jsFiles: [
-    //        jquery,
+    //        plugins,
     //        main_script
     //        bootstrapJs,
     //    ],

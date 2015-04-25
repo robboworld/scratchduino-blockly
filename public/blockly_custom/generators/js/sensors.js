@@ -26,27 +26,12 @@ Blockly.JavaScript['reload_sensor_values'] = function(block) {
     return code;
 };
 
-Blockly.JavaScript['sensor_1'] = function(block) {
-    var code = '...';
-    return [code, Blockly.JavaScript.ORDER_NONE];
-};
+for(var i = 1;i<=5;++i){
+    var sensorNumber = i;
 
-Blockly.JavaScript['sensor_2'] = function(block) {
-    var code = '...';
-    return [code, Blockly.JavaScript.ORDER_NONE];
-};
+    Blockly.JavaScript['sensor_'+sensorNumber] = function(block) {
+        var code = '...';
+        return [code, Blockly.JavaScript.ORDER_NONE];
+    };
+}
 
-Blockly.JavaScript['sensor_3'] = function(block) {
-    var code = '...';
-    return [code, Blockly.JavaScript.ORDER_NONE];
-};
-
-Blockly.JavaScript['sensor_4'] = function(block) {
-    var code = '...';
-    return [code, Blockly.JavaScript.ORDER_NONE];
-};
-
-Blockly.JavaScript['sensor_5'] = function(block) {
-    var code = '...';
-    return [code, Blockly.JavaScript.ORDER_NONE];
-};
