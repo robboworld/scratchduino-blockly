@@ -73,12 +73,12 @@ exports.openConn = function (res) {
 
     if (!serialport) {
         responseKeeper.send("No serial port selected", 500);
-        return false;
+        return;
     };
 
     if (serialport.isOpen()) {
-        responseKeeper.send("Port is not open", 500);
-        return false;
+        responseKeeper.send("Port is already opened", 200);
+        return;
     };
 
     serialport.open(function (err) {
@@ -86,7 +86,7 @@ exports.openConn = function (res) {
         console.log("open: " + err);
 
         if (err) {
-            responseKeeper.send(err, 500)
+            responseKeeper.send(err, 500);
             return;
         }
 
@@ -117,12 +117,12 @@ exports.openConn = function (res) {
         }, 2000);
     });
 
-    connectionWatcher.waitPort(responseKeeper);
+    connectionWatcher.watchPortAvailable(responseKeeper);
 };
 
 function onDataCallback(data) {
 
-    connectionWatcher.waitDisconnetcion(responseKeeper, serialport);
+    connectionWatcher.watchDisconnection(responseKeeper, serialport);
 
     dataBuffer.data += data.toString("hex");
 
@@ -202,7 +202,7 @@ exports.closeConn = function (res) {
         ;
     });
 
-    connectionWatcher.waitPort(responseKeeper);
+    connectionWatcher.watchPortAvailable(responseKeeper);
 };
 
 /*Direction constants*/
@@ -247,7 +247,7 @@ exports.move = function (direction, res) {
         });
     });
 
-    connectionWatcher.waitDisconnetcion(responseKeeper, serialport);
+    connectionWatcher.watchDisconnection(responseKeeper, serialport);
 };
 
 exports.data = function (res) {
@@ -263,7 +263,7 @@ exports.data = function (res) {
         });
     });
 
-    connectionWatcher.waitDisconnetcion(responseKeeper, serialport);
+    connectionWatcher.watchDisconnection(responseKeeper, serialport);
 };
 
 function checkPortAvailable(resKeeper) {

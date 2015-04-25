@@ -11,7 +11,8 @@ var CONN_TIMEOUT = 2500;
 var connectionWatcher = {
     trigger: false,
     isWatching: false,
-    waitDisconnetcion: function(responseKeeper, sp) {
+
+    watchDisconnection: function(responseKeeper, sp) {
         var self = this;
 
         if (this.isWatching) return;
@@ -31,11 +32,13 @@ var connectionWatcher = {
                 }, RECONN_INTERVAL);
             } else {
                 self.trigger = false;
+                responseKeeper.send();
             }
             self.isWatching = false;
         }, DISCONN_TIMEOUT);
     },
-    waitPort: function(responseKeeper) {
+
+    watchPortAvailable: function(responseKeeper) {
         var self = this;
 
         if (this.isWatching) return;
@@ -45,10 +48,11 @@ var connectionWatcher = {
         setTimeout(function() {
             if (!self.trigger) {
                 if (responseKeeper.isActivated()) {
-                    responseKeeper.send("Disconnected", 500);
+                    responseKeeper.send("Device connection failed", 500);
                 }
             } else {
                 self.trigger = false;
+                responseKeeper.send();
             }
             self.isWatching = false;
         }, CONN_TIMEOUT);
@@ -60,9 +64,9 @@ var RECONNECTION_ATTEMPTS = 20;
 
 function reconnectPort(intervalID, sp) {
     if (reconnectionCounter++ < RECONNECTION_ATTEMPTS && !sp.isOpen()) {
-        console.log("attempt");
         robot.openConn(null);
     } else {
+        // TODO: send "disconnection occurred" notification
         clearInterval(intervalID);
     }
 };

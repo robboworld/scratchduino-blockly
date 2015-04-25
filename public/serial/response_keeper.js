@@ -16,7 +16,7 @@ function ResponseKeeper() {
         if (res == null) return;
 
         // If there is another awaiting connection, skip current
-        if (self.result == null) {
+        if (self.result != null) {
             res.status(500).send("Too early");
         };
 
@@ -26,7 +26,7 @@ function ResponseKeeper() {
         self.status = status;
     };
     this.isActivated = function() {
-        return !(!self.result.length); // To boolean
+        return !(!self.result); // To boolean
     };
     this.appendMessage = function(mess) {
         self.message += mess;

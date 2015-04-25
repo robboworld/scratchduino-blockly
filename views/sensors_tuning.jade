@@ -1,0 +1,50 @@
+//
+   Created by Pais on 24.04.2015.
+
+html
+    head
+        title="Configuration"
+        script(type='text/javascript', src="scripts/jquery-1.11.2.min.js")
+    body
+        text Установите сенсор в один из разъемов, зажмите его и нажмите кноку "Тест".
+        button#testButton Тест
+        text#resultText
+
+script.
+    $("#testButton").click(function() {
+        $.ajax({
+            type: "GET",
+            url: "/scratch/on",
+            success: function() {
+                setTimeout(function(){
+                $.ajax({
+                    type: "GET",
+                    url: "/scratch/data",
+                    contentType: 'application/json; charset=utf-8',
+                    success: function(json) {
+                        var sensors = JSON.parse(json);
+                        var foundNum = 0;
+
+                        for (var sensor in sensors) {
+                            if (parseInt(sensors[sensor]) > 200) {
+                                break;
+                            }
+                            foundNum++;
+                        };
+
+                        if (foundNum++ < 5) {
+                            $("#resultText").text("Это сенсор " + foundNum);
+                        } else {
+                            $("#resultText").text("Зажми сенсор, еблан!");
+                        }
+                    },
+                    error: function() {
+                        alert("Что-то пошло не так!");
+                    }
+                })},500);
+            },
+            error: function() {
+                alert("Connection failed :(\nTry to reconfigure port settings\nor plug in device.");
+            }
+        })
+    });

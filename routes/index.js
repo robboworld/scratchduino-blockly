@@ -105,4 +105,8 @@ router.get('/demo', function (req, res) {
         });
 });
 
+router.get('/sensors', function(req, res) {
+   res.render('sensors_tuning');
+});
+
 module.exports = router;
