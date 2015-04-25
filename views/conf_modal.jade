@@ -1,51 +1,56 @@
-img#robot_image(src='img/Robot_panel_mini.png' usemap='#robot_map')
-map#robot_map(name='robot_map')
-    area#bot_left.popoverArea(shape='poly' coords='114, 276, 114, 293, 125, 300, 126, 312, 114, 318, 114, 335, 70, 335, 53, 317, 45, 311, 45, 300, 57, 291, 56, 274')
-    area#bot_right.popoverArea(shape='poly' coords='241, 335, 226, 320, 216, 312, 216, 301, 227, 292, 227, 277, 286, 277, 286, 294, 295, 301, 296, 312, 285, 321, 285, 336')
-    area#top_right.popoverArea(shape='poly' coords='253, 147, 253, 131, 241, 124, 241, 112, 252, 105, 252, 88, 295, 88, 313, 106, 322, 115, 321, 124, 310, 132, 310, 147')
-    area#top_center.popoverArea(shape='poly' coords='143, 95, 143, 79, 133, 70, 133, 59, 144, 52, 144, 35, 188, 35, 205, 52, 213, 63, 213, 72, 202, 79, 202, 95')
-    area#top_left.popoverArea(shape='poly' coords='38, 148, 38, 132, 27, 127, 27, 113, 38, 107, 38, 90, 82, 89, 98, 108, 106, 117, 106, 125, 95, 133, 95, 149')
-text Выбор порта:
-div.btn-group
-    button#portName.btn Не выбран
-    button.btn.dropdown-toggle(data-toggle='dropdown')
-        span.caret
-    ul#portsList.dropdown-menu
-        li#portsDivider.divider
-        li
-            a#refreshPorts Обновить список портов
-div#contextMenu.dropdown
-    ul.dropdown-menu(role="menu" style="display: block; position: static")
-        li#header.contextMenuItem
-            text.contextMenuText №
-            select#sensorNum.select
-                option 1
-                option 2
-                option 3
-                option 4
-                option 5
-            span.glyphicon.glyphicon-remove.contextMenuRight(title = "Закрыть")
-        li.divider
-        li.contextMenuItem
-            text.contextMenuText Название
-            input#sensorNameInput.inputSmall.contextMenuRight(type="text")
-        li.contextMenuItem
-            text.dropdown-toggle(data-toggle='dropdown') Тип датчика
-            select#sensorTypeSelect.contextMenuRight.select
-                option Касания
-                option Света
-                option Линии
-                option Камера
-        li.contextMenuItem
-            text.contextMenuText Пороги срабатывания
-            span.glyphicon.glyphicon-plus.contextMenuRight
-            ul#sensorThresholdsList
-        li.divider
-        li
-            a#save Сохранить
-                span.glyphicon.glyphicon-ok.floatRight
-        li
-            a#remove Удалить
-                span.glyphicon.glyphicon-trash.floatRight
+div.container-fluid
+    div.row
+        div.col-lg-6
+            img#robot_image(src='img/Robot_panel_mini.png' usemap='#robot_map')
+            map#robot_map(name='robot_map')
+                area#bot_left.popoverArea(shape='poly' data-position="1" coords='114, 276, 114, 293, 125, 300, 126, 312, 114, 318, 114, 335, 70, 335, 53, 317, 45, 311, 45, 300, 57, 291, 56, 274')
+                area#bot_right.popoverArea(shape='poly' data-position="2" coords='241, 335, 226, 320, 216, 312, 216, 301, 227, 292, 227, 277, 286, 277, 286, 294, 295, 301, 296, 312, 285, 321, 285, 336')
+                area#top_right.popoverArea(shape='poly' data-position="3" coords='253, 147, 253, 131, 241, 124, 241, 112, 252, 105, 252, 88, 295, 88, 313, 106, 322, 115, 321, 124, 310, 132, 310, 147')
+                area#top_center.popoverArea(shape='poly' data-position="4" coords='143, 95, 143, 79, 133, 70, 133, 59, 144, 52, 144, 35, 188, 35, 205, 52, 213, 63, 213, 72, 202, 79, 202, 95')
+                area#top_left.popoverArea(shape='poly' data-position="5" coords='38, 148, 38, 132, 27, 127, 27, 113, 38, 107, 38, 90, 82, 89, 98, 108, 106, 117, 106, 125, 95, 133, 95, 149')
+            text Выбор порта:
+            div.btn-group
+                button#portName.btn Не выбран
+                button.btn.dropdown-toggle(data-toggle='dropdown')
+                    span.caret
+                ul#portsList.dropdown-menu
+                    li#portsDivider.divider
+                    li
+                        a#refreshPorts Обновить список портов
+        div.col-lg-6
+            div#sensorEditCollapse.collapse
+                .well
+                    h1 Гнездо&nbsp;
+                        span#positionDiv
+                    form
+                        .checkbox
+                            label
+                                input#isActive(type='checkbox')/
+                                | Активен
+                        .form-group
+                            label(for='selectedNumber') №
+                            select#selectedNumber.form-control
+                                option(value=0, selected) Не выбран
+                                option(value=1) 1
+                                option(value=2) 2
+                                option(value=3) 3
+                                option(value=4) 4
+                                option(value=5) 5
+                        .form-group
+                            label(for='selectedName') Название
+                            input#selectedName.form-control(type='text', placeholder='sensor')
+                        .form-group
+                            label(for='selectedType') Тип
+                            select#selectedType.form-control
+                                option(value=0, selected) Не выбран
+                                option(value=1) Касания
+                                option(value=2) Света
+                                option(value=3) Линии
+                                option(value=4) Камера
+                        .form-group
+                            label(for='selectedTreshold') Порог срабатывания
+                            input#selectedTreshold.form-control(type='number')
+
+                        button#saveSensorButton.btn.btn-sm.btn-primary(type='button') Сохранить
 
 

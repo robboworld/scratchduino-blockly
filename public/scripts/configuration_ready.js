@@ -2,17 +2,128 @@
  * Created by Pais on 17.04.2015.
  */
 
+
+
+
+
+function loadSensorData(pos) {
+    $("#isActive").prop("checked", false);
+    $("#selectedNumber").find("option[value=0]").prop('selected', true);
+    $("#selectedType").find("option[value=0]").prop('selected', true);
+    $("#selectedName").val("");
+    var btn = $("#saveSensorButton");
+    btn.removeClass("btn-success");
+    btn.removeClass("btn-danger");
+    btn.addClass("btn-primary");
+    btn.html("Сохранить");
+
+    $.ajax({
+        type: "GET",
+        url: "/sensorSettings",
+        data: {
+            pos: pos
+        },
+        success: function (data) {
+            var sensorData = JSON.parse(data).sensor;
+            if (sensorData) {
+                if (sensorData.active) {
+                    $("#isActive").prop("checked", true);
+                }
+                if (sensorData.selectedNumber) {
+                    $("#selectedNumber").find("option[value="+sensorData.selectedNumber+"]").prop('selected', true);
+                }
+                if (sensorData.selectedName) {
+                    $("#selectedName").val(data.selectedName);
+                }
+                if (sensorData.selectedType) {
+                    $("#selectedType").find("option[value="+sensorData.selectedType+"]").prop('selected', true);
+                }
+            }
+            $("#positionDiv").html(pos);
+            $("#sensorEditCollapse").collapse('show');
+        },
+        error: function () {
+        }
+    });
+}
+
 $(document).ready(
     function () {
         $("#robot_image").maphilight();
         var areas = $(".popoverArea");
+        var collapse = $('#sensorEditCollapse');
+        collapse.collapse({
+            toggle: false
+        });
+        var isShown = false;
 
-        /*$("#bot_left").popover({
-            title: "Настройка сенсора",
-            selector:  $("#bot_left"),
-            trigger: "click",
-            content: "ololo"
-        });*/
+        $('html').click(function () {
+            if (isShown) {
+                collapse.collapse('hide');
+                collapse.on('hidden.bs.collapse', function () {
+                    isShown = false;
+                    collapse.off('hidden.bs.collapse');
+                });
+            }
+        });
+
+        collapse.click(function (e) {
+            e.stopPropagation();
+        });
+
+        areas.each(function (index) {
+            var $this = $(this);
+            $this.click(function (e) {
+                e.stopPropagation();
+                if (isShown) {
+                    collapse.collapse('hide');
+                    isShown = false;
+                    collapse.on('hidden.bs.collapse', function () {
+                        loadSensorData($this.attr("data-position"));
+                        collapse.collapse('show');
+                        isShown = false;
+                        collapse.off('hidden.bs.collapse');
+                    });
+                } else {
+                    isShown = true;
+                    loadSensorData($this.attr("data-position"));
+                    collapse.collapse('show');
+                    collapse.on('shown.bs.collapse', function () {
+                        isShown = true;
+                        collapse.off('shown.bs.collapse');
+                    });
+                }
+            });
+        });
+
+        $("#saveSensorButton").click(function (e) {
+            var btn = $("#saveSensorButton");
+            var sens = {
+                active: $("#isActive").is(":checked"),
+                selectedNumber: $("#selectedNumber").val(),
+                selectedName: $("#selectedName").val(),
+                selectedType: $("#selectedType").val()
+            };
+            $.ajax({
+                type: "GET",
+                url: "/saveSensor",
+                data: {
+                    pos: $("#positionDiv").html(),
+                    sensor: JSON.stringify(sens)
+                },
+                success: function (data) {
+                    btn.removeClass("btn-primary");
+                    btn.addClass("btn-success");
+                    btn.html("Сохранено!");
+                },
+                error: function () {
+                    btn.removeClass("btn-primary");
+                    btn.removeClass("btn-success");
+                    btn.addClass("btn-danger");
+                    btn.html("Ошибка :(");
+                }
+            });
+        });
 
         // TODO: Asynchronous refreshing?
         function requestPorts() {

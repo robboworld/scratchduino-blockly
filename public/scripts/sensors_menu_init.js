@@ -47,8 +47,8 @@ $(document).ready(function () {
 
         contextMenu.css({ // мои глаза >_< todo refactor, use fancy bootstrap features, not bicycles
             display: "block",
-            left: e.offsetX,
-            top: e.offsetY
+            left: e.pageX,
+            top: e.pageY
         });
 
         return false;

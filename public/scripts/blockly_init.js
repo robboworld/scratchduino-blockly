@@ -153,7 +153,7 @@ $(document).ready(
         $("#launchCodeButton").click(function () {
 
             var self = $(this);
-            $("#stopExecutionButton").trigger('click');
+            //$("#stopExecutionButton").trigger('click');
 
             $.ajax({
                 type: 'GET',
@@ -167,7 +167,6 @@ $(document).ready(
 
                         return;
                     }
-                    ;
 
                     eval(code);
 
