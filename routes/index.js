@@ -15,9 +15,13 @@ var jquery_maphighlight = "scripts/jquery.maphilight.min.js";
 var blocklyInit = "scripts/blockly_init.js";
 var roboEngineBlocks = "blockly_custom/blocks/robo_engine.js";
 var controlsBlocks = "blockly_custom/blocks/controls.js";
+var sensorsBlocks = "blockly_custom/blocks/sensors.js";
 var roboEngineJsGen = "blockly_custom/generators/js/robo_engine.js";
 var controlsJsGen = "blockly_custom/generators/js/controls.js";
+var sensorsJsGen = "blockly_custom/generators/js/sensors.js";
 var jsInterpreter = "JS-Interpreter/acorn_interpreter.js";
+
+var modalPopover = "bootstrap/js/bootstrap-modal-popover.js";
 
 var configReadyJs = "scripts/configuration_ready.js";
 var configStylesCss = "css/configuration_styles.css";
@@ -38,12 +42,14 @@ router.get('/', function (req, res) {
                 blocklyInit,
                 roboEngineBlocks,
                 controlsBlocks,
+                sensorsBlocks,
                 roboEngineJsGen,
                 controlsJsGen,
+                sensorsJsGen,
                 jsInterpreter,
                 storageJs,
                 configReadyJs,
-                sensorsMenuInit
+                modalPopover
             ],
             cssFiles: [bootstrapCss, configStylesCss]
         });
@@ -58,7 +64,8 @@ fs.readFile(filename, function (err, data) {
         console.log(JSON.stringify(db));
     } catch (e) {
         db = {
-            hashes: []
+            hashes: [],
+            sensors: []
         }
     }
 });
@@ -70,18 +77,7 @@ router.get("/addHash", function (req, res) {
         n: req.query.hashName,
         h: hash
     };
-    var tmp = JSON.stringify(db);
-    console.log(tmp);
-    fs.writeFile(filename, tmp, function (err) {
-        if (err) {
-            console.log(err);
-            res.send("fail");
-        } else {
-            console.log("Файл сохранен.");
-            res.send("ok");
-        }
-    });
-
+    saveDb(res);
 });
 
 router.get("/getAllHashes", function (req, res) {
@@ -104,6 +100,41 @@ router.get('/demo', function (req, res) {
             cssFiles: [bootstrapCss]
         });
 });
+
+router.get("/sensorSettings", function (req, res) {
+    //res.send(JSON.stringify(db.hashes));
+    var pos = req.query.pos;
+    var sensor = db.sensors[pos];
+    if (!sensor) sensor = {};
+    res.send(JSON.stringify({
+        position: pos,
+        sensor: sensor
+    }));
+});
+
+router.get("/saveSensor", function (req, res) {
+    var pos = req.query.pos;
+    console.log("pos is " + pos);
+    console.log("sens is " + req.query.sensor);
+    var sensor = JSON.parse(req.query.sensor);
+    console.log(req.query.sensor);
+    db.sensors[pos] = sensor;
+    saveDb(res);
+});
+
+function saveDb(res) {
+    var tmp = JSON.stringify(db);
+    console.log(tmp);
+    fs.writeFile(filename, tmp, function (err) {
+        if (err) {
+            console.log(err);
+            res.send("fail");
+        } else {
+            console.log("Файл сохранен.");
+            res.send("ok");
+        }
+    });
+}
 
 router.get('/sensors', function(req, res) {
    res.render('sensors_tuning');
