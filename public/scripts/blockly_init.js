@@ -119,11 +119,6 @@ $(document).ready(
 
         }
 
-
-        function to_configuration_page() {
-            document.location.href = "/configuration";
-        };
-
         function myUpdateFunction() {
             code = Blockly.JavaScript.workspaceToCode();
             document.getElementById('jsOutput').value = code;
@@ -148,7 +143,6 @@ $(document).ready(
             });
 
         });
-        $("#configureRobot").click(to_configuration_page);
 
         $("#launchCodeButton").click(function () {
 

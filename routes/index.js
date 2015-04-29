@@ -25,7 +25,6 @@ var modalPopover = "bootstrap/js/bootstrap-modal-popover.js";
 
 var configReadyJs = "scripts/configuration_ready.js";
 var configStylesCss = "css/configuration_styles.css";
-var sensorsMenuInit = "scripts/sensors_menu_init.js";
 
 router.get('/', function (req, res) {
     res.render('workflow',

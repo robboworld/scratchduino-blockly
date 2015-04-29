@@ -125,7 +125,6 @@ $(document).ready(
             });
         });
 
-        // TODO: Asynchronous refreshing?
         function requestPorts() {
             $.ajax({
                 type: "GET",
@@ -135,7 +134,7 @@ $(document).ready(
                     successPort(json);
                 },
                 error: function () {
-                    //
+                    alert("Ошибка при поиске доступных портов");
                 }
             });
         };
@@ -144,30 +143,38 @@ $(document).ready(
 
             var ports = JSON.parse(json);
             var portsDivider = $("#portsDivider");
+            var self = this;
 
-            clearList();
+            /*Clear list*/
+            var portsList = document.getElementById("portsList");
+            for (var i = 0; portsList.children.length - 2; i++) {
+                portsList.removeChild(portsList.children[i]);
+            };
 
             if (!ports.length) {
-                var li = createListItem("Нет доступных портов", null);
-                portsDivider.before(li);
-
+                portsDivider.before(createListItem("Нет доступных портов", null));
                 $("#portName").text("Не выбран");
             }
 
-            for (var i = 0; i < ports.length; i++) {
-                var li = createListItem(ports[i].name, onPortSelected);
+            for (i = 0; i < ports.length; i++) {
+                var li = createListItem(ports[i].name, function() {
+                    $.ajax({
+                        type: "GET",
+                        url: "scratch/set_port",
+                        data: {
+                            port: self.innerText
+                        },
+                        success: function () {
+                            $("#portName").text(self.innerText);
+                        },
+                        error: function () {
+                            alert("Не удалось подключиться к устройству");
+                        }
+                    });
+                });
+
                 portsDivider.before(li);
             }
-
-            function clearList() {
-                var portsList = document.getElementById("portsList");
-
-                // Delete all elements before divider and refresher
-                for (var i = 0; portsList.children.length - 2; i++) {
-                    portsList.removeChild(portsList.children[i]);
-                }
-                ;
-            };
 
             function createListItem(text, onClickFunc) {
                 var li = document.createElement("li");
@@ -179,26 +186,13 @@ $(document).ready(
 
                 return li;
             }
-
-            function onPortSelected() {
-                var self = this;
-
-                $("#portName").text(this.innerText);
-                $.ajax({
-                        type: "GET",
-                        url: "scratch/set_port",
-                        data: {
-                            port: self.innerText
-                        }
-                    }
-                );
-            };
         };
 
         // TODO: action on #portName button click
         // TODO: Add image map window resizing processing (see: https://github.com/stowball/jQuery-rwdImageMaps)
         // TODO: Try to process image resizing with map
         $("#refreshPorts").click(requestPorts);
+        $("#portsDownSpan").click(requestPorts);
         requestPorts();
     }
 );
