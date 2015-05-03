@@ -5,7 +5,7 @@
 var robot = require("./robot");
 
 var RECONN_INTERVAL = 500;
-var DISCONN_TIMEOUT = 200;
+var DISCONN_TIMEOUT = 1000;
 var CONN_TIMEOUT = 2500;
 
 var connectionWatcher = {

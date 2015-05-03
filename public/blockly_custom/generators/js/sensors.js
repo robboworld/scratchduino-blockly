@@ -4,7 +4,23 @@
 Blockly.JavaScript['sensor_value'] = function(block) {
     var dropdown_sensor_number = block.getFieldValue('sensor_number');
     // TODO: Assemble JavaScript into code variable.
-    var code = '...';
+    var code = '' +
+        '(function(){\
+        var result;\
+        $.ajax({\
+    type: "GET",\
+        url: "/scratch/data",\
+        async:false,\
+        contentType: \'application/json; charset=utf-8\',\
+        success: function(json) {\
+        var sensors = JSON.parse(json);\
+        var foundNum = '+dropdown_sensor_number+';\
+        result = parseInt(sensors[foundNum]);\
+    },\
+})\
+alert(result);\
+return result;\
+})()';
     // TODO: Change ORDER_NONE to the correct strength.
     return [code, Blockly.JavaScript.ORDER_NONE];
 };

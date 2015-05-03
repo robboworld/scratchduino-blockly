@@ -73,6 +73,7 @@ router.get("/addHash", function (req, res) {
 
 router.get("/getAllHashes", function (req, res) {
     //res.send(JSON.stringify(db.hashes));
+    updateDb();
     res.render('sketch_list',
         {
             hashes: db.hashes

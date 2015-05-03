@@ -16,6 +16,10 @@ var addedEvListeners = [];
 
 var code;
 
+
+
+
+
 function initApi(interpreter, scope) {
     // Add an API function for the alert() block.
     var wrapper = function (text) {
@@ -149,8 +153,9 @@ $(document).ready(
 
         });
         $("#configureRobot").click(to_configuration_page);
-
+        var inter;
         $("#launchCodeButton").click(function () {
+
 
             var self = $(this);
             //$("#stopExecutionButton").trigger('click');
@@ -160,6 +165,21 @@ $(document).ready(
                 url: '/scratch/on',
                 contentType: 'application/json; charset=utf-8',
                 success: function (message) {
+                    inter = setInterval(function () {
+                        $.ajax({
+                            type: 'GET',
+                            url: '/scratch/data',
+                            success: function (json) {
+                                var o = JSON.parse(json);
+                                document.getElementById("sensor1").value = o["sensor_1"];
+                                document.getElementById("sensor2").value = o["sensor_2"];
+                                document.getElementById("sensor3").value = o["sensor_3"];
+                                document.getElementById("sensor4").value = o["sensor_4"];
+                                document.getElementById("sensor5").value = o["sensor_5"];
+                            }
+                        });
+
+                    }, 500);
                     // TODO: Response message will bw fixed
                     // TODO: What if robot not using in program?
                     if (message == "No serial port selected.") {
@@ -180,7 +200,7 @@ $(document).ready(
             clearAllListeners();
             $("#launchCodeButton").removeClass("btn-success");
             $("#launchCodeButton").addClass("btn-primary");
-
+            clearInterval(inter);
             $.ajax({
                 type: 'GET',
                 url: '/scratch/off',

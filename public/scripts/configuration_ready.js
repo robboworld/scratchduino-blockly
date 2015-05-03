@@ -144,7 +144,6 @@ $(document).ready(
 
             var ports = JSON.parse(json);
             var portsDivider = $("#portsDivider");
-
             clearList();
 
             if (!ports.length) {
