@@ -5,8 +5,8 @@ rsync -avz --exclude /public/blockly/ \
            --exclude /public/blockly/.git/ \
            ./* ${user}@isae.me:~/scratchduino-blockly
 ssh "${user}@${address}" << EOF
-ls
 cd scratchduino-blockly
-./run.sh
+lsof -t -i:3000 | xargs kill -9
+./run.sh &
 logout
 EOF
