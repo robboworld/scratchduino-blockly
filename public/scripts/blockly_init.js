@@ -165,7 +165,7 @@ $(document).ready(
                 url: '/scratch/on',
                 contentType: 'application/json; charset=utf-8',
                 success: function (message) {
-                    inter = setInterval(function () {
+                   /* inter = setInterval(function () {
                         $.ajax({
                             type: 'GET',
                             url: '/scratch/data',
@@ -179,7 +179,7 @@ $(document).ready(
                             }
                         });
 
-                    }, 500);
+                    }, 500);*/
                     // TODO: Response message will bw fixed
                     // TODO: What if robot not using in program?
                     if (message == "No serial port selected.") {
@@ -200,7 +200,7 @@ $(document).ready(
             clearAllListeners();
             $("#launchCodeButton").removeClass("btn-success");
             $("#launchCodeButton").addClass("btn-primary");
-            clearInterval(inter);
+            //clearInterval(inter);
             $.ajax({
                 type: 'GET',
                 url: '/scratch/off',

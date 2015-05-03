@@ -4,7 +4,6 @@
 
 var SerialFactory = require("serialport");
 var SerialPort = require("serialport").SerialPort;
-var debug = require("debug")("robot");
 // Response from router
 var responseKeeper = require("./response_keeper");
 var connectionWatcher = require("./connection_watcher");
@@ -32,8 +31,8 @@ exports.findPorts = function(res) {
             // TODO: selection by manufacturer?
             ports.push({name: list[i].comName});
         };
-        try{
-        responseKeeper.send(JSON.stringify(ports));} catch(err){}
+
+        responseKeeper.send(JSON.stringify(ports));
     });
 
 };
