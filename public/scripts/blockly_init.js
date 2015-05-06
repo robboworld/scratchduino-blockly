@@ -16,10 +16,6 @@ var addedEvListeners = [];
 
 var code;
 
-
-
-
-
 function initApi(interpreter, scope) {
     // Add an API function for the alert() block.
     var wrapper = function (text) {
@@ -123,7 +119,6 @@ $(document).ready(
 
         }
 
-
         function to_configuration_page() {
             document.location.href = "/configuration";
         };
@@ -152,20 +147,25 @@ $(document).ready(
             });
 
         });
+
         $("#configureRobot").click(to_configuration_page);
-        var inter;
+
+        var sensors_intervalID;
         $("#launchCodeButton").click(function () {
 
+            /* If already run*/
+            if ($(this).hasClass("btn-success")) {
+                return;
+            }
 
             var self = $(this);
-            //$("#stopExecutionButton").trigger('click');
 
             $.ajax({
                 type: 'GET',
                 url: '/scratch/on',
                 contentType: 'application/json; charset=utf-8',
                 success: function (message) {
-                   /* inter = setInterval(function () {
+                    sensors_intervalID = setInterval(function () {
                         $.ajax({
                             type: 'GET',
                             url: '/scratch/data',
@@ -179,12 +179,10 @@ $(document).ready(
                             }
                         });
 
-                    }, 500);*/
-                    // TODO: Response message will bw fixed
-                    // TODO: What if robot not using in program?
+                   }, 500);
+
                     if (message == "No serial port selected.") {
                         alert("Робот не настроен!");
-
                         return;
                     }
 
@@ -196,11 +194,18 @@ $(document).ready(
                 }
             });
         });
+
         $("#stopExecutionButton").click(function () {
+            /*If program is not running*/
+            if ($("#launchCodeButton").hasClass("btn-primary")) {
+                return;
+            }
+
             clearAllListeners();
             $("#launchCodeButton").removeClass("btn-success");
             $("#launchCodeButton").addClass("btn-primary");
-            //clearInterval(inter);
+            clearInterval(sensors_intervalID);
+
             $.ajax({
                 type: 'GET',
                 url: '/scratch/off',
