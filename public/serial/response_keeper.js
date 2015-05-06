@@ -2,18 +2,14 @@
  * Created by Pais on 24.04.2015.
  */
 
-var default_message = "OK";
-var default_status = 200;
-
-// TODO: Another way to process multiple responses
 function ResponseKeeper() {
     this.result = null;
-    this.message = default_message;
-    this.status = default_status;
+    this.message = "OK";
+    this.status = 200;
     var self = this;
 
     this.addResponse = function(res) {
-        if (res == null) return;
+        if (res == null) return false;
 
         // If there is another awaiting connection, skip new request
         if (self.result != null) {
@@ -22,24 +18,27 @@ function ResponseKeeper() {
         };
 
         self.result = res;
+        return true;
     };
-    this.setStatus = function(status) {
-        self.status = status;
-    };
+
     this.isActivated = function() {
         return !(!self.result); // To boolean
     };
-    this.appendMessage = function(mess) {
-        self.message += mess;
-    };
+
     this.resetData = function() {
         self.result = null;
-        self.message = default_message;
-        self.status = default_status;
+        self.message = "OK";
+        self.status = 200;
     };
+
     this.send = function(mess, status) {
         if (self.result == null)
             return;
+
+        if (self.result.headersSent) {
+            self.resetData();
+            return;
+        }
 
         self.message = (mess) ? mess : self.message;
         self.status = (status) ? status : self.status;

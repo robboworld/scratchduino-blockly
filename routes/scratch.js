@@ -23,22 +23,6 @@ router.get("/on", function(req, res) {
     robot.openConn(res);
 });
 
-// Pausing doesn't enabled on win32
-router.get("/pause", function(req, res) {
-    //TODO: is it needed to send res into robot module?
-    //TODO: add platform checking
-    //robot.pauseConn();
-    res.send("Not supported");
-});
-
-// Resuming doesn't enabled on win32
-router.get("/resume", function(req, res) {
-    //TODO: is it needed to send res into robot module?
-    //TODO: add platform checking
-    //robot.resumeConn();
-    res.send("Not supported");
-});
-
 router.get("/off", function(req, res) {
     robot.closeConn(res);
 });

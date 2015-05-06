@@ -2,11 +2,15 @@
  * Created by Pais on 27.03.2015.
  */
 
+
+//TODO: Hardware button push
+//TODO: Logging
+
 var SerialFactory = require("serialport");
 var SerialPort = require("serialport").SerialPort;
-// Response from router
+
+// Uses for proper processing of sensors data queries from client.
 var responseKeeper = require("./response_keeper");
-var connectionWatcher = require("./connection_watcher");
 
 var portName = "";
 var serialport;
@@ -20,7 +24,7 @@ exports.findPorts = function(res) {
     SerialFactory.list(function (err, list) {
 
         if (err) {
-            res.setStatus(500).send(err);
+            res.status(500).send(err);
         };
 
         var ports = [];
@@ -53,9 +57,6 @@ exports.setPort = function (name) {
     }, false);
 };
 
-//TODO: Hardware button push
-//TODO: Logging
-
 var dataBuffer = {
     data: "",
     lastByte: "\x00", //Default value
@@ -66,60 +67,45 @@ var dataBuffer = {
 
 exports.openConn = function (res) {
 
-    responseKeeper.addResponse(res);
-
     if (!serialport) {
-        responseKeeper.send("No serial port selected", 500);
+        res.status(500).send("No serial port selected");
         return;
     };
 
     if (serialport.isOpen()) {
-        responseKeeper.send("Port is already opened", 200);
+        res.status(500).send("Port is already opened");
         return;
     };
 
     serialport.open(function (err) {
 
         console.log("open: " + err);
-
         if (err) {
-            responseKeeper.send(err, 500);
+            res.status(500).send(err);
             return;
         }
 
         serialport.on("close", function (err) {
-            //May be called in disconnection callback
-            // Logging
             console.log("serialport.close emitted. Error: " + err);
             // TODO: some response to client
         });
 
         serialport.on("error", function (err) {
-            // Logging
             console.log("serialport.error emitted. Error: " + err);
             //TODO: some response to client
         });
 
-        serialport.on('disconnect', function () {
-            console.log('disconnected: ' + err);
-        });
-
         serialport.on("data", onDataCallback);
-
-        connectionWatcher.trigger = true;
 
         // Arduino need some time to think about... something important, i suppose.
         setTimeout(function () {
-            responseKeeper.send(/*OK 200*/);
+            res.send("OK");
         }, 2000);
     });
 
-    connectionWatcher.watchPortAvailable(responseKeeper);
 };
 
 function onDataCallback(data) {
-
-    connectionWatcher.watchDisconnection(responseKeeper, serialport);
 
     dataBuffer.data += data.toString("hex");
 
@@ -130,7 +116,6 @@ function onDataCallback(data) {
             responseKeeper.send(dataToJSON(dataBuffer.data));
         }
         dataBuffer.resetData();
-        connectionWatcher.trigger = true;
     }
 
 };
@@ -162,44 +147,21 @@ function dataToJSON(data) {
     return JSON.stringify(json);
 };
 
-exports.pauseConn = function () {
-
-    if (!serialport || !serialport.isOpen()) {
-        return;
-    };
-
-    serialport.pause();
-};
-
-exports.resumeConn = function () {
-
-    if (!serialport || !serialport.isOpen()) {
-        return;
-    };
-
-    serialport.resume();
-};
-
 exports.closeConn = function (res) {
 
-    responseKeeper.addResponse(res);
-
-    if (!checkPortAvailable(responseKeeper)) return;
+    if (!checkPortAvailable(res)) return;
 
     serialport.close(function (err) {
         console.log("close callback: " + err);
 
-        connectionWatcher.trigger = true;
-
         if (err) {
-            responseKeeper.send(err, 500);
+            res.status(500).send(err);
         } else {
-            responseKeeper.send();
+            res.send("OK");
         }
         ;
     });
 
-    connectionWatcher.watchPortAvailable(responseKeeper);
 };
 
 /*Direction constants*/
@@ -211,9 +173,7 @@ var STOP = "\x00";
 
 exports.move = function (direction, res) {
 
-    responseKeeper.addResponse(res);
-
-    if (!checkPortAvailable(responseKeeper)) return;
+    if (!checkPortAvailable(res)) return;
 
     var directionByte;
     switch (direction) {
@@ -240,37 +200,57 @@ exports.move = function (direction, res) {
     serialport.write(new Buffer(directionByte, "binary"), function (err) {
         // Logging
         serialport.drain(function (err) {
-            responseKeeper.send(/*OK*/);
+            // watchDisconnection triggered
+            if (res.headersSent) {
+                return;
+            }
+
+            if (err) {
+                res.status(500).send(err);
+            } else {
+                res.send("OK");
+            }
         });
     });
 
-    connectionWatcher.watchDisconnection(responseKeeper, serialport);
+    watchDisconnection(res);
 };
 
 exports.data = function (res) {
 
-    responseKeeper.addResponse(res);
+    if (!checkPortAvailable(res)) return;
 
-    if (!checkPortAvailable(responseKeeper)) return;
+    if (!responseKeeper.addResponse(res)) return;
 
     serialport.write(new Buffer(dataBuffer.lastByte, "binary"), function (err) {
         // Logging
-        serialport.drain(function (err) {
-            //
-        });
     });
 
-    connectionWatcher.watchDisconnection(responseKeeper, serialport);
+    watchDisconnection(res);
 };
 
-function checkPortAvailable(resKeeper) {
+// TODO: Try to disconnect?
+var DISCONNECTION_TIMEOUT = 500;
+
+function watchDisconnection(res) {
+
+    setTimeout(function() {
+        if (!res.headersSent) {
+            res.status(500).send("Device disconnected");
+            responseKeeper.resetData();
+        }
+    }, DISCONNECTION_TIMEOUT);
+
+};
+
+function checkPortAvailable(res) {
     if (!serialport) {
-        responseKeeper.send("No serial port selected", 500);
+        res.status(500).send("No serial port selected");
         return false;
     };
 
     if (!serialport.isOpen()) {
-        responseKeeper.send("Port is not open", 500);
+        res.status(500).send("Port is not open");
         return false;
     };
 

@@ -4,6 +4,8 @@
 
 var eventListenerName = "blocklyEventListener";
 
+// TODO: Key pressed for a long time (see: keyup event)
+
 Blockly.JavaScript['when_key_pressed'] = function (block) {
     var key = block.getFieldValue('key');
     var statements_action = Blockly.JavaScript.statementToCode(block, 'action');
