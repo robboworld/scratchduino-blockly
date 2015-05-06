@@ -1,12 +1,15 @@
 /**
- * Created by Paise on 24.04.2015.
+ * Created by Pais on 24.04.2015.
  */
 
 var robot = require("./robot");
 
 var RECONN_INTERVAL = 500;
-var DISCONN_TIMEOUT = 1000;
+var DISCONN_TIMEOUT = 500;
+var RECONNECTION_ATTEMPTS = 20;
 var CONN_TIMEOUT = 2500;
+
+var reconnectionCounter;
 
 var connectionWatcher = {
     trigger: false,
@@ -27,6 +30,8 @@ var connectionWatcher = {
                 if (responseKeeper.isActivated()) {
                     responseKeeper.send("Disconnected", 500);
                 }
+                /*Try to reconnect device*/
+                reconnectionCounter = 0;
                 var intervalID = setInterval(function() {
                     reconnectPort(intervalID, sp);
                 }, RECONN_INTERVAL);
@@ -58,9 +63,6 @@ var connectionWatcher = {
         }, CONN_TIMEOUT);
     }
 };
-
-var reconnectionCounter = 0;
-var RECONNECTION_ATTEMPTS = 20;
 
 function reconnectPort(intervalID, sp) {
     if (reconnectionCounter++ < RECONNECTION_ATTEMPTS && !sp.isOpen()) {

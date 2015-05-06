@@ -17,12 +17,10 @@ var serialport;
 
 exports.findPorts = function(res) {
 
-    responseKeeper.addResponse(res);
-
     SerialFactory.list(function (err, list) {
 
         if (err) {
-            responseKeeper.send(err, 500);
+            res.setStatus(500).send(err);
         };
 
         var ports = [];
@@ -32,7 +30,7 @@ exports.findPorts = function(res) {
             ports.push({name: list[i].comName});
         };
 
-        responseKeeper.send(JSON.stringify(ports));
+        res.send(JSON.stringify(ports));
     });
 
 };
@@ -242,7 +240,7 @@ exports.move = function (direction, res) {
     serialport.write(new Buffer(directionByte, "binary"), function (err) {
         // Logging
         serialport.drain(function (err) {
-            //
+            responseKeeper.send(/*OK*/);
         });
     });
 

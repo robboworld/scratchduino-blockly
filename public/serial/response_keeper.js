@@ -10,14 +10,15 @@ function ResponseKeeper() {
     this.result = null;
     this.message = default_message;
     this.status = default_status;
-    self = this;
+    var self = this;
 
     this.addResponse = function(res) {
         if (res == null) return;
 
-        // If there is another awaiting connection, skip current
+        // If there is another awaiting connection, skip new request
         if (self.result != null) {
             res.status(500).send("Too early");
+            return false;
         };
 
         self.result = res;
