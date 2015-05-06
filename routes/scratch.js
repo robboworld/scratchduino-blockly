@@ -52,7 +52,7 @@ router.get("/set_port", function(req, res) {
     robot.setPort(portName);
 
     //TODO: response message
-    res.send("ok");
+    res.send("OK");
 });
 
 module.exports = router;
