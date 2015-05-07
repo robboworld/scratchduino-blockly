@@ -18,6 +18,7 @@ Blockly.JavaScript['engine_turn_on_sec'] = function(block) {
 //};
 
 Blockly.JavaScript['engine_turned_off'] = function(block) {
+
     var code = "global_blockly_engine(\"0\");\n";
     return code;
 };

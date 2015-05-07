@@ -21,7 +21,6 @@ Blockly.Blocks['when_key_pressed'] = {
             .appendField("нажата");
         this.appendStatementInput("action");
         this.setInputsInline(true);
-        //this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setTooltip('');
     }
@@ -35,7 +34,6 @@ Blockly.Blocks['while_program_running'] = {
             .appendField("Когда программа запущена");
         this.appendStatementInput("action");
         this.setInputsInline(true);
-        //this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setTooltip('');
     }

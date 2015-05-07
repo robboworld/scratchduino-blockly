@@ -2,14 +2,12 @@
  * Created by Pais on 27.03.2015.
  */
 
-
-//TODO: Hardware button push
 //TODO: Logging
 
 var SerialFactory = require("serialport");
 var SerialPort = require("serialport").SerialPort;
 
-// Uses for proper processing of sensors data queries from client.
+// Response object to send sensors data with
 var response = null;
 
 var portName = "";
@@ -109,19 +107,43 @@ function onDataCallback(data) {
 
     dataBuffer.data += data.toString("hex");
 
+    if (response == null) {
+        dataBuffer.resetData();
+        return;
+    };
+
     //TODO: Find another method to check whether transaction completed
     // 14 received bytes (14*2 numbers in hex) means end of transaction of data from robot.
     if (dataBuffer.data.length >= 28 && response != null) {
-        response.send(dataToJSON(dataBuffer.data));
+        if (!checkFirmware(dataBuffer.data)) {
+            response.status(500).send("Data output interrupted");
+        } else {
+            response.send(dataToJSON(dataBuffer.data));
+        }
         response = null;
+
         dataBuffer.resetData();
-    }
+    };
 
 };
+
+var FIRM_HIGH = 248;
+var FIRM_LOW = 4;
+function checkFirmware(data) {
+
+    var high = parseInt(data.substr(0, 2), 16);
+    var low = parseInt(data.substr(2, 2), 16);
+
+    if (high != FIRM_HIGH || low != FIRM_LOW) {
+        return false;
+    };
+    return true;
+}
 
 function dataToJSON(data) {
 
     var json = {
+        button: 0,
         sensor_1: 0,
         sensor_2: 0,
         sensor_3: 0,
@@ -129,7 +151,7 @@ function dataToJSON(data) {
         sensor_5: 0
     };
 
-    var i = 8; //Sensor_0 first byte is expected to be on this index
+    var i = 4; //First 4 bytes for firmware
     for (var val in json) {
         var high = parseInt(data.substr(i, 2), 16);
         var low = parseInt(data.substr(i + 2, 2), 16);
@@ -202,17 +224,16 @@ exports.move = function (direction, res) {
     serialport.write(new Buffer(directionByte, "binary"), function (err) {
         // Logging
         serialport.drain(function (err) {
-            // watchDisconnection triggered
-            if (res.headersSent) {
-                return;
-            }
 
-            if (err) {
-                res.status(500).send(err);
-            } else {
-                res.send("OK");
+            if (!res.headersSent) {
+                if (err) {
+                    res.status(500).send(err);
+                } else {
+                    res.send("OK");
+                }
             }
         });
+
     });
 
 };

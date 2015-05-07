@@ -2,20 +2,6 @@
  * Created by xottab on 3/12/15.
  */
 
-//TODO: Zero this var on every loaded sketch
-var curELNumber = 0;
-
-function getNextEventListenerNumber() {
-    return curELNumber++;
-}
-function clearListeners() {
-    addedEvListeners = [];
-    curELNumber = 0;
-}
-
-var addedEvListeners = [];
-var blocklyCodeGen = new BlocklyCodeGenerator();
-
 function initApi(interpreter, scope) {
     // Add an API function for the alert() block.
     var wrapper = function (text) {
@@ -43,14 +29,6 @@ function initApi(interpreter, scope) {
     };
     interpreter.setProperty(scope, 'alert',
         interpreter.createNativeFunction(wrapper));
-}
-
-function clearAllListeners() {
-    for (var i = 0; i < addedEvListeners.length; ++i) {
-        var tmp = addedEvListeners[i];
-        document.removeEventListener(tmp.type, tmp.fun);
-    }
-    clearListeners();
 }
 
 String.prototype.format = function () {
@@ -84,6 +62,9 @@ function loadSketch(name, hash) {
 
 $(document).ready(
     function () {
+
+        var blocklyCodeGen = new BlocklyCodeGenerator();
+
         Blockly.inject(document.getElementById('blocklyDiv'),
             {toolbox: document.getElementById('toolbox')})
         window.setTimeout(BlocklyStorage.restoreBlocks, 0);
@@ -126,8 +107,7 @@ $(document).ready(
         function myUpdateFunction() {
             blocklyCodeGen.generateCode(Blockly.JavaScript.workspaceToCode());
             document.getElementById('jsOutput').value = blocklyCodeGen.getCode();
-        }
-
+        };
 
         Blockly.addChangeListener(myUpdateFunction);
 
@@ -150,7 +130,6 @@ $(document).ready(
 
         $("#configureRobot").click(to_configuration_page);
 
-        var sensors_intervalID;
         $("#launchCodeButton").click(function () {
 
             /* If already run*/
@@ -188,85 +167,18 @@ $(document).ready(
                 return;
             };
 
-            clearAllListeners();
+            blocklyCodeGen.closeCurrentSession();
             $("#launchCodeButton").removeClass("btn-success");
             $("#launchCodeButton").addClass("btn-primary");
 
-            setTimeout(function() {
+            //setTimeout(function() {
                 $(".sensors").find("input[type = text]").val("");
-            }, 500);
+            //}, 1000);
         });
     }
+
 );
 
 function blocklyLoaded(blockly) {
     window.Blockly = blockly;
 }
-
-/*Blockly code generator.
-* Defines all needed variables and functions
-* used by blocks.*/
-function BlocklyCodeGenerator() {
-
-    function global_blockly_longPooling() {
-        $.ajax({
-            type: 'GET',
-            url: '/scratch/data',
-            success: function (json) {
-                var o = JSON.parse(json);
-                document.getElementById("sensor1").value = o["sensor_1"];
-                document.getElementById("sensor2").value = o["sensor_2"];
-                document.getElementById("sensor3").value = o["sensor_3"];
-                document.getElementById("sensor4").value = o["sensor_4"];
-                document.getElementById("sensor5").value = o["sensor_5"];
-                setTimeout(global_blockly_longPooling, SENSORS_DATA_TIMEOUT);
-            },
-            error: function (mess) {
-                //TODO: Error checking
-                if (mess.responseText == "Port is not open" || mess.responseText == "No serial port selected")
-                    return;
-                setTimeout(global_blockly_longPooling, SENSORS_DATA_TIMEOUT);
-            }
-        });
-    }
-
-    function global_blockly_engine(direction, timeout) {
-        clearTimeout(stop_timeoutID);
-        $.ajax({
-            type: 'GET',
-            url: '/scratch/engine',
-            data: {direction: direction}
-        });
-        if (timeout) {
-            stop_timeoutID = setTimeout(function () {
-                $.ajax({
-                    type: 'GET',
-                    url: '/scratch/engine',
-                    data: {direction: '0'}
-                });
-            }, timeout);
-        }
-        ;
-    };
-
-    var code = "var SENSORS_DATA_TIMEOUT = 100;\n"+
-        "var stop_timeoutID = null;\n" +
-        "var data_timeoutID = null;\n" +
-        global_blockly_engine.toString() +
-        ";\n" +
-        global_blockly_longPooling.toString() +
-        ";\n" +
-        "global_blockly_longPooling();\n" +
-        "\n";
-
-    var generated_code = code;
-
-    this.generateCode = function(workspace_code) {
-        generated_code = code + workspace_code
-        return generated_code;
-    };
-
-    this.getCode = function() {
-        return generated_code;
-    }
-};

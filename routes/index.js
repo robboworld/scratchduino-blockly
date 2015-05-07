@@ -20,6 +20,7 @@ var roboEngineJsGen = "blockly_custom/generators/js/robo_engine.js";
 var controlsJsGen = "blockly_custom/generators/js/controls.js";
 var sensorsJsGen = "blockly_custom/generators/js/sensors.js";
 var jsInterpreter = "JS-Interpreter/acorn_interpreter.js";
+var blocklyCodeGen = "scripts/blockly_code_gen.js"
 
 var modalPopover = "bootstrap/js/bootstrap-modal-popover.js";
 
@@ -48,7 +49,8 @@ router.get('/', function (req, res) {
                 jsInterpreter,
                 storageJs,
                 configReadyJs,
-                modalPopover
+                modalPopover,
+                blocklyCodeGen
             ],
             cssFiles: [bootstrapCss, configStylesCss]
         });
