@@ -30,13 +30,13 @@ function loadSensorData(pos) {
                     $("#isActive").prop("checked", true);
                 }
                 if (sensorData.number) {
-                    $("#selectedNumber").find("option[value="+sensorData.number+"]").prop('selected', true);
+                    $("#selectedNumber").find("option[value=" + sensorData.number + "]").prop('selected', true);
                 }
                 if (sensorData.name) {
                     $("#selectedName").val(sensorData.name);
                 }
                 if (sensorData.type) {
-                    $("#selectedType").find("option[value="+sensorData.type+"]").prop('selected', true);
+                    $("#selectedType").find("option[value=" + sensorData.type + "]").prop('selected', true);
                 }
             }
             $("#positionDiv").html(pos);
@@ -165,8 +165,8 @@ $(document).ready(
                 for (var i = 0; portsList.children.length - 2; i++) {
                     portsList.removeChild(portsList.children[i]);
                 }
-                ;
-            };
+
+            }
 
             function createListItem(text, onClickFunc) {
                 var li = document.createElement("li");

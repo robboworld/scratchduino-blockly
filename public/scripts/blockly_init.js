@@ -84,6 +84,7 @@ function loadSketch(name, hash) {
 
 $(document).ready(
     function () {
+
         Blockly.inject(document.getElementById('blocklyDiv'),
             {toolbox: document.getElementById('toolbox')})
         window.setTimeout(BlocklyStorage.restoreBlocks, 0);

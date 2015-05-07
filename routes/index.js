@@ -11,8 +11,10 @@ var storageJs = "blockly/appengine/storage.js";
 var messagesRUS = "blockly/msg/js/ru.js";
 var messagesEN = "blockly/msg/js/en.js";
 var jquery = "plugins/jquery-1.11.2.min.js";
+var createJs = "plugins/createjs.min.js";
 var jquery_maphighlight = "plugins/jquery.maphilight.min.js";
 var blocklyInit = "scripts/blockly_init.js";
+var stageInit = "scripts/stage_init.js";
 var roboEngineBlocks = "blockly_custom/blocks/robo_engine.js";
 var controlsBlocks = "blockly_custom/blocks/controls.js";
 var sensorsBlocks = "blockly_custom/blocks/sensors.js";
@@ -35,10 +37,12 @@ router.get('/', function (req, res) {
                 jquery_maphighlight,
                 bootstrapJs,
                 blocklyJs,
+                createJs,
                 jsCompressedJs,
                 blocksJs,
                 messagesRUS,
                 blocklyInit,
+                stageInit,
                 roboEngineBlocks,
                 controlsBlocks,
                 sensorsBlocks,
