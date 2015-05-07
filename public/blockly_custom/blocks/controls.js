@@ -6,7 +6,7 @@ Blockly.Blocks['when_key_pressed'] = {
         this.setHelpUrl('http://www.example.com/');
         this.setColour(65);
         this.appendDummyInput()
-            .appendField("когда клавиша");
+            .appendField("Когда клавиша");
         this.appendDummyInput()
             .appendField(new Blockly.FieldDropdown(
                 [
@@ -21,7 +21,21 @@ Blockly.Blocks['when_key_pressed'] = {
             .appendField("нажата");
         this.appendStatementInput("action");
         this.setInputsInline(true);
-        this.setPreviousStatement(true);
+        //this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setTooltip('');
+    }
+};
+
+Blockly.Blocks['while_program_running'] = {
+    init: function () {
+        this.setHelpUrl('http://www.example.com/');
+        this.setColour(65);
+        this.appendDummyInput()
+            .appendField("Когда программа запущена");
+        this.appendStatementInput("action");
+        this.setInputsInline(true);
+        //this.setPreviousStatement(true);
         this.setNextStatement(true);
         this.setTooltip('');
     }

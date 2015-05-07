@@ -2,6 +2,7 @@
  * Created by xottab on 3/12/15.
  */
 
+//TODO: Zero this var on every loaded sketch
 var curELNumber = 0;
 
 function getNextEventListenerNumber() {
@@ -13,8 +14,7 @@ function clearListeners() {
 }
 
 var addedEvListeners = [];
-
-var code;
+var blocklyCodeGen = new BlocklyCodeGenerator();
 
 function initApi(interpreter, scope) {
     // Add an API function for the alert() block.
@@ -124,8 +124,8 @@ $(document).ready(
         };
 
         function myUpdateFunction() {
-            code = Blockly.JavaScript.workspaceToCode();
-            document.getElementById('jsOutput').value = code;
+            blocklyCodeGen.generateCode(Blockly.JavaScript.workspaceToCode());
+            document.getElementById('jsOutput').value = blocklyCodeGen.getCode();
         }
 
 
@@ -179,14 +179,14 @@ $(document).ready(
                             }
                         });
 
-                   }, 500);
+                    }, 500);
 
                     if (message == "No serial port selected.") {
                         alert("Робот не настроен!");
                         return;
                     }
 
-                    eval(code);
+                    eval(blocklyCodeGen.getCode());
 
                     self.removeClass("btn-primary");
                     self.addClass("btn-success");
@@ -220,3 +220,43 @@ $(document).ready(
 function blocklyLoaded(blockly) {
     window.Blockly = blockly;
 }
+
+/*Blockly code generator.
+* Defines all needed variables and functions
+* used by blocks.*/
+function BlocklyCodeGenerator() {
+
+    function global_blockly_engine(direction, timeout) {
+        clearTimeout(stop_timeout_ID);
+        $.ajax({
+            type: 'GET',
+            url: '/scratch/engine',
+            data: {direction: direction}
+        });
+        if (timeout) {
+            stop_timeout_ID = setTimeout(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: '/scratch/engine',
+                    data: {direction: '0'}
+                });
+            }, timeout);
+        }
+        ;
+    };
+
+    var code = "var stop_timeout_ID = null;\n" +
+        global_blockly_engine.toString() +
+        ";\n";
+
+    var generated_code = code;
+
+    this.generateCode = function(workspace_code) {
+        generated_code = code + workspace_code
+        return generated_code;
+    };
+
+    this.getCode = function() {
+        return generated_code;
+    }
+};

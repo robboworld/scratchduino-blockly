@@ -103,6 +103,7 @@ exports.openConn = function (res) {
         }, 2000);
     });
 
+    //watchDisconnection
 };
 
 function onDataCallback(data) {
@@ -162,6 +163,10 @@ exports.closeConn = function (res) {
         ;
     });
 
+    dataBuffer.resetData();
+    responseKeeper.resetData();
+
+    //watchDisconnection
 };
 
 /*Direction constants*/
@@ -229,10 +234,10 @@ exports.data = function (res) {
     watchDisconnection(res);
 };
 
-// TODO: Try to disconnect?
-var DISCONNECTION_TIMEOUT = 500;
+// TODO: Try to reconnect?
+var DISCONNECTION_TIMEOUT = 1000;
 
-function watchDisconnection(res) {
+function watchDisconnection(res, timeout) {
 
     setTimeout(function() {
         if (!res.headersSent) {

@@ -22,7 +22,7 @@ Blockly.Blocks['sensor_value'] = {
         this.setHelpUrl('http://www.example.com/');
         this.setColour(20);
         this.appendDummyInput()
-            .appendField("Значение сенсора")
+            .appendField("значение сенсора")
             .appendField(new Blockly.FieldDropdown([
                 ["1", "sensor1"],
                 ["2", "sensor2"],
@@ -41,14 +41,15 @@ Blockly.Blocks['button_pushed'] = {
         this.setHelpUrl('http://www.example.com/');
         this.setColour(20);
         this.appendDummyInput()
-            .appendField("Кнопка нажата")
+            .appendField("кнопка")
             .appendField(new Blockly.FieldDropdown([
                 ["1", "sensor1"],
                 ["2", "sensor2"],
                 ["3", "sensor3"],
                 ["4", "sensor4"],
                 ["5", "sensor5"]
-            ]), "sensor_number");
+            ]), "sensor_number")
+            .appendField("нажата");
         this.setInputsInline(true);
         this.setOutput(true, "Boolean");
         this.setTooltip('');

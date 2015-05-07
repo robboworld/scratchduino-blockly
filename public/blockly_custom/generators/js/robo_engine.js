@@ -1,10 +1,13 @@
 /**
  * Created by xottab on 3/26/15.
  */
+
 Blockly.JavaScript['engine_turn_on_sec'] = function(block) {
-    var value_name = Blockly.JavaScript.valueToCode(block, 'name', Blockly.JavaScript.ORDER_ATOMIC);
-    // TODO: Assemble JavaScript into code variable.
-    var code = 'engine_turn_on_sec';
+    var key = block.getFieldValue('direction');
+    var sec_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
+    var time = sec_time*1000; // To milliseconds
+
+    var code = "global_blockly_engine({0}, {1});\n".format(key, time);
     return code;
 };
 
@@ -15,21 +18,14 @@ Blockly.JavaScript['engine_turn_on_sec'] = function(block) {
 //};
 
 Blockly.JavaScript['engine_turned_off'] = function(block) {
-    var code = "$.ajax({\n"+
-        "type: 'GET',\n"+
-        "url: '/scratch/engine',\n"+
-        "data: { direction: '0'},\n"+
-        "});";
+    var code = "global_blockly_engine(\"0\");\n";
     return code;
 };
 
 Blockly.JavaScript['engine_direction'] = function(block) {
     var key = block.getFieldValue('direction');
-    var code = "$.ajax({\n"+
-        "type: 'GET',\n"+
-        "url: '/scratch/engine',\n"+
-        "data: { direction: "+key+"},\n"+
-    "});";
+
+    var code = "global_blockly_engine({0});\n".format(key);
     return code;
 };
 
