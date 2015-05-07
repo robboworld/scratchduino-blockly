@@ -2,6 +2,9 @@
  * Created by xottab on 3/12/15.
  */
 
+var spriteCodeGen = new SpriteCodeGenerator();
+
+var robotSpriteMovingInte
 function initApi(interpreter, scope) {
     // Add an API function for the alert() block.
     var wrapper = function (text) {
@@ -105,7 +108,10 @@ $(document).ready(
         };
 
         function myUpdateFunction() {
-            blocklyCodeGen.generateCode(Blockly.JavaScript.workspaceToCode());
+
+            spriteCodeGen.generateCode(Blockly.JavaScript.workspaceToCode());
+            blocklyCodeGen.generateCode(spriteCodeGen.getCode());
+
             document.getElementById('jsOutput').value = blocklyCodeGen.getCode();
         };
 
@@ -152,9 +158,12 @@ $(document).ready(
                     self.blur();
                 }
             });
+            eval(spriteCodeGen.getCode());
         });
 
         $("#stopExecutionButton").click(function () {
+
+            window.clearInterval(robotSpriteMovingInterval);
             //TODO: close port if page is refreshed
             $.ajax({
                 type: 'GET',
@@ -165,7 +174,7 @@ $(document).ready(
             /*If program is not running*/
             if ($("#launchCodeButton").hasClass("btn-primary")) {
                 return;
-            };
+            }
 
             blocklyCodeGen.closeCurrentSession();
             $("#launchCodeButton").removeClass("btn-success");

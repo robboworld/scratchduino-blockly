@@ -2,7 +2,7 @@ extends layout
 
 block content
     header#top.navbar.navbar-static-top(role='banner')
-        div.container-fluid
+        div.container
             div.navbar-header
                 a.navbar-brand(href='../', style="font-size:40px") Blockly for ScratchDuino
             nav.collapse.navbar-collapse.bs-navbar-collapseform.navbar-form.navbar-right
@@ -19,30 +19,36 @@ block content
                     div.form-group
                         button#loadProgram.btn-sm.btn-default(type="button") Загрузить программу
                             span.glyphicon.glyphicon-upload(aria-hidden="true",style="margin-left: 4px")
-            div.row
-                div.col-lg-8
-                    div.panel.panel-default
-                        div.panel-heading Программа
-                        div.panel-body
-                            div#blocklyDiv(style="height: 600px")
-                            include toolbox.html
-                    div.panel.panel-default
-                        div.panel-heading Сцена
-                        div.panel-body
-                            div#sceneDiv(style="height: 600px")
-                                canvas#stageCanvas
 
+    div.container-fluid
+        div.row
+            div.col-lg-8
+                div.panel.panel-default
+                    div.panel-heading Программа
+                    div.panel-body
+                        div#blocklyDiv(style="height: 600px")
+                        include toolbox.html
+                div.panel.panel-default
+                    div.panel-heading Сцена
+                    div.panel-body
+                        div#sceneDiv(style="height: 600px")
+                            canvas#stageCanvas(style="height:100%; width:100%")
 
-                div.col-lg-4
+            //div.col-lg-4
+                div.panel.panel-default
+                    div.panel-heading Программа
+                    div.panel-body
+                        h1 column2
+            div.col-lg-4
+                div.row
                     div.panel.panel-default
                         div.panel-heading Вывод
                         div.panel-body(style="height: 300px")
                             textarea#jsOutput(style="width: 100%; height: 100%;")
-                    div.container-fluid(style="margin-bottom: 15px")
-                        div.col-lg-4
-                            button#launchCodeButton.btn-lg.btn-primary(style="font-size: 100%") Запустить
-                        div.col-lg-8
-                            button#stopExecutionButton.btn-lg.btn-warning(style="font-size: 100%") Остановить выполнение
+                div.row(style="margin-bottom: 15px")
+                    button#launchCodeButton.btn-lg.btn-primary(style="margin-right: 10px") Запустить
+                    button#stopExecutionButton.btn-lg.btn-warning Остановить выполнение
+                div.row
                     div.panel.panel-default
                         div.panel-heading Сцена
                         div.panel-body

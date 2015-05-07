@@ -7,7 +7,8 @@ Blockly.JavaScript['engine_turn_on_sec'] = function(block) {
     var sec_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
     var time = sec_time*1000; // To milliseconds
 
-    var code = "global_blockly_engine({0}, {1});\n".format(key, time);
+    var code = "try{\nglobal_blockly_engine({0}, {1});\n}catch(e){}\n".format(key, time);
+    code += "try{\nsprite_move({0}, {1});\n}catch(e){}\n".format(key, time);
     return code;
 };
 
@@ -18,15 +19,16 @@ Blockly.JavaScript['engine_turn_on_sec'] = function(block) {
 //};
 
 Blockly.JavaScript['engine_turned_off'] = function(block) {
-
-    var code = "global_blockly_engine(\"0\");\n";
+    var code = "try{\nglobal_blockly_engine(\"0\");\n}catch(e){}\n";
+    code+="try{\nsprite_move(\"0\");\n}catch(e){}\n";
     return code;
 };
 
 Blockly.JavaScript['engine_direction'] = function(block) {
     var key = block.getFieldValue('direction');
 
-    var code = "global_blockly_engine({0});\n".format(key);
+    var code = "try{\nglobal_blockly_engine({0});\n}catch(e){}\n".format(key);
+    code += "try{\nsprite_move({0});\n}catch(e){}\n".format(key);
     return code;
 };
 
