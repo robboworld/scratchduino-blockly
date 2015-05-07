@@ -2,9 +2,9 @@
  * Created by xottab on 3/12/15.
  */
 
-var spriteCodeGen = new SpriteCodeGenerator();
+//var spriteCodeGen = new SpriteCodeGenerator();
 
-var robotSpriteMovingInte
+
 function initApi(interpreter, scope) {
     // Add an API function for the alert() block.
     var wrapper = function (text) {
@@ -105,15 +105,15 @@ $(document).ready(
 
         function to_configuration_page() {
             document.location.href = "/configuration";
-        };
+        }
 
         function myUpdateFunction() {
 
-            spriteCodeGen.generateCode(Blockly.JavaScript.workspaceToCode());
-            blocklyCodeGen.generateCode(spriteCodeGen.getCode());
+
+            blocklyCodeGen.generateCode(Blockly.JavaScript.workspaceToCode());
 
             document.getElementById('jsOutput').value = blocklyCodeGen.getCode();
-        };
+        }
 
         Blockly.addChangeListener(myUpdateFunction);
 
@@ -158,7 +158,7 @@ $(document).ready(
                     self.blur();
                 }
             });
-            eval(spriteCodeGen.getCode());
+            eval(Blockly.JavaScript.workspaceToCode());
         });
 
         $("#stopExecutionButton").click(function () {

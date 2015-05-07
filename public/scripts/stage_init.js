@@ -8,6 +8,8 @@ function resizeImg(img, desiredWidth) {
     img.scaleY = scale; // Resolves to "2"
 }
 var easelStage;
+var robotSpriteMovingInterval;
+
 $(document).ready(function (e) {
         var stageCanvas = document.getElementById("stageCanvas");
         stageCanvas.width = stageCanvas.offsetWidth;
@@ -24,8 +26,8 @@ $(document).ready(function (e) {
             robot.x = stageCanvas.width / 2;
             robot.y = stageCanvas.height / 2;
 
-            //robot.regX = image.width/2;
-            //robot.regY = image.height/2;
+            robot.regX = image.naturalHeight/2;
+            robot.regY = image.naturalHeight/2;
             robot.name = "robotSprite";
             easelStage.addChildAt(robot);
             easelStage.update();
@@ -37,58 +39,62 @@ $(document).ready(function (e) {
     }
 );
 
+function sprite_move(direction, timeout) {
+    var rrb = easelStage.getChildByName("robotSprite");
 
+    window.clearInterval(robotSpriteMovingInterval);
+    if (direction != 0) {
+        var move;
+        var speed = 5;
+        switch (direction) {
+            case 1:
+            {
+                move = function(rb){
+                    var angle = Math.PI*(rb.rotation+90)/180;
+                    rb.x += speed*Math.cos(angle);
+                    rb.y += speed*Math.sin(angle);
+                };
+                break;
+            }
+            case 2:
+            {
+
+                move = function(rb){
+                    rb.rotation -= 4;
+                };
+                break;
+            }
+            case 3:
+            {
+
+                move = function(rb){
+                    rb.rotation += 4;
+                };
+                break;
+            }
+            case 4:
+            {
+
+                move = function(rb){
+                    var angle = Math.PI*(rb.rotation+90)/180;
+                    rb.x -= speed*Math.cos(angle);
+                    rb.y -= speed*Math.sin(angle);
+                };
+                break;
+            }
+        }
+        robotSpriteMovingInterval = window.setInterval(function (e) {
+            var rb = easelStage.getChildByName("robotSprite");
+            move(rb);
+            easelStage.update();
+        }, 100);
+    }
+}
+
+/*
 function SpriteCodeGenerator() {
 
-    function sprite_move(direction, timeout) {
 
-        var rrb = easelStage.getChildByName("robotSprite");
-        window.clearInterval(robotSpriteMovingInterval);
-        if (direction != 0) {
-            var move;
-            switch (direction) {
-                case 1:
-                {
-                    move = function(rb){
-                        rb.x += 0;
-                        rb.y += 5;
-                    };
-                    break;
-                }
-                case 2:
-                {
-
-                    move = function(rb){
-                        rb.rotation -= 1;
-                    };
-                    break;
-                }
-                case 3:
-                {
-
-                    move = function(rb){
-                        rb.rotation += 1;
-                    };
-                    break;
-                }
-                case 4:
-                {
-
-                    move = function(rb){
-                        rb.x += 0;
-                        rb.y += -5;
-                    };
-                    break;
-                }
-            }
-            robotSpriteMovingInterval = window.setInterval(function (e) {
-                var rb = easelStage.getChildByName("robotSprite");
-                move(rb);
-                easelStage.update();
-            }, 100);
-        }
-
-    }
 
     var code = sprite_move.toString()+"\n"
 
@@ -103,3 +109,4 @@ function SpriteCodeGenerator() {
         return generated_code;
     }
 }
+*/
