@@ -165,26 +165,6 @@ $(document).ready(
                 url: '/scratch/on',
                 contentType: 'application/json; charset=utf-8',
                 success: function (message) {
-                    sensors_intervalID = setInterval(function () {
-                        $.ajax({
-                            type: 'GET',
-                            url: '/scratch/data',
-                            success: function (json) {
-                                var o = JSON.parse(json);
-                                document.getElementById("sensor1").value = o["sensor_1"];
-                                document.getElementById("sensor2").value = o["sensor_2"];
-                                document.getElementById("sensor3").value = o["sensor_3"];
-                                document.getElementById("sensor4").value = o["sensor_4"];
-                                document.getElementById("sensor5").value = o["sensor_5"];
-                            }
-                        });
-
-                    }, 500);
-
-                    if (message == "No serial port selected.") {
-                        alert("Робот не настроен!");
-                        return;
-                    }
 
                     eval(blocklyCodeGen.getCode());
 
@@ -196,23 +176,25 @@ $(document).ready(
         });
 
         $("#stopExecutionButton").click(function () {
-            /*If program is not running*/
-            if ($("#launchCodeButton").hasClass("btn-primary")) {
-                return;
-            }
-
-            clearAllListeners();
-            $("#launchCodeButton").removeClass("btn-success");
-            $("#launchCodeButton").addClass("btn-primary");
-            clearInterval(sensors_intervalID);
-
+            //TODO: close port if page is refreshed
             $.ajax({
                 type: 'GET',
                 url: '/scratch/off',
                 contentType: 'application/json; charset=utf-8'
             });
 
-            $(".sensors").find("input[type = text]").val("");
+            /*If program is not running*/
+            if ($("#launchCodeButton").hasClass("btn-primary")) {
+                return;
+            };
+
+            clearAllListeners();
+            $("#launchCodeButton").removeClass("btn-success");
+            $("#launchCodeButton").addClass("btn-primary");
+
+            setTimeout(function() {
+                $(".sensors").find("input[type = text]").val("");
+            }, 500);
         });
     }
 );
@@ -226,15 +208,37 @@ function blocklyLoaded(blockly) {
 * used by blocks.*/
 function BlocklyCodeGenerator() {
 
+    function global_blockly_longPooling() {
+        $.ajax({
+            type: 'GET',
+            url: '/scratch/data',
+            success: function (json) {
+                var o = JSON.parse(json);
+                document.getElementById("sensor1").value = o["sensor_1"];
+                document.getElementById("sensor2").value = o["sensor_2"];
+                document.getElementById("sensor3").value = o["sensor_3"];
+                document.getElementById("sensor4").value = o["sensor_4"];
+                document.getElementById("sensor5").value = o["sensor_5"];
+                setTimeout(global_blockly_longPooling, SENSORS_DATA_TIMEOUT);
+            },
+            error: function (mess) {
+                //TODO: Error checking
+                if (mess.responseText == "Port is not open" || mess.responseText == "No serial port selected")
+                    return;
+                setTimeout(global_blockly_longPooling, SENSORS_DATA_TIMEOUT);
+            }
+        });
+    }
+
     function global_blockly_engine(direction, timeout) {
-        clearTimeout(stop_timeout_ID);
+        clearTimeout(stop_timeoutID);
         $.ajax({
             type: 'GET',
             url: '/scratch/engine',
             data: {direction: direction}
         });
         if (timeout) {
-            stop_timeout_ID = setTimeout(function () {
+            stop_timeoutID = setTimeout(function () {
                 $.ajax({
                     type: 'GET',
                     url: '/scratch/engine',
@@ -245,9 +249,15 @@ function BlocklyCodeGenerator() {
         ;
     };
 
-    var code = "var stop_timeout_ID = null;\n" +
+    var code = "var SENSORS_DATA_TIMEOUT = 100;\n"+
+        "var stop_timeoutID = null;\n" +
+        "var data_timeoutID = null;\n" +
         global_blockly_engine.toString() +
-        ";\n";
+        ";\n" +
+        global_blockly_longPooling.toString() +
+        ";\n" +
+        "global_blockly_longPooling();\n" +
+        "\n";
 
     var generated_code = code;
 

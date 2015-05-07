@@ -10,7 +10,7 @@ var SerialFactory = require("serialport");
 var SerialPort = require("serialport").SerialPort;
 
 // Uses for proper processing of sensors data queries from client.
-var responseKeeper = require("./response_keeper");
+var response = null;
 
 var portName = "";
 var serialport;
@@ -103,7 +103,6 @@ exports.openConn = function (res) {
         }, 2000);
     });
 
-    //watchDisconnection
 };
 
 function onDataCallback(data) {
@@ -112,10 +111,9 @@ function onDataCallback(data) {
 
     //TODO: Find another method to check whether transaction completed
     // 14 received bytes (14*2 numbers in hex) means end of transaction of data from robot.
-    if (dataBuffer.data.length == 28) {
-        if (dataBuffer.data.length == 28 && responseKeeper.isActivated()) {
-            responseKeeper.send(dataToJSON(dataBuffer.data));
-        }
+    if (dataBuffer.data.length >= 28 && response != null) {
+        response.send(dataToJSON(dataBuffer.data));
+        response = null;
         dataBuffer.resetData();
     }
 
@@ -164,9 +162,6 @@ exports.closeConn = function (res) {
     });
 
     dataBuffer.resetData();
-    responseKeeper.resetData();
-
-    //watchDisconnection
 };
 
 /*Direction constants*/
@@ -177,6 +172,8 @@ var LEFT = "\xA0";
 var STOP = "\x00";
 
 exports.move = function (direction, res) {
+
+    watchDisconnection(res);
 
     if (!checkPortAvailable(res)) return;
 
@@ -218,31 +215,29 @@ exports.move = function (direction, res) {
         });
     });
 
-    watchDisconnection(res);
 };
 
-exports.data = function (res) {
+exports.data = function(res) {
+
+    watchDisconnection(res);
+    response = res;
 
     if (!checkPortAvailable(res)) return;
-
-    if (!responseKeeper.addResponse(res)) return;
 
     serialport.write(new Buffer(dataBuffer.lastByte, "binary"), function (err) {
         // Logging
     });
 
-    watchDisconnection(res);
 };
 
 // TODO: Try to reconnect?
-var DISCONNECTION_TIMEOUT = 1000;
+var DISCONNECTION_TIMEOUT = 1500;
 
 function watchDisconnection(res, timeout) {
 
     setTimeout(function() {
         if (!res.headersSent) {
             res.status(500).send("Device disconnected");
-            responseKeeper.resetData();
         }
     }, DISCONNECTION_TIMEOUT);
 
