@@ -9,7 +9,7 @@ Blockly.JavaScript['when_key_pressed'] = function (block) {
     var key = block.getFieldValue('key');
     var action = Blockly.JavaScript.statementToCode(block, 'action');
 
-    var code = "global_blockly_createNewKeyListener({0}, function(){{1}});\n".format(key, action);
+    var code = "global_blockly.createNewKeyListener({0}, function(){{1}});\n".format(key, action);
     return code;
 };
 

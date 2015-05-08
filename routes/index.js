@@ -23,6 +23,7 @@ var controlsJsGen = "blockly_custom/generators/js/controls.js";
 var sensorsJsGen = "blockly_custom/generators/js/sensors.js";
 var jsInterpreter = "JS-Interpreter/acorn_interpreter.js";
 var blocklyCodeGen = "scripts/blockly_code_gen.js"
+var globalBlockly = "scripts/global_blockly.js"
 
 var modalPopover = "bootstrap/js/bootstrap-modal-popover.js";
 
@@ -54,7 +55,8 @@ router.get('/', function (req, res) {
                 storageJs,
                 configReadyJs,
                 modalPopover,
-                blocklyCodeGen
+                blocklyCodeGen,
+                globalBlockly
             ],
             cssFiles: [bootstrapCss, configStylesCss]
         });

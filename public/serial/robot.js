@@ -157,7 +157,7 @@ function dataToJSON(data) {
         var low = parseInt(data.substr(i + 2, 2), 16);
 
         // Get first byte of high
-        high &= 0x01;
+        high &= 0x07;
         // And append it as high byte of low
         low = (high << 7) | low;
         json[val] = low.toString();
