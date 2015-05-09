@@ -22,7 +22,7 @@ exports.findPorts = function(res) {
     SerialFactory.list(function (err, list) {
 
         if (err) {
-            res.status(500).send(err);
+            sendErrorResponse(res, 500, err, "Cannot get list of ports", ERR_SERIAL);
         };
 
         var ports = [];
@@ -66,12 +66,14 @@ var dataBuffer = {
 exports.openConn = function (res) {
 
     if (!serialport) {
-        res.status(500).send("No serial port selected");
+        sendErrorResponse(res, 500, "No serial port selected",
+            "Please select a serial port", ERR_USER);
         return;
     };
 
     if (serialport.isOpen()) {
-        res.status(500).send("Port is already opened");
+        sendErrorResponse(res, 500, "Port is already opened",
+            "Attempt to open currently opened port", ERR_SERIAL);
         return;
     };
 
@@ -79,7 +81,8 @@ exports.openConn = function (res) {
 
         console.log("open: " + err);
         if (err) {
-            res.status(500).send(err);
+            sendErrorResponse(res, 500, err,
+                "An error occurred while connecting to device", ERR_SERIAL);
             return;
         }
 
@@ -116,7 +119,7 @@ function onDataCallback(data) {
     // 14 received bytes (14*2 numbers in hex) means end of transaction of data from robot.
     if (dataBuffer.data.length >= 28 && response != null) {
         if (!checkFirmware(dataBuffer.data)) {
-            response.status(500).send("Data output interrupted");
+            sendErrorResponse(response, 500, "Data output interrupted", "", ERR_SERIAL);
         } else {
             response.send(dataToJSON(dataBuffer.data));
         }
@@ -176,7 +179,7 @@ exports.closeConn = function (res) {
         console.log("close callback: " + err);
 
         if (err) {
-            res.status(500).send(err);
+            sendErrorResponse(res, 500, err, "Port closed with error", ERR_SERIAL);
         } else {
             res.send("OK");
         }
@@ -227,7 +230,7 @@ exports.move = function (direction, res) {
 
             if (!res.headersSent) {
                 if (err) {
-                    res.status(500).send(err);
+                    sendErrorResponse(res, 500, err, "Cannot send data to device", ERR_SERIAL);
                 } else {
                     res.send("OK");
                 }
@@ -252,13 +255,14 @@ exports.data = function(res) {
 };
 
 // TODO: Try to reconnect?
-var DISCONNECTION_TIMEOUT = 1500;
+var DISCONNECTION_TIMEOUT = 5000;
 
 function watchDisconnection(res, timeout) {
 
     setTimeout(function() {
         if (!res.headersSent) {
-            res.status(500).send("Device disconnected");
+            sendErrorResponse(res, 500, "Disconnection", "Device disconnected", ERR_SERIAL);
+            serialport.close();
         }
     }, DISCONNECTION_TIMEOUT);
 
@@ -266,14 +270,29 @@ function watchDisconnection(res, timeout) {
 
 function checkPortAvailable(res) {
     if (!serialport) {
-        res.status(500).send("No serial port selected");
+        sendErrorResponse(res, 500, "No serial port selected",
+            "Please select a serial port", ERR_USER);
         return false;
     };
 
     if (!serialport.isOpen()) {
-        res.status(500).send("Port is not open");
+        sendErrorResponse(res, 500, "Port is not open",
+            "", ERR_SERIAL);
         return false;
     };
 
     return true;
+}
+
+
+var ERR_SERIAL = "serialport";
+var ERR_USER = "user";
+function sendErrorResponse(response, status, tech, user, type) {
+
+    var error = {
+        tech: tech,
+        user: user,
+        type: type
+    };
+    response.status(status).json(error);
 }

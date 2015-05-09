@@ -35,7 +35,6 @@ router.get("/set_port", function(req, res) {
     var portName = req.query.port;
     robot.setPort(portName);
 
-    //TODO: response message
     res.send("OK");
 });
 

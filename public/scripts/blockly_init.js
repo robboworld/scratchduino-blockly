@@ -2,8 +2,6 @@
  * Created by xottab on 3/12/15.
  */
 
-//var spriteCodeGen = new SpriteCodeGenerator();
-
 
 function initApi(interpreter, scope) {
     // Add an API function for the alert() block.
@@ -63,58 +61,126 @@ function loadSketch(name, hash) {
     }
 }
 
+function requestPorts() {
+    $("#portsList").empty();
+
+    $.ajax({
+        type: "GET",
+        url: "/scratch/ports",
+        contentType: 'application/json; charset=utf-8',
+        success: function (json) {
+            successPort(json);
+        },
+        error: function () {
+            //
+        }
+    });
+
+    /*Create waiting animation*/
+    var li = document.createElement("li");
+    var span = document.createElement("span");
+
+    li.innerText = "Загрузка ";
+    span.className = "glyphicon glyphicon-refresh glyphicon-refresh-animate";
+    li.appendChild(span);
+    $("#portsList").append(li);
+
+};
+
+function successPort(json) {
+
+    var ports = JSON.parse(json);
+    var $portsList = $("#portsList");
+
+    $portsList.empty();
+
+    if (!ports.length) {
+        var li = createListItem("Нет доступных портов", null);
+        $portsList.append(li);
+
+        $("#selectPortButton").text("Порт не выбран");
+        // TODO: send to server or cancel port selection
+    }
+
+    for (var i = 0; i < ports.length; i++) {
+        var li = createListItem(ports[i].name, onPortSelected);
+        $portsList.append(li);
+    }
+
+    function createListItem(text, onClickFunc) {
+        var li = document.createElement("li");
+        var a = document.createElement("a");
+
+        a.innerText = text;
+        a.onclick = onClickFunc;
+        li.appendChild(a);
+
+        return li;
+    }
+
+    function onPortSelected() {
+        var self = this;
+
+        $("#selectPortButton").text(this.innerText);
+        $.ajax({
+                type: "GET",
+                url: "scratch/set_port",
+                data: {
+                    port: self.innerText
+                }
+            }
+        );
+    };
+};
+
+function backup_blocks() {
+    var name = prompt("Введите название для скетча");
+    if (name) {
+        var id = uuid();
+        $.ajax({
+            type: 'GET',
+            url: '/addHash',
+            data: {
+                blocklyHash: id,
+                hashName: name
+            },
+            success: function (json) {
+                if (typeof(Storage) !== "undefined") {
+                    var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+                    var txt = new XMLSerializer().serializeToString(xml);
+                    localStorage.setItem(id, Blockly.Xml.domToText(xml));
+                    //console.log("backuped");
+                } else {
+                    // Sorry! No web storage support..
+                }
+                alert("Success! Hash is: " + id);
+            },
+            error: function (e) {
+                alert("Fail :(");
+            }
+
+        });
+    }
+
+}
+
+function to_configuration_page() {
+    document.location.href = "/configuration";
+}
+
 $(document).ready(
     function () {
 
-        var blocklyCodeGen = new BlocklyCodeGenerator();
+        var blocklyCodeManager = new BlocklyCodeManager();
 
         Blockly.inject(document.getElementById('blocklyDiv'),
             {toolbox: document.getElementById('toolbox')})
         window.setTimeout(BlocklyStorage.restoreBlocks, 0);
 
-        function backup_blocks() {
-            var name = prompt("Введите название для скетча");
-            if (name) {
-                var id = uuid();
-                $.ajax({
-                    type: 'GET',
-                    url: '/addHash',
-                    data: {
-                        blocklyHash: id,
-                        hashName: name
-                    },
-                    success: function (json) {
-                        if (typeof(Storage) !== "undefined") {
-                            var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-                            var txt = new XMLSerializer().serializeToString(xml);
-                            localStorage.setItem(id, Blockly.Xml.domToText(xml));
-                            //console.log("backuped");
-                        } else {
-                            // Sorry! No web storage support..
-                        }
-                        alert("Success! Hash is: " + id);
-                    },
-                    error: function (e) {
-                        alert("Fail :(");
-                    }
-
-                });
-            }
-
-        }
-
-        function to_configuration_page() {
-            document.location.href = "/configuration";
-        }
-
         function myUpdateFunction() {
-
-
-            blocklyCodeGen.generateCode(Blockly.JavaScript.workspaceToCode());
-
-            document.getElementById('jsOutput').value = blocklyCodeGen.getCode();
+            blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode());
+            document.getElementById('jsOutput').value = blocklyCodeManager.getCode();
         }
-
         Blockly.addChangeListener(myUpdateFunction);
 
         $("#saveProgram").click(backup_blocks);
@@ -138,52 +204,26 @@ $(document).ready(
 
         $("#launchCodeButton").click(function () {
 
-            /* If already run*/
-            if ($(this).hasClass("btn-success")) {
-                return;
+            if (blocklyCodeManager.runCode(BlocklyCodeManager.RUN_MODES.SPRITE_PRIMARY)) {
+                $(this).removeClass("btn-primary");
+                $(this).addClass("btn-success");
+                $(this).blur();
             }
-
-            var self = $(this);
-
-            $.ajax({
-                type: 'GET',
-                url: '/scratch/on',
-                contentType: 'application/json; charset=utf-8',
-                success: function (message) {
-
-                    eval(blocklyCodeGen.getCode());
-
-                    self.removeClass("btn-primary");
-                    self.addClass("btn-success");
-                    self.blur();
-                }
-            });
-            eval(Blockly.JavaScript.workspaceToCode());
         });
 
         $("#stopExecutionButton").click(function () {
 
             window.clearInterval(robotSpriteMovingInterval);
-            //TODO: close port if page is refreshed
-            $.ajax({
-                type: 'GET',
-                url: '/scratch/off',
-                contentType: 'application/json; charset=utf-8'
-            });
 
-            /*If program is not running*/
-            if ($("#launchCodeButton").hasClass("btn-primary")) {
-                return;
-            }
+            blocklyCodeManager.stopExecution();
 
-            blocklyCodeGen.closeCurrentSession();
             $("#launchCodeButton").removeClass("btn-success");
             $("#launchCodeButton").addClass("btn-primary");
-
-            //setTimeout(function() {
-                $(".sensors").find("input[type = text]").val("");
-            //}, 1000);
+            $(".sensors").find("input[type = text]").val("");
         });
+
+        $("#selectPortButton").click(requestPorts);
+
     }
 
 );

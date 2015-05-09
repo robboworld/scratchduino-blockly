@@ -7,8 +7,8 @@ function resizeImg(img, desiredWidth) {
     img.scaleX = scale; // Resolves to "2"
     img.scaleY = scale; // Resolves to "2"
 }
+
 var easelStage;
-var robotSpriteMovingInterval;
 
 $(document).ready(function (e) {
         var stageCanvas = document.getElementById("stageCanvas");
@@ -38,75 +38,3 @@ $(document).ready(function (e) {
         }
     }
 );
-
-function sprite_move(direction, timeout) {
-    var rrb = easelStage.getChildByName("robotSprite");
-
-    window.clearInterval(robotSpriteMovingInterval);
-    if (direction != 0) {
-        var move;
-        var speed = 5;
-        switch (direction) {
-            case 1:
-            {
-                move = function(rb){
-                    var angle = Math.PI*(rb.rotation+90)/180;
-                    rb.x += speed*Math.cos(angle);
-                    rb.y += speed*Math.sin(angle);
-                };
-                break;
-            }
-            case 2:
-            {
-
-                move = function(rb){
-                    rb.rotation -= 4;
-                };
-                break;
-            }
-            case 3:
-            {
-
-                move = function(rb){
-                    rb.rotation += 4;
-                };
-                break;
-            }
-            case 4:
-            {
-
-                move = function(rb){
-                    var angle = Math.PI*(rb.rotation+90)/180;
-                    rb.x -= speed*Math.cos(angle);
-                    rb.y -= speed*Math.sin(angle);
-                };
-                break;
-            }
-        }
-        robotSpriteMovingInterval = window.setInterval(function (e) {
-            var rb = easelStage.getChildByName("robotSprite");
-            move(rb);
-            easelStage.update();
-        }, 100);
-    }
-}
-
-/*
-function SpriteCodeGenerator() {
-
-
-
-    var code = sprite_move.toString()+"\n"
-
-    var generated_code = code;
-
-    this.generateCode = function (workspace_code) {
-        generated_code = code + workspace_code;
-        return generated_code;
-    };
-
-    this.getCode = function () {
-        return generated_code;
-    }
-}
-*/

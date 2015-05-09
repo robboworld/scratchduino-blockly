@@ -48,6 +48,9 @@ block content
                 div.row(style="margin-bottom: 15px")
                     button#launchCodeButton.btn-lg.btn-primary(style="margin-right: 10px") Запустить
                     button#stopExecutionButton.btn-lg.btn-warning Остановить выполнение
+                    div.btn-group
+                        button#selectPortButton.btn-sm.dropdown-toggle(data-toggle='dropdown') Порт не выбран
+                        ul#portsList.dropdown-menu
                 div.row
                     div.panel.panel-default
                         div.panel-heading Сцена
