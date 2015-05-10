@@ -86,6 +86,8 @@ function BlocklyCodeManager() {
             return /*return message*/;
         };
 
+        clearInterval(global_blockly.main_program_intervalID);
+
         //TODO: close port if page is refreshed
         $.ajax({
             type: 'GET',
