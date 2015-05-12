@@ -25,14 +25,24 @@ var jsInterpreter = "JS-Interpreter/acorn_interpreter.js";
 var blocklyCodeGen = "scripts/blockly_code_manager.js";
 var globalBlockly = "scripts/global_blockly.js";
 var robotInterface = "scripts/robot_interface.js";
-var spriteInterface = "scripts/sprite_interface.js"
+var spriteInterface = "scripts/sprite_interface.js";
+var flagsCss = "flags/css/flag-icon.min.css";
 
 var modalPopover = "bootstrap/js/bootstrap-modal-popover.js";
 
 var configReadyJs = "scripts/configuration_ready.js";
 var configStylesCss = "css/configuration_styles.css";
 
+var langs = ["ru", "en"];
+var defaultLang = "ru";
+
 router.get('/', function (req, res) {
+
+    var lang = req.query.lang;
+    if(!lang){
+        lang = defaultLang;
+    }
+
     res.render('workflow',
         {
             title: 'ScratchDuino - Blockly',
@@ -62,7 +72,9 @@ router.get('/', function (req, res) {
                 robotInterface,
                 spriteInterface
             ],
-            cssFiles: [bootstrapCss, configStylesCss]
+            cssFiles: [bootstrapCss, configStylesCss, flagsCss],
+            lang: lang,
+            langs: langs
         });
 });
 

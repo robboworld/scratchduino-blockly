@@ -1,0 +1,6 @@
+{
+  "main": {
+    "run": "123",
+    "stop_execution": "456"
+  }
+}

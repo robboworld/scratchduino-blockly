@@ -7,5 +7,5 @@ ssh "${user}@${address}" << EOF
 cd scratchduino-blockly
 lsof -t -i:3000 | xargs kill -9
 ./run.sh &
-logout
+exit
 EOF

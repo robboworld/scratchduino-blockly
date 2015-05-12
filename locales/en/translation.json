@@ -1,0 +1,20 @@
+{
+  "main": {
+    "run": "Run",
+    "stop_execution": "Stop execution",
+    "scene": "Scene",
+    "program": "Program",
+    "portNotChosen": "Port is not chosen",
+    "sensors": "Sensors",
+    "sensorValues": "Sensors values",
+    "output": "Output"
+  },
+  "settings": {
+    "settings": "Settings",
+    "saveProgram": "Save",
+    "loadProgram": "Load"
+  },
+  "savedSketches": {
+    "title": "Saved sketches"
+  }
+}

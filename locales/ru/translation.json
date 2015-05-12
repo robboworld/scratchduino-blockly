@@ -1,0 +1,20 @@
+{
+  "main": {
+    "run": "Запустить",
+    "stop_execution": "Остановить выполнение",
+    "scene": "Сцена",
+    "program": "Программа",
+    "portNotChosen": "Порт не выбран",
+    "sensors": "Сенсоры",
+    "sensorValues": "Значения сенсоров",
+    "output": "Вывод"
+  },
+  "settings": {
+    "settings": "Настройки",
+    "saveProgram": "Сохранить программу",
+    "loadProgram": "Загрузить программу"
+  },
+  "savedSketches": {
+    "title": "Сохранённые скетчи"
+  }
+}
