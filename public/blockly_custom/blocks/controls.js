@@ -31,7 +31,7 @@ Blockly.Blocks['while_program_running'] = {
         this.setHelpUrl('http://www.example.com/');
         this.setColour(65);
         this.appendDummyInput()
-            .appendField("Когда программа запущена");
+            .appendField("Пока программа запущена");
         this.appendStatementInput("action");
         this.setInputsInline(true);
         this.setNextStatement(true);

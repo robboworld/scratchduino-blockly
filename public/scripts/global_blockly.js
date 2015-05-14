@@ -8,11 +8,13 @@ function global_blockly() {
 };
 
 global_blockly.SENSORS_REQUSET_TIMEOUT = 100;
+global_blockly.MAIN_PROGRAM_INTERVAL = 200;
 global_blockly.BUTTON_THRESHOLD = 1020;
 
 global_blockly.robot_accessible = false;    //Should be set before each running blockly program
 global_blockly.addedEvListeners = [];
-global_blockly.stop_timeoutID = null;
+global_blockly.engine_stop_timeoutID = null;
+global_blockly.main_program_intervalID = null;
 global_blockly.direction = null;
 global_blockly.timeout = null;
 global_blockly.is_engine_ready = false;
@@ -52,7 +54,7 @@ global_blockly.engine = function(timeout) {
         return;
     };
 
-    clearTimeout(global_blockly.stop_timeoutID);
+    clearTimeout(global_blockly.engine_stop_timeoutID);
     global_blockly.is_engine_ready = false;
 
     if (global_blockly.robot_accessible) {
@@ -64,7 +66,7 @@ global_blockly.engine = function(timeout) {
 
 global_blockly.stopEngine = function() {
 
-    clearTimeout(global_blockly.stop_timeoutID);
+    clearTimeout(global_blockly.engine_stop_timeoutID);
     global_blockly.is_engine_ready = false;
 
     if (global_blockly.robot_accessible) {

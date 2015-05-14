@@ -15,6 +15,10 @@ Blockly.JavaScript['when_key_pressed'] = function (block) {
 
 Blockly.JavaScript['while_program_running'] = function (block) {
 
-    //TODO: implement
+    var action = Blockly.JavaScript.statementToCode(block, 'action');
 
+    var code = "global_blockly.main_program_intervalID = setInterval(function() {\n" +
+        "{0}\n".format(action) +
+    "}, global_blockly.MAIN_PROGRAM_INTERVAL);\n";
+    return code;
 };
