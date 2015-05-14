@@ -14,7 +14,7 @@ fs.readFile(filename, function (err, data) {
         console.log("Read from file: "+JSON.stringify(db));
     } catch (e) {
         db = {
-            hashes: [],
+            hashes: {},
             sensors: []
         }
     }

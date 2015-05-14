@@ -8,8 +8,10 @@ var blocklyJs = "blockly/blockly_compressed.js";
 var jsCompressedJs = "blockly/javascript_compressed.js";
 var blocksJs = "blockly/blocks_compressed.js";
 var storageJs = "blockly/appengine/storage.js";
-var messagesRUS = "blockly/msg/js/ru.js";
-var messagesEN = "blockly/msg/js/en.js";
+var messages = {
+    "ru": "blockly/msg/js/ru.js",
+    "en": "blockly/msg/js/en.js"
+};
 var jquery = "plugins/jquery-1.11.2.min.js";
 var createJs = "plugins/createjs.min.js";
 var jquery_maphighlight = "plugins/jquery.maphilight.min.js";
@@ -41,11 +43,11 @@ var defaultLang = "ru";
 router.get('/', function (req, res) {
 
     var lang = req.query.lang;
-    if(!lang){
+    if (!lang) {
         lang = defaultLang;
     }
 
-    var blocklyLangFile = "blockly/msg/js/"+lang+".js";
+    var blocklyLangFile = "blockly/msg/js/" + lang + ".js";
 
     res.render('workflow',
         {
@@ -60,7 +62,7 @@ router.get('/', function (req, res) {
                 jsCompressedJs,
                 blocksJs,
                 blocklyLangFile,
-                messagesRUS,
+                messages[lang],
                 stageInit,
                 blocklyInit,
                 roboEngineBlocks,
@@ -93,9 +95,8 @@ function updateDb() {
 router.get("/addHash", function (req, res) {
     updateDb();
     var hash = req.query.blocklyHash;
-    db.hashes[db.hashes.length] = {
-        n: req.query.hashName,
-        h: hash
+    db.hashes[hash] = {
+        n: req.query.hashName
     };
     my_database.saveDb(res);
 });
@@ -107,6 +108,13 @@ router.get("/getAllHashes", function (req, res) {
         {
             hashes: db.hashes
         });
+});
+
+router.get("/deleteHash", function (req, res) {
+    updateDb();
+    var hash = req.query.blocklyHash;
+    delete db.hashes[hash];
+    my_database.saveDb(res);
 });
 
 

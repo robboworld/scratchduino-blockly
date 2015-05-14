@@ -4,7 +4,10 @@ table.table.table-hover
             th Название
             th Хеш
     tbody
-        each row in hashes
-            tr(onclick="loadSketch(\'"+row.n+"\', \'"+row.h+"\');")
-                td.name= row.n
-                td.hash= row.h
+        each val, index  in hashes
+            tr(onclick="loadSketch(\'"+val.n+"\', \'"+index+"\');")
+                td.name= val.n
+                td.hash= index
+                td
+                    button.btn.btn-block.btn-default.deleteSketchButton
+                        span.glyphicon.glyphicon-trash(aria-hidden="true")

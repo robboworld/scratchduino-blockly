@@ -200,6 +200,24 @@ function init() {
             success: function (html) {
                 var modal = $("#loadSketchModal");
                 modal.find(".modal-body").html(html);
+                var deleteButtons = $(".deleteSketchButton");
+                deleteButtons.each(function () {
+                    $(this).click(function (e) {
+                        e.stopPropagation();
+                        var row = $(this).parents("tr");
+                        var hash = row.children(".hash").text();
+                        if (confirm("Вы уверены, что хотите удалить " + hash + " ?")) {
+                            $.ajax({
+                                type: 'GET',
+                                url: '/deleteHash',
+                                data: {blocklyHash: hash},
+                                success: function () {
+                                    row.remove();
+                                }
+                            });
+                        }
+                    });
+                });
                 modal.modal("toggle")
             },
             error: function () {
