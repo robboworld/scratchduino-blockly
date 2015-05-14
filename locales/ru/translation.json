@@ -16,5 +16,65 @@
   },
   "savedSketches": {
     "title": "Сохранённые скетчи"
+  },
+  "blockly": {
+    "toolbox": {
+      "variables": {"title": "Переменные"},
+      "controls": {"title": "Контроль"},
+      "sensors": {
+        "title": "Сенсоры",
+        "sensor_value": {
+          "sensor_value": "значение сенсора"
+        },
+        "button_pushed": {
+          "button": "кнопка",
+          "is_pressed": "нажата"
+        }
+      },
+      "operators": {
+        "title": "Операторы",
+        "when_key_pressed": {
+          "when_key": "когда клавиша",
+          "arrow_up": "стрелка вверх",
+          "arrow_down": "стрелка вниз",
+          "arrow_left": "стрелка влево",
+          "arrow_right": "стрелка вправо",
+          "space": "пробел",
+          "enter": "enter",
+          "is_pressed": "нажата"
+        },
+        "while_program_running": {
+          "while_program_is_running": "пока программа запущена"
+        }
+      },
+      "engine": {
+        "title": "Мотор",
+        "engine_turn_on_sec": {
+          "engine_on": "мотор вкл",
+          "by": "на",
+          "sec": "сек"
+        },
+        "engine_turn_on": {
+          "engine_on": "мотор вкл"
+        },
+        "engine_turn_off": {
+          "engine_off": "мотор выкл"
+        },
+        "engine_direction": {
+          "engine_to": "мотор",
+          "up": "вперед",
+          "down": "назад",
+          "left": "влево",
+          "right": "вправо"
+        },
+        "engine_angle": {
+          "turn": "повернуть",
+          "to_left": "влево",
+          "to_right": "вправо",
+          "by": "на",
+          "degrees": "градусов"
+        }
+      }
+    }
   }
 }

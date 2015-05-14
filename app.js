@@ -28,6 +28,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use("/locales",express.static(path.join(__dirname, 'locales')));
 
 app.use(i18n.handle);
 
@@ -46,6 +47,7 @@ i18n.registerAppHelper(app);
 
 app.use('/', routes);
 app.use("/scratch", scratch);
+i18n.serveClientScript(app);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

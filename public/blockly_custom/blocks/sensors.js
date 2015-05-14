@@ -5,10 +5,12 @@
 
 Blockly.Blocks['sensor_value'] = {
     init: function() {
-        this.setHelpUrl('http://www.example.com/');
+        function t(arg) {
+            return i18n.t("blockly.toolbox.sensors.sensor_value." + arg);
+        }
         this.setColour(20);
         this.appendDummyInput()
-            .appendField("значение сенсора")
+            .appendField(t("sensor_value"))
             .appendField(new Blockly.FieldDropdown([
                 ["1", "1"],
                 ["2", "2"],
@@ -18,16 +20,17 @@ Blockly.Blocks['sensor_value'] = {
             ]), "sensor_number");
         this.setInputsInline(true);
         this.setOutput(true, "Number");
-        this.setTooltip('');
     }
 };
 
 Blockly.Blocks['button_pushed'] = {
     init: function() {
-        this.setHelpUrl('http://www.example.com/');
+        function t(arg) {
+            return i18n.t("blockly.toolbox.sensors.button_pushed." + arg);
+        }
         this.setColour(20);
         this.appendDummyInput()
-            .appendField("кнопка")
+            .appendField(t("button"))
             .appendField(new Blockly.FieldDropdown([
                 ["1", "1"],
                 ["2", "2"],
@@ -35,9 +38,8 @@ Blockly.Blocks['button_pushed'] = {
                 ["4", "4"],
                 ["5", "5"]
             ]), "sensor_number")
-            .appendField("нажата");
+            .appendField(t("is_pressed"));
         this.setInputsInline(true);
         this.setOutput(true, "Boolean");
-        this.setTooltip('');
     }
 };

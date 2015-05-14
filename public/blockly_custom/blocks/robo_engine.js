@@ -2,82 +2,92 @@
  * Created by xottab on 3/26/15.
  */
 Blockly.Blocks['engine_turn_on_sec'] = {
-    init: function() {
-        this.setHelpUrl('http://www.example.com/');
+    init: function () {
+        function t(arg) {
+            return i18n.t("blockly.toolbox.engine.engine_turn_on_sec." + arg);
+        }
+
         this.setColour(210);
         this.appendDummyInput()
-            .appendField("мотор вкл");
+            .appendField(t("engine_on"));
         this.appendValueInput("time")
             .setCheck("Number")
             .setAlign(Blockly.ALIGN_CENTRE)
-            .appendField("на");
+            .appendField(t("by"));
         this.appendDummyInput()
-            .appendField("сек");
+            .appendField(t("sec"));
         this.setInputsInline(true);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
-        this.setTooltip('');
     }
 };
 
 Blockly.Blocks['engine_turn_on'] = {
-    init: function() {
-        this.setHelpUrl('http://www.example.com/');
+    init: function () {
+        function t(arg) {
+            return i18n.t("blockly.toolbox.engine.engine_turn_on." + arg);
+        }
+
         this.setColour(210);
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_CENTRE)
-            .appendField("мотор вкл");
+            .appendField(t("engine_on"));
         this.setInputsInline(true);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
-        this.setTooltip('');
     }
 };
 
 Blockly.Blocks['engine_turn_off'] = {
-    init: function() {
-        this.setHelpUrl('http://www.example.com/');
+    init: function () {
+        function t(arg) {
+            return i18n.t("blockly.toolbox.engine.engine_turn_off." + arg);
+        }
+
         this.setColour(210);
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_CENTRE)
-            .appendField("мотор выкл");
+            .appendField(t("engine_off"));
         this.setInputsInline(true);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
-        this.setTooltip('');
     }
 };
 
 Blockly.Blocks['engine_direction'] = {
-    init: function() {
-        this.setHelpUrl('http://www.example.com/');
+    init: function () {
+        function t(arg) {
+            return i18n.t("blockly.toolbox.engine.engine_direction." + arg);
+        }
+
         this.setColour(210);
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_CENTRE)
-            .appendField("мотор в");
+            .appendField(t("engine_to"));
         this.appendDummyInput()
-            .appendField(new Blockly.FieldDropdown([["вперёд", "4"],["назад", "1"],["влево", "2"], ["вправо", "3"]]), "direction");
+            .appendField(new Blockly.FieldDropdown([[t("up"), "4"], [t("down"), "1"], [t("left"), "2"], [t("right"), "3"]]), "direction");
         this.setInputsInline(true);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
-        this.setTooltip('');
     }
 };
 
 Blockly.Blocks['engine_angle'] = {
-    init: function() {
-        this.setHelpUrl('http://www.example.com/');
+    init: function () {
+        function t(arg) {
+            return i18n.t("blockly.toolbox.engine.engine_angle." + arg);
+        }
+
         this.setColour(210);
         this.appendDummyInput()
             .setAlign(Blockly.ALIGN_CENTRE)
-            .appendField("повернуть")
-            .appendField(new Blockly.FieldDropdown([["влево", "2"], ["вправо", "3"]]), "direction")
-            .appendField("на")
+            .appendField(t("turn"))
+            .appendField(new Blockly.FieldDropdown([[t("to_left"), "2"], [t("to_right"), "3"]]), "direction")
+            .appendField(t("by"))
             .appendField(new Blockly.FieldAngle("0"), "angle")
-            .appendField("градусов");
+            .appendField(t("degrees"));
         this.setInputsInline(true);
         this.setPreviousStatement(true);
         this.setNextStatement(true);
-        this.setTooltip('');
     }
 };

@@ -33,6 +33,8 @@ var modalPopover = "bootstrap/js/bootstrap-modal-popover.js";
 var configReadyJs = "scripts/configuration_ready.js";
 var configStylesCss = "css/configuration_styles.css";
 
+var i18nLocal = "/i18next/i18next.js";
+
 var langs = ["ru", "en"];
 var defaultLang = "ru";
 
@@ -43,17 +45,21 @@ router.get('/', function (req, res) {
         lang = defaultLang;
     }
 
+    var blocklyLangFile = "blockly/msg/js/"+lang+".js";
+
     res.render('workflow',
         {
             title: 'ScratchDuino - Blockly',
             jsFiles: [
                 jquery,
+                i18nLocal,
                 jquery_maphighlight,
                 bootstrapJs,
                 blocklyJs,
                 createJs,
                 jsCompressedJs,
                 blocksJs,
+                blocklyLangFile,
                 messagesRUS,
                 stageInit,
                 blocklyInit,

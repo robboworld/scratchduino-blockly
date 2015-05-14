@@ -16,5 +16,65 @@
   },
   "savedSketches": {
     "title": "Saved sketches"
+  },
+  "blockly": {
+    "toolbox": {
+      "variables": {"title": "Variables"},
+      "controls": {"title": "Control"},
+      "sensors": {
+        "title": "Sensors",
+        "sensor_value":{
+          "sensor_value": "value of sensor №"
+        },
+        "button_pushed": {
+          "button": "button",
+          "is_pressed":"is pressed"
+        }
+      },
+      "operators": {
+        "title": "Operators",
+        "when_key_pressed": {
+          "when_key": "When",
+          "arrow_up": "up arrow",
+          "arrow_down": "down arrow",
+          "arrow_left": "left arrow",
+          "arrow_right": "right arrow",
+          "space": "space",
+          "enter": "enter",
+          "is_pressed": "is pressed"
+        },
+        "while_program_running": {
+          "while_program_is_running": "while program is running"
+        }
+      },
+      "engine": {
+        "title": "Engine",
+        "engine_turn_on_sec": {
+          "engine_on": "engine on",
+          "by": "by",
+          "sec": "sec"
+        },
+        "engine_turn_on": {
+          "engine_on": "engine on"
+        },
+        "engine_turn_off": {
+          "engine_off": "engine off"
+        },
+        "engine_direction": {
+          "engine_to":"launch engine ",
+          "up":"forward",
+          "down":"backward",
+          "left":"to the left",
+          "right":"to the right"
+        },
+        "engine_angle": {
+          "turn": "turn",
+          "to_left":"left",
+          "to_right":"right",
+          "by":"by",
+          "degrees":"degrees"
+        }
+      }
+    }
   }
 }

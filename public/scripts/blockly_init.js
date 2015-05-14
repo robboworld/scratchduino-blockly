@@ -168,64 +168,90 @@ function to_configuration_page() {
     document.location.href = "/configuration";
 }
 
-$(document).ready(
-    function () {
+var langs = ["ru", "en"];
+var defaultLang = "ru";
 
-        var blocklyCodeManager = new BlocklyCodeManager();
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
 
-        Blockly.inject(document.getElementById('blocklyDiv'),
-            {toolbox: document.getElementById('toolbox')})
-        window.setTimeout(BlocklyStorage.restoreBlocks, 0);
+function init() {
+    var blocklyCodeManager = new BlocklyCodeManager();
 
-        function myUpdateFunction() {
-            blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode());
-            document.getElementById('jsOutput').value = blocklyCodeManager.getCode();
-        }
-        Blockly.addChangeListener(myUpdateFunction);
+    Blockly.inject(document.getElementById('blocklyDiv'),
+        {toolbox: document.getElementById('toolbox')})
+    window.setTimeout(BlocklyStorage.restoreBlocks, 0);
 
-        $("#saveProgram").click(backup_blocks);
-        $("#loadProgram").click(function (e) {
-            $.ajax({
-                type: 'GET',
-                url: '/getAllHashes',
-                success: function (html) {
-                    var modal = $("#loadSketchModal");
-                    modal.find(".modal-body").html(html);
-                    modal.modal("toggle")
-                },
-                error: function () {
-                    alert("Sorry, cannot load list of sketches");
-                }
-            });
+    function myUpdateFunction() {
+        blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode());
+        document.getElementById('jsOutput').value = blocklyCodeManager.getCode();
+    }
 
-        });
+    Blockly.addChangeListener(myUpdateFunction);
 
-        $("#configureRobot").click(to_configuration_page);
-
-        $("#launchCodeButton").click(function () {
-
-            if (blocklyCodeManager.runCode(BlocklyCodeManager.RUN_MODES.SPRITE_PRIMARY)) {
-                $(this).removeClass("btn-primary");
-                $(this).addClass("btn-success");
-                $(this).blur();
+    $("#saveProgram").click(backup_blocks);
+    $("#loadProgram").click(function (e) {
+        $.ajax({
+            type: 'GET',
+            url: '/getAllHashes',
+            success: function (html) {
+                var modal = $("#loadSketchModal");
+                modal.find(".modal-body").html(html);
+                modal.modal("toggle")
+            },
+            error: function () {
+                alert("Sorry, cannot load list of sketches");
             }
         });
 
-        $("#stopExecutionButton").click(function () {
+    });
 
-            window.clearInterval(robotSpriteMovingInterval);
+    $("#configureRobot").click(to_configuration_page);
 
-            blocklyCodeManager.stopExecution();
+    $("#launchCodeButton").click(function () {
 
-            $("#launchCodeButton").removeClass("btn-success");
-            $("#launchCodeButton").addClass("btn-primary");
-            $(".sensors").find("input[type = text]").val("");
+        if (blocklyCodeManager.runCode(BlocklyCodeManager.RUN_MODES.SPRITE_PRIMARY)) {
+            $(this).removeClass("btn-primary");
+            $(this).addClass("btn-success");
+            $(this).blur();
+        }
+    });
+
+    $("#stopExecutionButton").click(function () {
+
+        window.clearInterval(robotSpriteMovingInterval);
+
+        blocklyCodeManager.stopExecution();
+
+        $("#launchCodeButton").removeClass("btn-success");
+        $("#launchCodeButton").addClass("btn-primary");
+        $(".sensors").find("input[type = text]").val("");
+    });
+
+    $("#selectPortButton").click(requestPorts);
+
+}
+
+$(document).ready(
+    function () {
+        var lang = getParameterByName("lang");
+        if (!lang) {
+            lang = defaultLang;
+        }
+        i18n.init({
+            lng: lang,
+            resGetPath: "locales/" + lang + "/translation.json"
+        }, function () {
+            $("#toolbox").children("category").each(function () {
+                $(this).attr("name", i18n.t($(this).attr("name")));
+            });
+            init();
         });
 
-        $("#selectPortButton").click(requestPorts);
-
     }
-
 );
 
 function blocklyLoaded(blockly) {
