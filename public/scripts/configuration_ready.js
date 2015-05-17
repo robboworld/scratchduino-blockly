@@ -125,6 +125,14 @@ $(document).ready(
             });
         });
 
+       /* $('.myTab').each(function () {
+            $(this).click(function (e) {
+                e.preventDefault();
+                $(this).tab('show')
+            })
+        });*/
+
+
         // TODO: Add image map window resizing processing (see: https://github.com/stowball/jQuery-rwdImageMaps)
         // TODO: Try to process image resizing with map
     }

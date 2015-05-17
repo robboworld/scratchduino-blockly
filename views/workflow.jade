@@ -28,62 +28,68 @@ block content
                                         span #{language}
 
     div.container-fluid
-        div.row
-            div.col-lg-8
-                div.panel.panel-default
-                    div.panel-heading= t("main.program")
-                    div.panel-body
-                        div#blocklyDiv(style="height: 600px")
-                        include toolbox.html
-                div.panel.panel-default
-                    div.panel-heading= t("main.scene")
-                    div.panel-body
-                        div#sceneDiv(style="height: 600px")
-                            canvas#stageCanvas(style="height:100%; width:100%")
+        .row
+            div(role='tabpanel')
+                ul.nav.nav-tabs(role='tablist')
+                    li.active(role='presentation')
+                        a(href='#program', aria-controls='program', role='tab', data-toggle='tab')= t("main.program")
+                    li(role='presentation')
+                        a(href='#output', aria-controls='output', role='tab', data-toggle='tab')= t("main.output")
+                .tab-content
+                    #program.tab-pane.active(role='tabpanel')
+                        div.container-fluid
+                            .col-lg-7
+                                div.panel.panel-default
+                                    div.panel-heading= t("main.program")
+                                    div.panel-body
+                                        div#blocklyDiv(style="height: 600px")
+                                        include toolbox.html
+                            .col-lg-5
+                                div.panel.panel-default(style="margin-bottom: 5px")
+                                    div.panel-heading= t("main.sensors")
+                                    div.panel-body#sensorsPanel
+                                        .row.no-gutter
+                                            .col-lg-4
+                                                label.col-sm-5.control-label(for="sensor1") Сенсор 1
+                                                div.col-sm-7
+                                                    input#sensor1.form-control(type="text")
+                                            .col-lg-4
+                                                label.col-sm-5.control-label(for="sensor2") Сенсор 2
+                                                div.col-sm-7
+                                                    input#sensor2.form-control(type="text")
+                                            .col-lg-4
+                                                label.col-sm-5.control-label(for="sensor3") Сенсор 3
+                                                div.col-sm-7
+                                                    input#sensor3.form-control(type="text")
+                                        .row.no-gutter
+                                            .col-lg-6
+                                                label.col-sm-4.control-label(for="sensor4") Сенсор 4
+                                                div.col-sm-8
+                                                    input#sensor4.form-control(type="text")
+                                            .col-lg-6
+                                                label.col-sm-4.control-label(for="sensor5") Сенсор 5
+                                                div.col-sm-8
+                                                    input#sensor5.form-control(type="text")
+                                div.panel.panel-default(style="margin-bottom: 5px")
+                                    div.panel-body(style="padding: 5px")
+                                        button#launchCodeButton.btn.btn-primary(style="margin-right: 10px")= t("main.run")
+                                        button#stopExecutionButton.btn.btn-warning(style="margin-right: 10px")= t("main.stop_execution")
+                                        div.btn-group
+                                            button#selectPortButton.btn.dropdown-toggle(data-toggle='dropdown')= t("main.portNotChosen")
+                                            ul#portsList.dropdown-menu
+                                div.panel.panel-default
+                                    div.panel-heading= t("main.scene")
+                                    div.panel-body
+                                        div#sceneDiv(style="height: 400px")
+                                            canvas#stageCanvas(style="height:100%; width:100%")
+                    #output.tab-pane(role='tabpanel')
+                        div.container-fluid
+                            .col-lg-12
+                                div.panel.panel-default
+                                    div.panel-heading= t("main.output")
+                                    div.panel-body(style="height: 300px")
+                                        textarea#jsOutput(style="width: 100%; height: 100%;")
 
-            //div.col-lg-4
-                div.panel.panel-default
-                    div.panel-heading Программа
-                    div.panel-body
-                        h1 column2
-            div.col-lg-4
-                div.row
-                    div.panel.panel-default
-                        div.panel-heading= t("main.output")
-                        div.panel-body(style="height: 300px")
-                            textarea#jsOutput(style="width: 100%; height: 100%;")
-                div.row(style="margin-bottom: 15px")
-                    button#launchCodeButton.btn-lg.btn-primary(style="margin-right: 10px")= t("main.run")
-                    button#stopExecutionButton.btn-lg.btn-warning= t("main.stop_execution")
-                    div.btn-group
-                        button#selectPortButton.btn-sm.dropdown-toggle(data-toggle='dropdown')= t("main.portNotChosen")
-                        ul#portsList.dropdown-menu
-                div.row
-                    div.panel.panel-default
-                        div.panel-heading= t("main.sensors")
-                        div.panel-body
-                            h1= t("main.sensorValues")
-                            form.form-horizontal.sensorsForm
-                                div.form-group
-                                    label.col-sm-4.control-label(for="sensor1") Сенсор 1
-                                    div.col-sm-8
-                                        input#sensor1.form-control(type="text")
-                                div.form-group
-                                    label.col-sm-4.control-label(for="sensor2") Сенсор 2
-                                    div.col-sm-8
-                                        input#sensor2.form-control(type="text")
-                                div.form-group
-                                    label.col-sm-4.control-label(for="sensor3") Сенсор 3
-                                    div.col-sm-8
-                                        input#sensor3.form-control(type="text")
-                                div.form-group
-                                    label.col-sm-4.control-label(for="sensor4") Сенсор 4
-                                    div.col-sm-8
-                                        input#sensor4.form-control(type="text")
-                                div.form-group
-                                    label.col-sm-4.control-label(for="sensor5") Сенсор 5
-                                    div.col-sm-8
-                                        input#sensor5.form-control(type="text")
 
     div#settingsModal.modal.fade(role='dialog', aria-labelledby='settingsModalLabel', aria-hidden='true')
         div.modal-dialog.modal-lg

@@ -27,3 +27,27 @@
     height: 20px;
     width: 160px;
 }
+
+#sensorsPanel {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#sensorsPanel h1:first-child{
+    margin-top: 0;
+}
+
+#sensorsPanel .row.no-gutter {
+    margin-bottom: 5px;
+    margin-left:2px;
+    margin-right:2px;
+}
+#sensorsPanel .row.no-gutter :not(:last-child) {
+    margin-bottom: 10px;
+}
+
+#sensorsPanel .row.no-gutter [class*='col-']:not(:first-child),
+#sensorsPanel .row.no-gutter [class*='col-']:not(:last-child) {
+    padding-right: 2px;
+    padding-left: 1px;
+}
