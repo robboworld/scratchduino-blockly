@@ -38,12 +38,13 @@
 }
 
 #sensorsPanel .row.no-gutter {
+    margin-top: 5px;
     margin-bottom: 5px;
     margin-left:2px;
     margin-right:2px;
 }
 #sensorsPanel .row.no-gutter :not(:last-child) {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 #sensorsPanel .row.no-gutter [class*='col-']:not(:first-child),
