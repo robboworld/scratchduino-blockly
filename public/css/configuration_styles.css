@@ -33,17 +33,18 @@
     padding-bottom: 0;
 }
 
-#sensorsPanel h1:first-child{
+#sensorsPanel h1:first-child {
     margin-top: 0;
 }
 
 #sensorsPanel .row.no-gutter {
     margin-top: 5px;
     margin-bottom: 5px;
-    margin-left:2px;
-    margin-right:2px;
+    margin-left: 2px;
+    margin-right: 2px;
 }
-#sensorsPanel .row.no-gutter :not(:last-child) {
+
+/*#sensorsPanel .row.no-gutter :not(:last-child) {
     margin-bottom: 5px;
 }
 
@@ -51,4 +52,15 @@
 #sensorsPanel .row.no-gutter [class*='col-']:not(:last-child) {
     padding-right: 2px;
     padding-left: 1px;
+}*/
+/*
+
+.sensorValue {
+    display: inline;
+    margin-right: 5px;
 }
+
+.sensorValue input {
+    width: 15%;
+}
+*/

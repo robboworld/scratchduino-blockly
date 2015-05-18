@@ -49,27 +49,22 @@ block content
                                     div.panel-heading= t("main.sensors")
                                     div.panel-body#sensorsPanel
                                         .row.no-gutter
-                                            .col-lg-4
-                                                label.col-sm-5.control-label(for="sensor1") Сенсор 1
-                                                div.col-sm-7
-                                                    input#sensor1.form-control(type="text")
-                                            .col-lg-4
-                                                label.col-sm-5.control-label(for="sensor2") Сенсор 2
-                                                div.col-sm-7
-                                                    input#sensor2.form-control(type="text")
-                                            .col-lg-4
-                                                label.col-sm-5.control-label(for="sensor3") Сенсор 3
-                                                div.col-sm-7
-                                                    input#sensor3.form-control(type="text")
-                                        .row.no-gutter
-                                            .col-lg-6
-                                                label.col-sm-4.control-label(for="sensor4") Сенсор 4
-                                                div.col-sm-8
-                                                    input#sensor4.form-control(type="text")
-                                            .col-lg-6
-                                                label.col-sm-4.control-label(for="sensor5") Сенсор 5
-                                                div.col-sm-8
-                                                    input#sensor5.form-control(type="text")
+                                            form.form-inline
+                                                .form-group(style="display:inline; margin-right:5px")
+                                                    label.control-label(for="sensor1") 1:
+                                                    input#sensor1.form-control(type="text", style="width:15%")
+                                                .form-group(style="display:inline; margin-right:5px")
+                                                    label.control-label(for="sensor2") 2:
+                                                    input#sensor2.form-control(type="text", style="width:15%")
+                                                .form-group(style="display:inline; margin-right:5px")
+                                                    label.control-label(for="sensor3") 3:
+                                                    input#sensor3.form-control(type="text", style="width:15%")
+                                                .form-group(style="display:inline; margin-right:5px")
+                                                    label.control-label(for="sensor4") 4:
+                                                    input#sensor4.form-control(type="text", style="width:15%")
+                                                .form-group(style="display:inline; margin-right:5px")
+                                                    label.control-label(for="sensor5") 5:
+                                                    input#sensor5.form-control(type="text", style="width:15%")
                                 div.panel.panel-default(style="margin-bottom: 5px")
                                     div.panel-body(style="padding: 5px")
                                         button#launchCodeButton.btn.btn-primary(style="margin-right: 10px")= t("main.run")
