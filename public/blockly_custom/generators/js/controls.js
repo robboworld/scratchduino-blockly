@@ -17,8 +17,9 @@ Blockly.JavaScript['while_program_running'] = function (block) {
 
     var action = Blockly.JavaScript.statementToCode(block, 'action');
 
-    var code = "global_blockly.main_program_intervalID = setInterval(function() {\n" +
+    var code =
+        "global_blockly.main_program_intervalID = setInterval(function() {\n" +
         "{0}\n".format(action) +
-    "}, global_blockly.MAIN_PROGRAM_INTERVAL);\n";
+        "}, global_blockly.MAIN_PROGRAM_INTERVAL);\n";
     return code;
 };

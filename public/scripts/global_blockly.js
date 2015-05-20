@@ -13,15 +13,14 @@ global_blockly.BUTTON_THRESHOLD = 1020;
 
 global_blockly.robot_accessible = false;    //Should be set before each running blockly program
 global_blockly.addedEvListeners = [];
-global_blockly.engine_stop_timeoutID = null;
 global_blockly.main_program_intervalID = null;
-global_blockly.direction = null;
-global_blockly.timeout = null;
-global_blockly.is_engine_ready = false;
 
 global_blockly.createNewKeyListener = function(keyCode, action_func) {
     var listenerFunc = new Function("event",
-        "if(event.keyCode == {0}) ({1})();\n".format(keyCode, action_func.toString()));
+        "if(event.keyCode == {0}) {".format(keyCode) +
+            "event.preventDefault();" +
+            "({0})();".format(action_func.toString()) +
+        "}\n");
     global_blockly.addedEvListeners.push({type: "keydown", fun: listenerFunc});
     document.addEventListener("keydown", listenerFunc);
 };
@@ -37,42 +36,18 @@ global_blockly.updateSensorsData = function() {
 
 global_blockly.setDirection = function(direction) {
 
-    global_blockly.direction = direction;
-
-    /*If motor_on block was triggered previously*/
-    if (global_blockly.is_engine_ready) {
-        global_blockly.engine(global_blockly.timeout);
-    }
+    if (global_blockly.robot_accessible) {
+        robot_interface.setDirection(direction)
+    };
+    sprite_interface.setDirection(direction);
 }
 
-global_blockly.engine = function(timeout) {
-
-    /*If direction was not set in program earlier*/
-    if (!global_blockly.direction) {
-        global_blockly.is_engine_ready = true; //Run robot as soon as direction will be set.
-        global_blockly.timeout = timeout; //Will be used when direction set.
-        return;
-    };
-
-    clearTimeout(global_blockly.engine_stop_timeoutID);
-    global_blockly.is_engine_ready = false;
+global_blockly.engine = function(mode, timeout) {
 
     if (global_blockly.robot_accessible) {
-        robot_interface.move(global_blockly.direction, timeout);
+        robot_interface.move(mode, timeout);
     };
-    sprite_interface.move(global_blockly.direction, timeout);
-
-};
-
-global_blockly.stopEngine = function() {
-
-    clearTimeout(global_blockly.engine_stop_timeoutID);
-    global_blockly.is_engine_ready = false;
-
-    if (global_blockly.robot_accessible) {
-        robot_interface.move(0);
-    };
-    sprite_interface.move(0);
+    sprite_interface.move(mode, timeout);
 
 };
 
@@ -81,9 +56,8 @@ global_blockly.engineAngle = function(direction, angle) {
     var HALF_ROUND_TIME = 4600; //milliseconds
     var timeout = HALF_ROUND_TIME * angle / 180;
 
-    global_blockly.direction = direction;
-    global_blockly.engine(timeout);
-    global_blockly.direction = null;
+    global_blockly.setDirection(direction);
+    global_blockly.engine("5", timeout);
 };
 
 global_blockly.getSensorValue = function(sensorNum) {

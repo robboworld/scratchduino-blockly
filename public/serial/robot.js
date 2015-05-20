@@ -196,35 +196,46 @@ var RIGHT = "\xC0";
 var LEFT = "\xA0";
 var STOP = "\x00";
 
-exports.move = function (direction, res) {
+var savedDirection = null;
+
+exports.setDirection = function (direction) {
+    switch (direction) {
+        case "1":
+            savedDirection = BACK;
+            break;
+        case "2":
+            savedDirection = LEFT;
+            break;
+        case "3":
+            savedDirection = RIGHT;
+            break;
+        case "4":
+            savedDirection = FORWARD;
+            break;
+        default:
+            break;
+    }
+}
+
+exports.engine = function (mode, res) {
 
     watchDisconnection(res);
 
     if (!checkPortAvailable(res)) return;
 
-    var directionByte;
-    switch (direction) {
-        case "0":
-            directionByte = STOP;
-            break;
-        case "1":
-            directionByte = BACK;
-            break;
-        case "2":
-            directionByte = LEFT;
-            break;
-        case "3":
-            directionByte = RIGHT;
-            break;
-        case "4":
-            directionByte = FORWARD;
-            break;
-        default:
-            break;
-    }
+    var byteToSend;
 
-    dataBuffer.lastByte = directionByte;
-    serialport.write(new Buffer(directionByte, "binary"), function (err) {
+    if (mode == "0" || savedDirection == null) {
+        byteToSend = STOP;
+    } else if (mode == "5") {
+        byteToSend = savedDirection;
+    } else {
+        sendErrorResponse(res, 500, "Direction is not set", "Cannot send data to device", ERR_USER);
+        return;
+    };
+
+    dataBuffer.lastByte = byteToSend;
+    serialport.write(new Buffer(byteToSend, "binary"), function (err) {
         // Logging
         serialport.drain(function (err) {
 
@@ -262,7 +273,10 @@ function watchDisconnection(res, timeout) {
     setTimeout(function() {
         if (!res.headersSent) {
             sendErrorResponse(res, 500, "Disconnection", "Device disconnected", ERR_SERIAL);
-            serialport.close();
+            // TODO: handle serialport not open
+            serialport.close(function () {
+                //
+            });
         }
     }, DISCONNECTION_TIMEOUT);
 
