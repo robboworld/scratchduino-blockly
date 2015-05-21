@@ -6,6 +6,8 @@ function robot_interface() {
 
 }
 
+robot_interface.stopTimeout = null;
+
 robot_interface.updateSensorsData = function() {
     $.ajax({
         type: 'GET',
@@ -42,28 +44,59 @@ robot_interface.updateSensorsData = function() {
     });
 };
 
-robot_interface.move = function(direction, timeout) {
-    $.ajax({
-        type: 'GET',
-        url: '/scratch/engine',
-        data: {direction: direction},
-        success: function() {
-            global_blockly.robot_accessible = true;
-        },
-        error: processEngineError
-    });
-    if (timeout) {
-        global_blockly.engine_stop_timeoutID = setTimeout(function () {
+robot_interface.setDirection = function(direction) {
+    switch (direction.toString()) {
+        case "1":
+        case "2":
+        case "3":
+        case "4":
             $.ajax({
                 type: 'GET',
-                url: '/scratch/engine',
-                data: {direction: '0'},
-                success: function() {
+                url: '/scratch/setDirection',
+                data: {direction: direction},
+                success: function () {
                     global_blockly.robot_accessible = true;
                 },
                 error: processEngineError
             });
-        }, timeout);
+            break;
+        default:
+            break;
+    };
+}
+
+robot_interface.move = function(mode, stopTimeout) {
+
+    clearInterval(robot_interface.stopTimeout);
+
+    switch (mode) {
+        case "0":
+        case "5":
+            $.ajax({
+                type: 'GET',
+                url: '/scratch/engine',
+                data: {mode: mode},
+                success: function () {
+                    global_blockly.robot_accessible = true;
+                },
+                error: processEngineError
+            });
+            if (stopTimeout) {
+                robot_interface.stopTimeout = setTimeout(function () {
+                    $.ajax({
+                        type: 'GET',
+                        url: '/scratch/engine',
+                        data: {mode: '0'},
+                        success: function () {
+                            global_blockly.robot_accessible = true;
+                        },
+                        error: processEngineError
+                    });
+                }, stopTimeout);
+            };
+            break;
+        default:
+            break;
     };
 };
 

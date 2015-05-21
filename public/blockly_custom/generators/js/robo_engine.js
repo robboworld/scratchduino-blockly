@@ -6,18 +6,18 @@ Blockly.JavaScript['engine_turn_on_sec'] = function(block) {
     var sec_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
     var time = sec_time*1000; // To milliseconds
 
-    var code = "global_blockly.engine({0});\n".format(time);
+    var code = "global_blockly.engine(\"5\", {0});\n".format(time);
     return code;
 };
 
 Blockly.JavaScript['engine_turn_on'] = function(block) {
     // TODO: Assemble JavaScript into code variable.
-    var code = "global_blockly.engine();\n";
+    var code = "global_blockly.engine(\"5\");\n";
     return code;
 };
 
 Blockly.JavaScript['engine_turn_off'] = function(block) {
-    var code = "global_blockly.stopEngine();\n";
+    var code = "global_blockly.engine(\"0\");\n";
     return code;
 };
 

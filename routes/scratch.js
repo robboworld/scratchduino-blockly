@@ -11,8 +11,15 @@ router.get("/", function(req, res) {
 });
 
 router.get("/engine", function(req, res) {
+    var mode = req.query.mode;
+    robot.engine(mode, res);
+});
+
+router.get("/setDirection", function(req, res) {
     var direction = req.query.direction;
-    robot.move(direction, res);
+    robot.setDirection(direction);
+
+    res.send("OK");
 });
 
 router.get("/data", function(req, res) {
