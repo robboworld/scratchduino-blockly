@@ -9,13 +9,16 @@
     "sensorValues": "Значения сенсоров",
     "output": "Вывод"
   },
+  "prompt":{
+    "sketch_name": "Пожалуйста, введите название для скетча"
+  },
   "settings": {
     "settings": "Настройки",
     "saveProgram": "Сохранить программу",
     "loadProgram": "Загрузить программу"
   },
   "savedSketches": {
-    "title": "Сохранённые скетчи"
+    "title": "Загрузить скетч"
   },
   "blockly": {
     "toolbox": {

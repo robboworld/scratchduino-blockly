@@ -9,13 +9,16 @@
     "sensorValues": "Sensors values",
     "output": "Output"
   },
+  "prompt":{
+    "sketch_name": "Please, write down the name of sketch"
+  },
   "settings": {
     "settings": "Settings",
     "saveProgram": "Save",
     "loadProgram": "Load"
   },
   "savedSketches": {
-    "title": "Saved sketches"
+    "title": "Load sketch"
   },
   "blockly": {
     "toolbox": {

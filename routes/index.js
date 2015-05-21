@@ -40,6 +40,15 @@ var i18nLocal = "/i18next/i18next.js";
 var langs = ["ru", "en"];
 var defaultLang = "ru";
 
+var fileInputCss = "plugins/fileinput/fileinput.min.css";
+var fileInputJs = "plugins/fileinput/fileinput.min.js";
+
+var fileSaverJs = "plugins/FileSaver.min.js";
+
+function getFileInputLang(lang) {
+    return "plugins/fileinput/fileinput_locale_" + lang + ".js";
+}
+
 router.get('/', function (req, res) {
 
     var lang = req.query.lang;
@@ -57,6 +66,9 @@ router.get('/', function (req, res) {
                 i18nLocal,
                 jquery_maphighlight,
                 bootstrapJs,
+                fileInputJs,
+                getFileInputLang(lang),
+                fileSaverJs,
                 blocklyJs,
                 createJs,
                 jsCompressedJs,
@@ -80,43 +92,11 @@ router.get('/', function (req, res) {
                 robotInterface,
                 spriteInterface
             ],
-            cssFiles: [bootstrapCss, configStylesCss, flagsCss],
+            cssFiles: [bootstrapCss, fileInputCss,configStylesCss, flagsCss],
             lang: lang,
             langs: langs
         });
 });
-
-var my_database = require('../public/scripts/scratchduino_db');
-var db;
-
-function updateDb() {
-    db = my_database.getDb();
-}
-router.get("/addHash", function (req, res) {
-    updateDb();
-    var hash = req.query.blocklyHash;
-    db.hashes[hash] = {
-        n: req.query.hashName
-    };
-    my_database.saveDb(res);
-});
-
-router.get("/getAllHashes", function (req, res) {
-    //res.send(JSON.stringify(db.hashes));
-    updateDb();
-    res.render('sketch_list',
-        {
-            hashes: db.hashes
-        });
-});
-
-router.get("/deleteHash", function (req, res) {
-    updateDb();
-    var hash = req.query.blocklyHash;
-    delete db.hashes[hash];
-    my_database.saveDb(res);
-});
-
 
 router.get('/demo', function (req, res) {
     res.render('demo',
@@ -129,31 +109,6 @@ router.get('/demo', function (req, res) {
             cssFiles: [bootstrapCss]
         });
 });
-
-router.get("/sensorSettings", function (req, res) {
-    updateDb();
-    //res.send(JSON.stringify(db.hashes));
-    var pos = req.query.pos;
-    var sensor = db.sensors[pos];
-    if (!sensor) sensor = {};
-    res.send(JSON.stringify({
-        position: pos,
-        sensor: sensor
-    }));
-});
-
-router.get("/allSensors", function (req, res) {
-    updateDb();
-    res.send(JSON.stringify(db.sensors));
-});
-
-router.get("/saveSensor", function (req, res) {
-    updateDb();
-    var pos = req.query.pos;
-    db.sensors[pos] = JSON.parse(req.query.sensor);
-    my_database.saveDb(res);
-});
-
 
 router.get('/sensors', function (req, res) {
     res.render('sensors_tuning');

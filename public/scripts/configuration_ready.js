@@ -4,7 +4,7 @@
 
 
 
-
+var sensorsStorageID = "OLOLO#UNIQUE_ID#SENSORS#aflfkl";
 
 function loadSensorData(pos) {
     $("#isActive").prop("checked", false);
@@ -17,34 +17,29 @@ function loadSensorData(pos) {
     btn.addClass("btn-primary");
     btn.html("Сохранить");
 
-    $.ajax({
-        type: "GET",
-        url: "/sensorSettings",
-        data: {
-            pos: pos//todo check if number already exists
-        },
-        success: function (data) {
-            var sensorData = JSON.parse(data).sensor;
-            if (sensorData) {
-                if (sensorData.active) {
-                    $("#isActive").prop("checked", true);
-                }
-                if (sensorData.number) {
-                    $("#selectedNumber").find("option[value=" + sensorData.number + "]").prop('selected', true);
-                }
-                if (sensorData.name) {
-                    $("#selectedName").val(sensorData.name);
-                }
-                if (sensorData.type) {
-                    $("#selectedType").find("option[value=" + sensorData.type + "]").prop('selected', true);
-                }
+    if (typeof(Storage) !== "undefined") {
+        var data = localStorage.getItem(sensorsStorageID);
+        var sensorData = JSON.parse(data)[pos];
+
+        if (sensorData) {
+            if (sensorData.active) {
+                $("#isActive").prop("checked", true);
             }
-            $("#positionDiv").html(pos);
-            $("#sensorEditCollapse").collapse('show');
-        },
-        error: function () {
+            if (sensorData.number) {
+                $("#selectedNumber").find("option[value=" + sensorData.number + "]").prop('selected', true);
+            }
+            if (sensorData.name) {
+                $("#selectedName").val(sensorData.name);
+            }
+            if (sensorData.type) {
+                $("#selectedType").find("option[value=" + sensorData.type + "]").prop('selected', true);
+            }
         }
-    });
+        $("#positionDiv").html(pos);
+        $("#sensorEditCollapse").collapse('show');
+    } else {
+        alert("Sorry, no local storage available");
+    }
 }
 
 $(document).ready(
@@ -104,35 +99,19 @@ $(document).ready(
                 name: $("#selectedName").val(),
                 type: $("#selectedType").val()
             };
-            $.ajax({
-                type: "GET",
-                url: "/saveSensor",
-                data: {
-                    pos: $("#positionDiv").html(),
-                    sensor: JSON.stringify(sens)
-                },
-                success: function (data) {
-                    btn.removeClass("btn-primary");
-                    btn.addClass("btn-success");
-                    btn.html("Сохранено!");
-                },
-                error: function () {
-                    btn.removeClass("btn-primary");
-                    btn.removeClass("btn-success");
-                    btn.addClass("btn-danger");
-                    btn.html("Ошибка :(");
-                }
-            });
+            if (typeof(Storage) !== "undefined") {
+                var data = localStorage.getItem(sensorsStorageID);
+                var sensors = JSON.parse(data);
+                if(!sensors) sensors = [];
+                sensors[$("#positionDiv").html()] = sens;
+                localStorage.setItem(sensorsStorageID,JSON.stringify(sensors));
+                btn.removeClass("btn-primary");
+                btn.addClass("btn-success");
+                btn.html("Сохранено!");
+            } else {
+                alert("Sorry, no local storage available");
+            }
         });
-
-       /* $('.myTab').each(function () {
-            $(this).click(function (e) {
-                e.preventDefault();
-                $(this).tab('show')
-            })
-        });*/
-
-
         // TODO: Add image map window resizing processing (see: https://github.com/stowball/jQuery-rwdImageMaps)
         // TODO: Try to process image resizing with map
     }

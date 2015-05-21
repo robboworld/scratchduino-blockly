@@ -48,19 +48,6 @@ function uuid() {
     });
 }
 
-
-function loadSketch(name, hash) {
-    if (typeof(Storage) !== "undefined") {
-        var xml = localStorage.getItem(hash);
-        var dom = Blockly.Xml.textToDom(xml);
-        Blockly.mainWorkspace.clear();
-        Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, dom);
-        $("#loadSketchModal").modal("hide");
-    } else {
-        alert("Sorry, no local storage available");
-    }
-}
-
 function requestPorts() {
     $("#portsList").empty();
 
@@ -85,7 +72,7 @@ function requestPorts() {
     li.appendChild(span);
     $("#portsList").append(li);
 
-};
+}
 
 function successPort(json) {
 
@@ -130,38 +117,18 @@ function successPort(json) {
                 }
             }
         );
-    };
-};
-
-function backup_blocks() {
-    var name = prompt("Введите название для скетча");
-    if (name) {
-        var id = uuid();
-        $.ajax({
-            type: 'GET',
-            url: '/addHash',
-            data: {
-                blocklyHash: id,
-                hashName: name
-            },
-            success: function (json) {
-                if (typeof(Storage) !== "undefined") {
-                    var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
-                    var txt = new XMLSerializer().serializeToString(xml);
-                    localStorage.setItem(id, Blockly.Xml.domToText(xml));
-                    //console.log("backuped");
-                } else {
-                    // Sorry! No web storage support..
-                }
-                alert("Success! Hash is: " + id);
-            },
-            error: function (e) {
-                alert("Fail :(");
-            }
-
-        });
     }
+}
 
+function download_sketch() {
+    var name = prompt(i18n.t("prompt.sketch_name"));
+    if (name) {
+        var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+        var blob = new Blob([new XMLSerializer().serializeToString(xml)], {
+            type: "text/xml;charset=utf-8;"
+        });
+        saveAs(blob, name + ".blocks");
+    }
 }
 
 function to_configuration_page() {
@@ -192,39 +159,10 @@ function init() {
 
     Blockly.addChangeListener(myUpdateFunction);
 
-    $("#saveProgram").click(backup_blocks);
+    $("#saveProgram").click(download_sketch);
     $("#loadProgram").click(function (e) {
-        $.ajax({
-            type: 'GET',
-            url: '/getAllHashes',
-            success: function (html) {
-                var modal = $("#loadSketchModal");
-                modal.find(".modal-body").html(html);
-                var deleteButtons = $(".deleteSketchButton");
-                deleteButtons.each(function () {
-                    $(this).click(function (e) {
-                        e.stopPropagation();
-                        var row = $(this).parents("tr");
-                        var hash = row.children(".hash").text();
-                        if (confirm("Вы уверены, что хотите удалить " + hash + " ?")) {
-                            $.ajax({
-                                type: 'GET',
-                                url: '/deleteHash',
-                                data: {blocklyHash: hash},
-                                success: function () {
-                                    row.remove();
-                                }
-                            });
-                        }
-                    });
-                });
-                modal.modal("toggle")
-            },
-            error: function () {
-                alert("Sorry, cannot load list of sketches");
-            }
-        });
-
+        var modal = $("#loadSketchModal");
+        modal.modal("toggle");
     });
 
     $("#configureRobot").click(to_configuration_page);
@@ -253,6 +191,8 @@ function init() {
 
 }
 
+var fileReader = new FileReader();
+
 $(document).ready(
     function () {
         var lang = getParameterByName("lang");
@@ -267,6 +207,24 @@ $(document).ready(
                 $(this).attr("name", i18n.t($(this).attr("name")));
             });
             init();
+        });
+
+        $("#loadSketchInput").fileinput({
+            language: lang,
+            showPreview: false,
+            allowedFileExtensions: ["blocks"]
+        });
+
+        $("#loadSketchInput").on("fileloaded", function (event, file, previewId, index, reader) {
+            fileReader.onload = function(e) {
+                var text = this.result;
+                $("#loadSketchInput").fileinput('clear');
+                var dom = Blockly.Xml.textToDom(text);
+                Blockly.mainWorkspace.clear();
+                Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, dom);
+                $("#loadSketchModal").modal("hide");
+            };
+            fileReader.readAsText(file, "UTF-8");
         });
 
     }
