@@ -38,3 +38,5 @@ junit*.properties
 
 #Custom directives
 node_modules
+installer
+!installer/install.nsi
