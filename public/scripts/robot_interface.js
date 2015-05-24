@@ -6,8 +6,6 @@ function robot_interface() {
 
 }
 
-robot_interface.stopTimeout = null;
-
 robot_interface.updateSensorsData = function() {
     $.ajax({
         type: 'GET',
@@ -65,9 +63,7 @@ robot_interface.setDirection = function(direction) {
     };
 }
 
-robot_interface.move = function(mode, stopTimeout) {
-
-    clearInterval(robot_interface.stopTimeout);
+robot_interface.move = function(mode) {
 
     switch (mode) {
         case "0":
@@ -81,19 +77,6 @@ robot_interface.move = function(mode, stopTimeout) {
                 },
                 error: processEngineError
             });
-            if (stopTimeout) {
-                robot_interface.stopTimeout = setTimeout(function () {
-                    $.ajax({
-                        type: 'GET',
-                        url: '/scratch/engine',
-                        data: {mode: '0'},
-                        success: function () {
-                            global_blockly.robot_accessible = true;
-                        },
-                        error: processEngineError
-                    });
-                }, stopTimeout);
-            };
             break;
         default:
             break;
@@ -105,12 +88,13 @@ function processEngineError(res) {
     var err = JSON.parse(res.responseText);
 
     if (err.tech == "Disconnection") {
-        alert(err.user);
+        //alert(err.user);
         global_blockly.robot_accessible = false;
         return;
     }
     if (err.tech == "Port is not open" || err.tech == "No serial port selected") {
         global_blockly.robot_accessible = false;
         return;
+
     }
 }

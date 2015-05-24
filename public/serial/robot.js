@@ -197,8 +197,9 @@ var LEFT = "\xA0";
 var STOP = "\x00";
 
 var savedDirection = null;
+var isEngineReady = false;
 
-exports.setDirection = function (direction) {
+exports.setDirection = function (direction, res) {
     switch (direction) {
         case "1":
             savedDirection = BACK;
@@ -213,7 +214,14 @@ exports.setDirection = function (direction) {
             savedDirection = FORWARD;
             break;
         default:
-            break;
+            sendErrorResponse(res, 500, "setDirection error", "wrong direction", ERR_USER);
+            return;
+    }
+
+    if (isEngineReady) {
+        exports.engine(res);
+    } else {
+        res.send("OK");
     }
 }
 
@@ -225,14 +233,20 @@ exports.engine = function (mode, res) {
 
     var byteToSend;
 
-    if (mode == "0" || savedDirection == null) {
+    if (mode == "0") {
         byteToSend = STOP;
-    } else if (mode == "5") {
+    } else if (mode == "5" && savedDirection != null) {
         byteToSend = savedDirection;
     } else {
-        sendErrorResponse(res, 500, "Direction is not set", "Cannot send data to device", ERR_USER);
+        if (mode == "0" || mode == "5") {
+            res.send("Direction is not set");
+            isEngineReady = true;
+        } else {
+            sendErrorResponse(res, 500, "Mode is invalid", "Incorrect mode", ERR_USER);
+        }
         return;
     };
+    isEngineReady = false;
 
     dataBuffer.lastByte = byteToSend;
     serialport.write(new Buffer(byteToSend, "binary"), function (err) {

@@ -21,6 +21,7 @@ function BlocklyCodeManager() {
 
     this.generateCode = function(workspace_code) {
         generated_code = BASIC_CODE + workspace_code;
+        generated_code = processCodeMacro(generated_code);
         return generated_code;
     };
 
@@ -31,7 +32,7 @@ function BlocklyCodeManager() {
 
     this.runCode = function(mode) {
         if(is_code_running) {
-            return /*return message*/;
+            this.stopExecution();
         };
 
         var return_val = false;
@@ -86,7 +87,10 @@ function BlocklyCodeManager() {
             return /*return message*/;
         };
 
-        clearInterval(global_blockly.main_program_intervalID);
+        //TODO: this code clears all timeouts been created during program execution, including already executed
+        while (global_blockly.main_program_timeoutIDs.length) {
+            clearInterval(global_blockly.main_program_timeoutIDs.pop());
+        };
 
         //TODO: close port if page is refreshed
         $.ajax({
@@ -106,7 +110,7 @@ function BlocklyCodeManager() {
     function evalBlockly(robot_accessible, mode) {
         global_blockly.robot_accessible = robot_accessible;
         is_code_running = true;
-        eval(generated_code);
+        window.eval(generated_code);
     };
 
 };

@@ -8,12 +8,22 @@ function global_blockly() {
 };
 
 global_blockly.SENSORS_REQUSET_TIMEOUT = 100;
-global_blockly.MAIN_PROGRAM_INTERVAL = 200;
+global_blockly.MAIN_PROGRAM_TIMEOUT = 200;
 global_blockly.BUTTON_THRESHOLD = 1020;
 
 global_blockly.robot_accessible = false;    //Should be set before each running blockly program
 global_blockly.addedEvListeners = [];
-global_blockly.main_program_intervalID = null;
+global_blockly.main_program_timeoutIDs = [];
+
+global_blockly.wholeProgramLoop = function(action_func) {
+    var timeoutID = setTimeout(function timeoutBody() {
+        action_func();
+        var timeout = setTimeout(timeoutBody, global_blockly.MAIN_PROGRAM_TIMEOUT);
+        global_blockly.main_program_timeoutIDs.push(timeout);
+    }, global_blockly.MAIN_PROGRAM_TIMEOUT);
+
+    global_blockly.main_program_timeoutIDs.push(timeoutID);
+}
 
 global_blockly.createNewKeyListener = function(keyCode, action_func) {
     var listenerFunc = new Function("event",

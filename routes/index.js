@@ -23,11 +23,11 @@ var sensorsBlocks = "blockly_custom/blocks/sensors.js";
 var roboEngineJsGen = "blockly_custom/generators/js/robo_engine.js";
 var controlsJsGen = "blockly_custom/generators/js/controls.js";
 var sensorsJsGen = "blockly_custom/generators/js/sensors.js";
-var jsInterpreter = "JS-Interpreter/acorn_interpreter.js";
 var blocklyCodeGen = "scripts/blockly_code_manager.js";
 var globalBlockly = "scripts/global_blockly.js";
 var robotInterface = "scripts/robot_interface.js";
 var spriteInterface = "scripts/sprite_interface.js";
+var codePreprocessor = "scripts/code_preprocessor.js"
 var flagsCss = "flags/css/flag-icon.min.css";
 
 var modalPopover = "bootstrap/js/bootstrap-modal-popover.js";
@@ -83,14 +83,14 @@ router.get('/', function (req, res) {
                 roboEngineJsGen,
                 controlsJsGen,
                 sensorsJsGen,
-                jsInterpreter,
                 storageJs,
                 configReadyJs,
                 modalPopover,
                 blocklyCodeGen,
                 globalBlockly,
                 robotInterface,
-                spriteInterface
+                spriteInterface,
+                codePreprocessor
             ],
             cssFiles: [bootstrapCss, fileInputCss,configStylesCss, flagsCss],
             lang: lang,

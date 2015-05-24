@@ -17,9 +17,7 @@ router.get("/engine", function(req, res) {
 
 router.get("/setDirection", function(req, res) {
     var direction = req.query.direction;
-    robot.setDirection(direction);
-
-    res.send("OK");
+    robot.setDirection(direction, res);
 });
 
 router.get("/data", function(req, res) {
