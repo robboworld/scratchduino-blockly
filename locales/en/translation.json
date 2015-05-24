@@ -9,13 +9,17 @@
     "sensorValues": "Sensors values",
     "output": "Output"
   },
+  "confirm":{
+    "saveCurrentProgram": "Do you want to save current program?"
+  },
   "prompt":{
     "sketch_name": "Please, write down the name of sketch"
   },
   "settings": {
     "settings": "Settings",
     "saveProgram": "Save",
-    "loadProgram": "Load"
+    "loadProgram": "Load",
+    "newProgram": "New"
   },
   "savedSketches": {
     "title": "Load sketch"

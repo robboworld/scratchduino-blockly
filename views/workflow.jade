@@ -9,12 +9,17 @@ block content
                 div.form-group
                     button#settings.btn-sm.btn-default(type="button",style="margin-right: 5px" data-toggle="modal" data-target="#settingsModal")= t("settings.settings")
                         span.glyphicon.glyphicon-wrench(aria-hidden="true",style="margin-left: 4px")
-                div.form-group
-                    button#saveProgram.btn-sm.btn-primary(type="button",style="margin-right: 5px")= t("settings.saveProgram")
-                        span.glyphicon.glyphicon-download(aria-hidden="true",style="margin-left: 4px")
-                div.form-group
-                    button#loadProgram.btn-sm.btn-default(type="button",style="margin-right: 5px")= t("settings.loadProgram")
-                        span.glyphicon.glyphicon-upload(aria-hidden="true",style="margin-left: 4px")
+                div.form-group(style="margin-right: 5px")
+                    div.btn-group
+                        button.btn.btn-primary.dropdown-toggle(type='button', data-toggle='dropdown')= t("main.program")
+                            span.caret
+                        ul.dropdown-menu(role="menu")
+                            li
+                                a#saveProgram(href="#")= t("settings.saveProgram")
+                            li
+                                a#loadProgram(href="#")= t("settings.loadProgram")
+                            li
+                                a#newProgram(href="#")= t("settings.newProgram")
                 div.form-group
                     div.btn-group.btn-block
                         button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown')

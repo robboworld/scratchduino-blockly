@@ -12,10 +12,14 @@
   "prompt":{
     "sketch_name": "Пожалуйста, введите название для скетча"
   },
+  "confirm":{
+    "saveCurrentProgram": "Сохранить текущую программу?"
+  },
   "settings": {
     "settings": "Настройки",
-    "saveProgram": "Сохранить программу",
-    "loadProgram": "Загрузить программу"
+    "saveProgram": "Сохранить",
+    "loadProgram": "Загрузить",
+    "newProgram": "Новая"
   },
   "savedSketches": {
     "title": "Загрузить скетч"

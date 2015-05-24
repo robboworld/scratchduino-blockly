@@ -2,6 +2,7 @@
  * Created by xottab on 3/12/15.
  */
 
+var workspace;
 
 function initApi(interpreter, scope) {
     // Add an API function for the alert() block.
@@ -123,7 +124,7 @@ function successPort(json) {
 function download_sketch() {
     var name = prompt(i18n.t("prompt.sketch_name"));
     if (name) {
-        var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+        var xml = Blockly.Xml.workspaceToDom(workspace);
         var blob = new Blob([new XMLSerializer().serializeToString(xml)], {
             type: "text/xml;charset=utf-8;"
         });
@@ -148,17 +149,25 @@ function getParameterByName(name) {
 function init() {
     var blocklyCodeManager = new BlocklyCodeManager();
 
-    Blockly.inject(document.getElementById('blocklyDiv'),
+    workspace = Blockly.inject(document.getElementById('blocklyDiv'),
         {toolbox: document.getElementById('toolbox')})
 
     function myUpdateFunction() {
-        blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode());
+        blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode(workspace));
         document.getElementById('jsOutput').value = blocklyCodeManager.getCode();
     }
 
-    Blockly.addChangeListener(myUpdateFunction);
+    workspace.addChangeListener(myUpdateFunction);
 
     $("#saveProgram").click(download_sketch);
+    $("#newProgram").click(function (e) {
+        if(confirm(i18n.t("confirm.saveCurrentProgram"))){
+            download_sketch();
+            Blockly.mainWorkspace.clear();
+        }
+
+    });
+
     $("#loadProgram").click(function (e) {
         var modal = $("#loadSketchModal");
         modal.modal("toggle");
@@ -215,12 +224,12 @@ $(document).ready(
         });
 
         $("#loadSketchInput").on("fileloaded", function (event, file, previewId, index, reader) {
-            fileReader.onload = function(e) {
+            fileReader.onload = function (e) {
                 var text = this.result;
                 $("#loadSketchInput").fileinput('clear');
                 var dom = Blockly.Xml.textToDom(text);
-                Blockly.mainWorkspace.clear();
-                Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, dom);
+                workspace.clear();
+                Blockly.Xml.domToWorkspace(workspace, dom);
                 $("#loadSketchModal").modal("hide");
             };
             fileReader.readAsText(file, "UTF-8");
