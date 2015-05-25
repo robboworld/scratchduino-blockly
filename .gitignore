@@ -40,3 +40,4 @@ junit*.properties
 node_modules
 installer
 !installer/install.nsi
+!installer/run.bat
