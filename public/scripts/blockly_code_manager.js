@@ -103,14 +103,29 @@ function BlocklyCodeManager() {
             document.removeEventListener(elem.type, elem.fun);
         });
 
+        for (var key in global_blockly.keys_state) {
+            key = global_blockly.NOT_PRESSED;
+        };
+
         global_blockly.addedEvListeners = [];
         is_code_running = false;
     };
 
     function evalBlockly(robot_accessible, mode) {
+
+        global_blockly.addedEvListeners.push({type: "keyup", fun: keyUpListener});
+        document.addEventListener("keyup", keyUpListener);
+
         global_blockly.robot_accessible = robot_accessible;
         is_code_running = true;
+
         window.eval(generated_code);
+    };
+
+    function keyUpListener(event) {
+        if (global_blockly.keys_state[event.keyCode] != undefined) {
+            global_blockly.keys_state[event.keyCode] = global_blockly.PUSHED_UP;
+        }
     };
 
 };

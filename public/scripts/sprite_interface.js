@@ -51,25 +51,20 @@ sprite_interface.setDirection = function(direction) {
     }
 }
 
-sprite_interface.move = function (mode, stopTimeout) {
+sprite_interface.move = function (mode) {
 
     clearInterval(sprite_interface.moveInterval);
 
     switch (mode) {
+        case "0":
+            clearInterval(sprite_interface.moveInterval);
+            break;
         case "5":
-            /*Move sprite*/
             sprite_interface.moveInterval = window.setInterval(function (e) {
                 var rb = easelStage.getChildByName("robotSprite");
                 sprite_interface.moveFunc(rb);
                 easelStage.update();
             }, 100);
-
-            /*If timeout to stop defined, set it*/
-            if (stopTimeout) {
-                setTimeout(function () {
-                    clearInterval(sprite_interface.moveInterval);
-                }, stopTimeout);
-            };
             break;
         default:
             break;

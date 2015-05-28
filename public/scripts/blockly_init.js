@@ -192,7 +192,9 @@ function init() {
 
         $("#launchCodeButton").removeClass("btn-success");
         $("#launchCodeButton").addClass("btn-primary");
-        $(".sensors").find("input[type = text]").val("");
+        setTimeout(function() {
+            $(".sensors").find("input[type = text]").val("");
+        }, 2000);
     });
 
     $("#selectPortButton").click(requestPorts);
