@@ -43,4 +43,10 @@ router.get("/set_port", function(req, res) {
     res.send("OK");
 });
 
+router.get("/currentPort", function(req, res) {
+    var name = robot.currentPortName();
+
+    res.send(name);
+});
+
 module.exports = router;

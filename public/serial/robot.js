@@ -37,6 +37,10 @@ exports.findPorts = function(res) {
 
 };
 
+exports.currentPortName = function() {
+    return portName;
+};
+
 exports.setPort = function (name) {
     portName = name;
 

@@ -156,7 +156,7 @@ function init() {
     function myUpdateFunction() {
         //blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode(workspace));
         blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode());
-        document.getElementById('jsOutput').value = self.blocklyCodeManager.getCode();
+        document.getElementById('jsOutput').value = blocklyCodeManager.getCode();
     }
 
     //workspace.addChangeListener(myUpdateFunction);
@@ -199,7 +199,19 @@ function init() {
     });
 
     $("#selectPortButton").click(requestPorts);
-
+    // Set current port as name of selectPortButton
+    $.ajax({
+        type: 'GET',
+        url: '/scratch/currentPort',
+        success: function(name) {
+            console.log("name = " + name);
+            if (name != "") {
+                $("#selectPortButton").text(name);
+            } else {
+                $("#selectPortButton").text("Порт не выбран");
+            }
+        }
+    });
 }
 
 var fileReader = new FileReader();
