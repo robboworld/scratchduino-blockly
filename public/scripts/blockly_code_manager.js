@@ -13,6 +13,7 @@ BlocklyCodeManager.RUN_MODES = {
 
 function BlocklyCodeManager() {
 
+    var self = this;
     var BASIC_CODE =
         "global_blockly.updateSensorsData();\n" +
         "\n";
@@ -30,9 +31,13 @@ function BlocklyCodeManager() {
         return generated_code;
     };
 
+    //this.isCodeRunning = function() {
+    //    return is_code_running;
+    //};
+
     this.runCode = function(mode) {
         if(is_code_running) {
-            this.stopExecution();
+            self.stopExecution();
         };
 
         var return_val = false;
@@ -92,6 +97,7 @@ function BlocklyCodeManager() {
             clearInterval(global_blockly.main_program_timeoutIDs.pop());
         };
 
+        global_blockly.engine("0");
         //TODO: close port if page is refreshed
         $.ajax({
             type: 'GET',

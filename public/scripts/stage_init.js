@@ -22,7 +22,7 @@ $(document).ready(function (e) {
 
         function init() {
             robot = new createjs.Bitmap(image);
-            resizeImg(robot, 100);
+            resizeImg(robot, 60);
             robot.x = stageCanvas.width / 2;
             robot.y = stageCanvas.height / 2;
 

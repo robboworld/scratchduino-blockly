@@ -219,7 +219,7 @@ exports.setDirection = function (direction, res) {
     }
 
     if (isEngineReady) {
-        exports.engine(res);
+        exports.engine("5", res);
     } else {
         res.send("OK");
     }
@@ -268,10 +268,10 @@ exports.engine = function (mode, res) {
 
 exports.data = function(res) {
 
+    if (!checkPortAvailable(res)) return;
+
     watchDisconnection(res);
     response = res;
-
-    if (!checkPortAvailable(res)) return;
 
     serialport.write(new Buffer(dataBuffer.lastByte, "binary"), function (err) {
         // Logging
@@ -282,7 +282,7 @@ exports.data = function(res) {
 // TODO: Try to reconnect?
 var DISCONNECTION_TIMEOUT = 5000;
 
-function watchDisconnection(res, timeout) {
+function watchDisconnection(res) {
 
     setTimeout(function() {
         if (!res.headersSent) {

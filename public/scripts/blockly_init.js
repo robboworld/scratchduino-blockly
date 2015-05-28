@@ -147,6 +147,7 @@ function getParameterByName(name) {
 }
 
 function init() {
+
     var blocklyCodeManager = new BlocklyCodeManager();
 
     workspace = Blockly.inject(document.getElementById('blocklyDiv'),
@@ -155,7 +156,7 @@ function init() {
     function myUpdateFunction() {
         //blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode(workspace));
         blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode());
-        document.getElementById('jsOutput').value = blocklyCodeManager.getCode();
+        document.getElementById('jsOutput').value = self.blocklyCodeManager.getCode();
     }
 
     //workspace.addChangeListener(myUpdateFunction);
@@ -188,14 +189,13 @@ function init() {
 
     $("#stopExecutionButton").click(function () {
 
-        window.clearInterval(robotSpriteMovingInterval);
-
         blocklyCodeManager.stopExecution();
-
         $("#launchCodeButton").removeClass("btn-success").addClass("btn-primary");
+
+        //Clear sensors data a bit later to prevent last update
         setTimeout(function() {
             $(".sensors").find("input[type = text]").val("");
-        }, 2000);
+        }, 3000);
     });
 
     $("#selectPortButton").click(requestPorts);
