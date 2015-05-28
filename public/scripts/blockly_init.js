@@ -153,11 +153,13 @@ function init() {
         {toolbox: document.getElementById('toolbox')})
 
     function myUpdateFunction() {
-        blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode(workspace));
+        //blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode(workspace));
+        blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode());
         document.getElementById('jsOutput').value = blocklyCodeManager.getCode();
     }
 
-    workspace.addChangeListener(myUpdateFunction);
+    //workspace.addChangeListener(myUpdateFunction);
+    Blockly.addChangeListener(myUpdateFunction);
 
     $("#saveProgram").click(download_sketch);
     $("#newProgram").click(function (e) {
@@ -190,8 +192,7 @@ function init() {
 
         blocklyCodeManager.stopExecution();
 
-        $("#launchCodeButton").removeClass("btn-success");
-        $("#launchCodeButton").addClass("btn-primary");
+        $("#launchCodeButton").removeClass("btn-success").addClass("btn-primary");
         setTimeout(function() {
             $(".sensors").find("input[type = text]").val("");
         }, 2000);

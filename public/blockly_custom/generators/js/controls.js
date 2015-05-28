@@ -9,7 +9,8 @@ Blockly.JavaScript['when_key_pressed'] = function (block) {
     var key = block.getFieldValue('key');
     var action = Blockly.JavaScript.statementToCode(block, 'action');
 
-    var code = "global_blockly.createNewKeyListener({0}, function(){{1}});\n".format(key, action);
+    var actionWrapped = global_blockly.wrappers.key_listener_wrapper(key, action);
+    var code = "global_blockly.createNewKeyListener(function(event) {{0}});\n".format(actionWrapped);
     return code;
 };
 
@@ -17,7 +18,7 @@ Blockly.JavaScript['while_program_running'] = function (block) {
 
     var action = Blockly.JavaScript.statementToCode(block, 'action');
 
-    var code = "global_blockly.wholeProgramLoop(function(){{0}})".format(action);
+    var code = global_blockly.wrappers.while_programm_loop_wrapper(action);
     return code;
 };
 
@@ -28,9 +29,9 @@ Blockly.JavaScript['controls_whileUntil'] = function (block) {
     var argument0 = Blockly.JavaScript.valueToCode(block, 'BOOL',
             until ? Blockly.JavaScript.ORDER_LOGICAL_NOT :
                 Blockly.JavaScript.ORDER_NONE) || 'false';
-    var branch = Blockly.JavaScript.statementToCode(block, 'DO');
+    var action = Blockly.JavaScript.statementToCode(block, 'DO');
 
-    var code = "global_blockly.wholeProgramLoop(function(){{0}})".format(branch);
+    var code = global_blockly.wrappers.while_until_loop_wraper(action, argument0);
     return code;
 }
 
@@ -38,8 +39,8 @@ Blockly.JavaScript['controls_repeat_ext'] = function (block) {
 
     var repeats = Blockly.JavaScript.valueToCode(block, 'TIMES',
             Blockly.JavaScript.ORDER_ASSIGNMENT) || '0';
-    var branch = Blockly.JavaScript.statementToCode(block, 'DO');
+    var action = Blockly.JavaScript.statementToCode(block, 'DO');
 
-    var code = "global_blockly.repeatLoop({0}, function(){{1}})".format(repeats, branch);
+    var code = global_blockly.wrappers.repeat_loop_wraper(action, repeats);
     return code;
 }

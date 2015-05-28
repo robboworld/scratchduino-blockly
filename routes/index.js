@@ -26,11 +26,11 @@ var jsCompressedJs = "blockly/javascript_compressed.js";
 var blocksJs = "blockly/blocks_compressed.js";
 var storageJs = "blockly/appengine/storage.js";
 //BLOCKLY CODE GENERATOR MODULES
-var blocklyCodeGen = "scripts/blockly_code_modules/blockly_code_manager.js";
-var globalBlockly = "scripts/blockly_code_modules/global_blockly.js";
-var robotInterface = "scripts/blockly_code_modules/robot_interface.js";
-var spriteInterface = "scripts/blockly_code_modules/sprite_interface.js";
-var codePreprocessor = "scripts/blockly_code_modules/code_preprocessor.js";
+var blocklyCodeGen = "scripts/blockly_code_manager.js";
+var globalBlockly = "scripts/global_blockly.js";
+var robotInterface = "scripts/robot_interface.js";
+var spriteInterface = "scripts/sprite_interface.js";
+var codePreprocessor = "scripts/code_preprocessor.js";
 //I18N SCRIPTS
 var i18nLocal = "/i18next/i18next.js";
 var messages = {

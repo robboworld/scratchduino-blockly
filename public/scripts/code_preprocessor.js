@@ -7,48 +7,56 @@
  */
 
 var MACRO_TURN_ON_SEC_BLOCK = "#ENGINE_ON_SEC(";
-// More of predefined macros may be added
 
 function processCodeMacro(code) {
 
-    var turnOnBlocksIndices = [];
-
-    turnOnBlocksIndices = searchOccurrences(code, MACRO_TURN_ON_SEC_BLOCK);
-
-    var lastOccurrence;
-    var time;
-    var innerCode;
-    var outerCode;
-    var closingBracket;
-    var generatedCode;
-
-    while (turnOnBlocksIndices.length) {
-        lastOccurrence = turnOnBlocksIndices.pop();
-        closingBracket = code.indexOf(')', lastOccurrence + MACRO_TURN_ON_SEC_BLOCK.length);
-
-        time = code.substring(lastOccurrence + MACRO_TURN_ON_SEC_BLOCK.length, closingBracket);
-        innerCode = code.substring(closingBracket + 1);
-
-        var bracketIndex;
-        outerCode = "";
-        //Processing code may be defined in if statement or function
-        if (~(bracketIndex = indexOfClosingBracket(innerCode))) {
-            outerCode = innerCode.substring(bracketIndex);
-            innerCode = innerCode.slice(0, bracketIndex);
-        }
-
-        generatedCode =
-            "global_blockly.engine(\"5\");\n" +
-            "setTimeout(function(){\n" +
-            "\tglobal_blockly.engine(\"0\");\n" +
-            "\t{0}\n".format(innerCode) +
-            "}, {0});\n".format(time) + outerCode;
-
-        code = code.slice(0, lastOccurrence);
-        code = code.concat(generatedCode);
-    }
+    code = engineMacroProcessing(code);
 
     return code;
+
+    //TODO: improve search algorithm
+    //TODO: improve processing algorithm
+
+    function engineMacroProcessing(code) {
+        var turnOnBlocksIndices = [];
+
+        turnOnBlocksIndices = searchOccurrences(code, MACRO_TURN_ON_SEC_BLOCK);
+
+        var lastOccurrence;
+        var time;
+        var innerCode;
+        var outerCode;
+        var closingBracket;
+        var generatedCode;
+
+        while (turnOnBlocksIndices.length) {
+            lastOccurrence = turnOnBlocksIndices.pop();
+            closingBracket = code.indexOf(')', lastOccurrence + MACRO_TURN_ON_SEC_BLOCK.length);
+
+            time = code.substring(lastOccurrence + MACRO_TURN_ON_SEC_BLOCK.length, closingBracket);
+            innerCode = code.substring(closingBracket + 1);
+
+            var bracketIndex;
+            outerCode = "";
+            //Processing code may be defined in if statement or function
+            if (~(bracketIndex = indexOfClosingBracket(innerCode))) {
+                outerCode = innerCode.substring(bracketIndex);
+                innerCode = innerCode.slice(0, bracketIndex);
+            }
+
+            generatedCode =
+                "global_blockly.engine(\"5\");\n" +
+                "setTimeout(function(){\n" +
+                "\tglobal_blockly.engine(\"0\");\n" +
+                "\t{0}\n".format(innerCode) +
+                "}, {0});\n".format(time) + outerCode;
+
+            code = code.slice(0, lastOccurrence);
+            code = code.concat(generatedCode);
+        }
+
+        return code;
+    }
 
     function searchOccurrences(code, substr) {
         var indices = [];

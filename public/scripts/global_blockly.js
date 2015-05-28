@@ -2,7 +2,6 @@
  * Created by Pais on 08.05.2015.
  */
 
-
 function global_blockly() {
 
 };
@@ -28,47 +27,59 @@ global_blockly.keys_state = {
     13: global_blockly.NOT_PRESSED  //enter
 }
 
-global_blockly.wholeProgramLoop = function(action_func) {
-    var timeoutID = setTimeout(function timeoutBody() {
-        action_func();
-        var timeout = setTimeout(timeoutBody, global_blockly.MAIN_PROGRAM_TIMEOUT);
-        global_blockly.main_program_timeoutIDs.push(timeout);
-    }, global_blockly.MAIN_PROGRAM_TIMEOUT);
+global_blockly.wrappers = {
+    // Creates listener function body for key press processing.
+    // Checks whether this key is already pressed and cancel PUSHED state if action
+    // was performed. It allows user to keep key pressed without danger of uncontrolled
+    // flow of queries to server.
+    key_listener_wrapper: function (keyCode, action) {
 
-    global_blockly.main_program_timeoutIDs.push(timeoutID);
+        return "\nif (event.keyCode == {0}) {\n".format(keyCode) +
+            "\tevent.preventDefault();\n" +
+            "\tif (global_blockly.keys_state[event.keyCode] == global_blockly.PUSHED_DOWN) {\n" +
+            "\t\treturn;\n" +
+            "\t} else {\n" +
+            "\t\tglobal_blockly.keys_state[event.keyCode] = global_blockly.PUSHED_DOWN;\n" +
+            "\t\t" + action + "\n;" +
+            "\t\tglobal_blockly.keys_state[event.keyCode] = global_blockly.NOT_PRESSED;\n" +
+            "\t}" +
+            "}\n";
+    },
+
+    while_programm_loop_wrapper: function (action) {
+    return "function loop() {\n" +
+        "\t" + action + ";\n" +
+        "\tvar id = setTimeout(loop, 100);\n" +
+        "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
+        "};\n" +
+        "loop();\n";
+    },
+
+    while_until_loop_wraper: function (action, condition) {
+    return "function loop() {\n" +
+        "\t" + action + ";\n" +
+        "\tif ({0}) {\n".format(condition) +
+        "\t\tvar id = setTimeout(loop, 100);\n" +
+        "\t\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
+        "\t};\n" +
+        "};\n" +
+        "loop();\n";
+    },
+
+    repeat_loop_wraper: function (action, repeats) {
+    return "function loop(repeats) {\n" +
+        "\tif (repeats-- <= 0) {\n" +
+        "\t\treturn;" +
+        "\t};\n" +
+        "\t" + action + ";\n" +
+        "\tvar id = setTimeout(loop, 100, repeats);\n" +
+        "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
+        "};\n" +
+        "loop({0});\n".format(repeats);
+    }
 };
 
-global_blockly.repeatLoop = function(repeats, action_func) {
-    function timeoutBody(repeats) {
-        console.log("repeats = " + repeats);
-        if (repeats-- <= 0) {
-            return;
-        };
-        action_func();
-        var timeout = setTimeout(timeoutBody, global_blockly.MAIN_PROGRAM_TIMEOUT, repeats);
-        global_blockly.main_program_timeoutIDs.push(timeout);
-    };
-
-    var timeoutID = setTimeout(timeoutBody, global_blockly.MAIN_PROGRAM_TIMEOUT, repeats);
-
-    global_blockly.main_program_timeoutIDs.push(timeoutID);
-}
-
-global_blockly.whileUntilLoop = function(condition, action_func) {
-    if (condition) {}
-};
-
-global_blockly.createNewKeyListener = function(keyCode, action_func) {
-
-    var listenerFunc = new Function("event",
-        "if (event.keyCode == {0}) {".format(keyCode) +
-        "if (global_blockly.keys_state[event.keyCode] == global_blockly.PUSHED_DOWN) {" +
-        "\treturn;" +
-        "} else {" +
-        "\tevent.preventDefault();" +
-        "\tglobal_blockly.keys_state[event.keyCode] = global_blockly.PUSHED_DOWN;" +
-        "\t({0})();".format(action_func.toString()) +
-        "}}\n");
+global_blockly.createNewKeyListener = function(listenerFunc) {
 
     global_blockly.addedEvListeners.push({type: "keydown", fun: listenerFunc});
     document.addEventListener("keydown", listenerFunc);
