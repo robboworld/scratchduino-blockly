@@ -28,6 +28,10 @@ global_blockly.keys_state = {
 }
 
 global_blockly.wrappers = {
+
+    //Number of loops in program. Used in loop function names.
+    n: 0,
+
     // Creates listener function body for key press processing.
     // Checks whether this key is already pressed and cancel PUSHED state if action
     // was performed. It allows user to keep key pressed without danger of uncontrolled
@@ -47,35 +51,38 @@ global_blockly.wrappers = {
     },
 
     while_programm_loop_wrapper: function (action) {
-    return "function loop() {\n" +
-        "\t" + action + ";\n" +
-        "\tvar id = setTimeout(loop, 100);\n" +
-        "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
-        "};\n" +
-        "loop();\n";
+        var loopName = "loop" + global_blockly.wrappers.n++;
+        return "function " + loopName + "() {\n" +
+            "\t" + action + ";\n" +
+            "\tvar id = setTimeout(" + loopName + ", 100);\n" +
+            "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
+            "};\n" +
+            loopName + "();\n";
     },
 
     while_until_loop_wraper: function (action, condition) {
-    return "function loop() {\n" +
-        "\t" + action + ";\n" +
-        "\tif ({0}) {\n".format(condition) +
-        "\t\tvar id = setTimeout(loop, 100);\n" +
-        "\t\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
-        "\t};\n" +
-        "};\n" +
-        "loop();\n";
+        var loopName = "loop" + global_blockly.wrappers.n++;
+        return "function " + loopName + "() {\n" +
+            "\t" + action + ";\n" +
+            "\tif ({0}) {\n".format(condition) +
+            "\t\tvar id = setTimeout(" + loopName + ", 100);\n" +
+            "\t\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
+            "\t};\n" +
+            "};\n" +
+            loopName + "();\n";
     },
 
     repeat_loop_wraper: function (action, repeats) {
-    return "function loop(repeats) {\n" +
-        "\tif (repeats-- <= 0) {\n" +
-        "\t\treturn;" +
-        "\t};\n" +
-        "\t" + action + ";\n" +
-        "\tvar id = setTimeout(loop, 100, repeats);\n" +
-        "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
-        "};\n" +
-        "loop({0});\n".format(repeats);
+        var loopName = "loop" + global_blockly.wrappers.n++;
+        return "function " + loopName + "(repeats) {\n" +
+            "\tif (repeats-- <= 0) {\n" +
+            "\t\treturn;" +
+            "\t};\n" +
+            "\t" + action + ";\n" +
+            "\tvar id = setTimeout(" + loopName + ", 100, repeats);\n" +
+            "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
+            "};\n" +
+            loopName + "({0});\n".format(repeats);
     }
 };
 
