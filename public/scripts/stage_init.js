@@ -16,20 +16,27 @@ $(document).ready(function (e) {
         stageCanvas.height = stageCanvas.offsetHeight;
         easelStage = new createjs.Stage("stageCanvas");
         var robot;
+        var shadow;
         var image = new Image();
         image.onload = updateStage;
         image.src = "img/Robot_panel_mini.png";
 
+
+        function init_robot(rb, name, x,y){
+            resizeImg(rb, 60);
+            rb.x = x;
+            rb.y = y;
+            rb.regX = image.naturalHeight/2;
+            rb.regY = image.naturalHeight/2;
+            rb.name = name;
+            easelStage.addChild(rb);
+        }
+
         function init() {
             robot = new createjs.Bitmap(image);
-            resizeImg(robot, 60);
-            robot.x = stageCanvas.width / 2;
-            robot.y = stageCanvas.height / 2;
-
-            robot.regX = image.naturalHeight/2;
-            robot.regY = image.naturalHeight/2;
-            robot.name = "robotSprite";
-            easelStage.addChildAt(robot);
+            init_robot(robot, "robotSprite",stageCanvas.width / 2,stageCanvas.height / 2);
+            //shadow = new createjs.Bitmap(image);
+            //init_robot(shadow, "shadowSprite",stageCanvas.width / 2,stageCanvas.height / 2);
             easelStage.update();
         }
 
