@@ -159,12 +159,12 @@ function init() {
         document.getElementById('jsOutput').value = blocklyCodeManager.getCode();
     }
 
-    //workspace.addChangeListener(myUpdateFunction);
-    Blockly.addChangeListener(myUpdateFunction);
+    workspace.addChangeListener(myUpdateFunction);
+    //Blockly.addChangeListener(myUpdateFunction);
 
     $("#saveProgram").click(download_sketch);
     $("#newProgram").click(function (e) {
-        if(confirm(i18n.t("confirm.saveCurrentProgram"))){
+        if (confirm(i18n.t("confirm.saveCurrentProgram"))) {
             download_sketch();
             Blockly.mainWorkspace.clear();
         }
@@ -193,7 +193,7 @@ function init() {
         $("#launchCodeButton").removeClass("btn-success").addClass("btn-primary");
 
         //Clear sensors data a bit later to prevent last update
-        setTimeout(function() {
+        setTimeout(function () {
             $(".sensors").find("input[type = text]").val("");
         }, 3000);
     });
@@ -203,7 +203,7 @@ function init() {
     $.ajax({
         type: 'GET',
         url: '/scratch/currentPort',
-        success: function(name) {
+        success: function (name) {
             console.log("name = " + name);
             if (name != "") {
                 $("#selectPortButton").text(name);
@@ -230,6 +230,17 @@ $(document).ready(
                 $(this).attr("name", i18n.t($(this).attr("name")));
             });
             init();
+        });
+
+        $("#programTab").click(function (e) {
+            $(".blocklyToolboxDiv").css({"display": "block"});
+            e.preventDefault();
+            $(this).tab('show')
+        });
+        $("#outputTab").click(function (e) {
+            $(".blocklyToolboxDiv").css({"display": "none"});
+            e.preventDefault();
+            $(this).tab('show')
         });
 
         $("#loadSketchInput").fileinput({

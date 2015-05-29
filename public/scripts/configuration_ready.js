@@ -66,6 +66,8 @@ $(document).ready(
             e.stopPropagation();
         });
 
+
+
         areas.each(function (index) {
             var $this = $(this);
             $this.click(function (e) {
