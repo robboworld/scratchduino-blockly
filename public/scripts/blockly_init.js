@@ -122,14 +122,15 @@ function successPort(json) {
 }
 
 function download_sketch() {
-    var name = prompt(i18n.t("prompt.sketch_name"));
-    if (name) {
-        var xml = Blockly.Xml.workspaceToDom(workspace);
-        var blob = new Blob([new XMLSerializer().serializeToString(xml)], {
-            type: "text/xml;charset=utf-8;"
-        });
-        saveAs(blob, name + ".blocks");
-    }
+    bootbox.prompt(i18n.t("prompt.sketch_name"), function(name){
+        if (name) {
+            var xml = Blockly.Xml.workspaceToDom(workspace);
+            var blob = new Blob([new XMLSerializer().serializeToString(xml)], {
+                type: "text/xml;charset=utf-8;"
+            });
+            saveAs(blob, name + ".blocks");
+        }
+    });
 }
 
 function to_configuration_page() {
@@ -164,10 +165,13 @@ function init() {
 
     $("#saveProgram").click(download_sketch);
     $("#newProgram").click(function (e) {
-        if(confirm(i18n.t("confirm.saveCurrentProgram"))){
-            download_sketch();
-            Blockly.mainWorkspace.clear();
-        }
+        bootbox.confirm(i18n.t("confirm.saveCurrentProgram"), function(result){
+            if(result){
+                download_sketch();
+                Blockly.mainWorkspace.clear();
+            }
+        });
+
 
     });
 
