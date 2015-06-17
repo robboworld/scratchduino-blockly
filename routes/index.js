@@ -31,6 +31,7 @@ var globalBlockly = "scripts/global_blockly.js";
 var robotInterface = "scripts/robot_interface.js";
 var spriteInterface = "scripts/sprite_interface.js";
 var codePreprocessor = "scripts/code_preprocessor.js";
+var bootBox = "../node_modules/bootbox/bootbox.min.js";
 //I18N SCRIPTS
 var i18nLocal = "/i18next/i18next.js";
 var messages = {
@@ -61,7 +62,6 @@ router.get('/', function (req, res) {
     }
 
     var blocklyLangFile = "blockly/msg/js/" + lang + ".js";
-
     res.render('workflow',
         {
             title: 'ScratchDuino - Blockly',
@@ -70,6 +70,7 @@ router.get('/', function (req, res) {
                 i18nLocal,
                 jquery_maphighlight,
                 bootstrapJs,
+                bootBox,
                 fileInputJs,
                 getFileInputLang(lang),
                 fileSaverJs,
