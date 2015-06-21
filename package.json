@@ -1,5 +1,10 @@
-C:\Users\Xottab\IdeaProjects\scratchduino-blockly\node_modules
 {
+  "name": "scratchduino-blockly",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
   "dependencies": {
     "abbrev": "1.0.5",
     "accepts": "1.2.9",
@@ -161,4 +166,3 @@ C:\Users\Xottab\IdeaProjects\scratchduino-blockly\node_modules
     "xtend": "4.0.0"
   }
 }
-[32mprint node_modules complete[39m
