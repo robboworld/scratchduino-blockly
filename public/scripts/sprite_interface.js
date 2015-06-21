@@ -2,8 +2,6 @@
  * Created by Pais on 09.05.2015.
  */
 
-var robotSpriteMovingInterval = null;
-
 function sprite_interface() {
 
 }
