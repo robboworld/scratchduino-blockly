@@ -13,6 +13,7 @@ BlocklyCodeManager.RUN_MODES = {
 
 function BlocklyCodeManager() {
 
+    var self = this;
     var BASIC_CODE =
         "global_blockly.updateSensorsData();\n" +
         "\n";
@@ -30,9 +31,13 @@ function BlocklyCodeManager() {
         return generated_code;
     };
 
+    //this.isCodeRunning = function() {
+    //    return is_code_running;
+    //};
+
     this.runCode = function(mode) {
         if(is_code_running) {
-            this.stopExecution();
+            self.stopExecution();
         };
 
         var return_val = false;
@@ -59,16 +64,16 @@ function BlocklyCodeManager() {
                         var err = JSON.parse(mess.responseText);
 
                         if (mode == BlocklyCodeManager.RUN_MODES.SPRITE_PRIMARY) {
-                            alert("Cannot connect robot!: " + err.user);
+                            alert("Cannot connect robot! Use virtual robot only.\nError description: " + err.user);
                             evalBlockly(false, mode);
                             return_val = true;
                         } else if (mode == BlocklyCodeManager.RUN_MODES.RECONNECTION) {
-                            alert("Cannot connect robot! Will try to reconnect. Error: " + err.user);
+                            alert("Cannot connect robot! Will try to reconnect.\nError description: " + err.user);
                             //TODO: send order to server to trying reconnection
                             evalBlockly(true, mode);
                             return_val = true;
                         } else {
-                            alert("Cannot connect robot!: " + err.user);
+                            alert("Cannot connect robot!\n " + err.user);
                             return_val = false;
                         }
                     }
@@ -87,6 +92,7 @@ function BlocklyCodeManager() {
             return /*return message*/;
         };
 
+        global_blockly.engine("0");
         //TODO: this code clears all timeouts been created during program execution, including already executed
         while (global_blockly.main_program_timeoutIDs.length) {
             clearInterval(global_blockly.main_program_timeoutIDs.pop());
@@ -103,14 +109,29 @@ function BlocklyCodeManager() {
             document.removeEventListener(elem.type, elem.fun);
         });
 
+        for (var key in global_blockly.keys_state) {
+            key = global_blockly.NOT_PRESSED;
+        };
+
         global_blockly.addedEvListeners = [];
         is_code_running = false;
     };
 
     function evalBlockly(robot_accessible, mode) {
+
+        global_blockly.addedEvListeners.push({type: "keyup", fun: keyUpListener});
+        document.addEventListener("keyup", keyUpListener);
+
         global_blockly.robot_accessible = robot_accessible;
         is_code_running = true;
+
         window.eval(generated_code);
+    };
+
+    function keyUpListener(event) {
+        if (global_blockly.keys_state[event.keyCode] != undefined) {
+            global_blockly.keys_state[event.keyCode] = global_blockly.PUSHED_UP;
+        }
     };
 
 };

@@ -26,7 +26,7 @@ robot_interface.updateSensorsData = function() {
             var err = JSON.parse(res.responseText);
 
             if (err.tech == "Disconnection") {
-                alert(err.user);
+                //alert(err.user);
                 global_blockly.robot_accessible = false;
                 return
             }
@@ -88,7 +88,6 @@ function processEngineError(res) {
     var err = JSON.parse(res.responseText);
 
     if (err.tech == "Disconnection") {
-        //alert(err.user);
         global_blockly.robot_accessible = false;
         return;
     }

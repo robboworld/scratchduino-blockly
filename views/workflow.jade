@@ -37,9 +37,9 @@ block content
             div(role='tabpanel')
                 ul.nav.nav-tabs(role='tablist')
                     li.active(role='presentation')
-                        a(href='#program', aria-controls='program', role='tab', data-toggle='tab')= t("main.program")
+                        a#programTab(href='#program', role='tab' )= t("main.program")
                     li(role='presentation')
-                        a(href='#output', aria-controls='output', role='tab', data-toggle='tab')= t("main.output")
+                        a#outputTab(href='#output',  role='tab')= t("main.output")
                 .tab-content
                     #program.tab-pane.active(role='tabpanel')
                         div.container-fluid
@@ -79,7 +79,7 @@ block content
                                             ul#portsList.dropdown-menu
                                 div.panel.panel-default
                                     div.panel-heading= t("main.scene")
-                                    div.panel-body
+                                    div.panel-body(style="padding: 0px")
                                         div#sceneDiv(style="height: 400px")
                                             canvas#stageCanvas(style="height:100%; width:100%")
                     #output.tab-pane(role='tabpanel')
@@ -87,7 +87,7 @@ block content
                             .col-lg-12
                                 div.panel.panel-default
                                     div.panel-heading= t("main.output")
-                                    div.panel-body(style="height: 300px")
+                                    div.panel-body(style="height: 300px; ")
                                         textarea#jsOutput(style="width: 100%; height: 100%;")
 
 

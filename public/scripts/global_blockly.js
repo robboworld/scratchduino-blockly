@@ -2,7 +2,6 @@
  * Created by Pais on 08.05.2015.
  */
 
-
 function global_blockly() {
 
 };
@@ -15,22 +14,80 @@ global_blockly.robot_accessible = false;    //Should be set before each running 
 global_blockly.addedEvListeners = [];
 global_blockly.main_program_timeoutIDs = [];
 
-global_blockly.wholeProgramLoop = function(action_func) {
-    var timeoutID = setTimeout(function timeoutBody() {
-        action_func();
-        var timeout = setTimeout(timeoutBody, global_blockly.MAIN_PROGRAM_TIMEOUT);
-        global_blockly.main_program_timeoutIDs.push(timeout);
-    }, global_blockly.MAIN_PROGRAM_TIMEOUT);
-
-    global_blockly.main_program_timeoutIDs.push(timeoutID);
+// Next object needed to correctly process key keeping by user
+global_blockly.NOT_PRESSED = -1;
+global_blockly.PUSHED_DOWN = 0;
+global_blockly.PUSHED_UP = 1;
+global_blockly.keys_state = {
+    38: global_blockly.NOT_PRESSED, //arrow up
+    40: global_blockly.NOT_PRESSED, //arrow down
+    37: global_blockly.NOT_PRESSED, //arrow left
+    39: global_blockly.NOT_PRESSED, //arrow right
+    32: global_blockly.NOT_PRESSED, //space
+    13: global_blockly.NOT_PRESSED  //enter
 }
 
-global_blockly.createNewKeyListener = function(keyCode, action_func) {
-    var listenerFunc = new Function("event",
-        "if(event.keyCode == {0}) {".format(keyCode) +
-            "event.preventDefault();" +
-            "({0})();".format(action_func.toString()) +
-        "}\n");
+global_blockly.wrappers = {
+
+    //Number of loops in program. Used in loop function names.
+    n: 0,
+
+    // Creates listener function body for key press processing.
+    // Checks whether this key is already pressed and cancel PUSHED state if action
+    // was performed. It allows user to keep key pressed without danger of uncontrolled
+    // flow of queries to server.
+    key_listener_wrapper: function (keyCode, action) {
+
+        return "\nif (event.keyCode == {0}) {\n".format(keyCode) +
+            "\tevent.preventDefault();\n" +
+            "\tif (global_blockly.keys_state[event.keyCode] == global_blockly.PUSHED_DOWN) {\n" +
+            "\t\treturn;\n" +
+            "\t} else {\n" +
+            "\t\tglobal_blockly.keys_state[event.keyCode] = global_blockly.PUSHED_DOWN;\n" +
+            "\t\t" + action + "\n;" +
+            "\t\tglobal_blockly.keys_state[event.keyCode] = global_blockly.NOT_PRESSED;\n" +
+            "\t}" +
+            "}\n";
+    },
+
+    while_programm_loop_wrapper: function (action) {
+        var loopName = "loop" + global_blockly.wrappers.n++;
+        return "function " + loopName + "() {\n" +
+            "\t" + action + ";\n" +
+            "\tvar id = setTimeout(" + loopName + ", 100);\n" +
+            "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
+            "};\n" +
+            loopName + "();\n";
+    },
+
+    while_until_loop_wraper: function (action, condition) {
+        var loopName = "loop" + global_blockly.wrappers.n++;
+        return "function " + loopName + "() {\n" +
+            "\t" + action + ";\n" +
+            "\tif ({0}) {\n".format(condition) +
+            "\t\tvar id = setTimeout(" + loopName + ", 100);\n" +
+            "\t\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
+            "\t};\n" +
+            "};\n" +
+            loopName + "();\n";
+    },
+
+    repeat_loop_wraper: function (action, repeats) {
+        var loopName = "loop" + global_blockly.wrappers.n++;
+        return "function " + loopName + "(repeats) {\n" +
+            "\tif (repeats-- <= 0) {\n" +
+            "\t\treturn;" +
+            "\t};\n" +
+            "\t" + action + ";\n" +
+            "\tvar id = setTimeout(" + loopName + ", 100, repeats);\n" +
+            "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
+            "};\n" +
+            loopName + "({0});\n".format(repeats);
+    }
+};
+
+global_blockly.createNewKeyListener = function(listenerFunc) {
+
     global_blockly.addedEvListeners.push({type: "keydown", fun: listenerFunc});
     document.addEventListener("keydown", listenerFunc);
 };
@@ -52,12 +109,12 @@ global_blockly.setDirection = function(direction) {
     sprite_interface.setDirection(direction);
 }
 
-global_blockly.engine = function(mode, timeout) {
+global_blockly.engine = function(mode) {
 
     if (global_blockly.robot_accessible) {
-        robot_interface.move(mode, timeout);
+        robot_interface.move(mode);
     };
-    sprite_interface.move(mode, timeout);
+    sprite_interface.move(mode);
 
 };
 

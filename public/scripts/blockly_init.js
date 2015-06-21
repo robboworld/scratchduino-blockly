@@ -122,14 +122,15 @@ function successPort(json) {
 }
 
 function download_sketch() {
-    var name = prompt(i18n.t("prompt.sketch_name"));
-    if (name) {
-        var xml = Blockly.Xml.workspaceToDom(workspace);
-        var blob = new Blob([new XMLSerializer().serializeToString(xml)], {
-            type: "text/xml;charset=utf-8;"
-        });
-        saveAs(blob, name + ".blocks");
-    }
+    bootbox.prompt(i18n.t("prompt.sketch_name"), function(name){
+        if (name) {
+            var xml = Blockly.Xml.workspaceToDom(workspace);
+            var blob = new Blob([new XMLSerializer().serializeToString(xml)], {
+                type: "text/xml;charset=utf-8;"
+            });
+            saveAs(blob, name + ".blocks");
+        }
+    });
 }
 
 function to_configuration_page() {
@@ -147,24 +148,30 @@ function getParameterByName(name) {
 }
 
 function init() {
+
     var blocklyCodeManager = new BlocklyCodeManager();
 
     workspace = Blockly.inject(document.getElementById('blocklyDiv'),
         {toolbox: document.getElementById('toolbox')})
 
     function myUpdateFunction() {
-        blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode(workspace));
+        //blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode(workspace));
+        blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode());
         document.getElementById('jsOutput').value = blocklyCodeManager.getCode();
     }
 
-    workspace.addChangeListener(myUpdateFunction);
+    //workspace.addChangeListener(myUpdateFunction);
+    Blockly.addChangeListener(myUpdateFunction);
 
     $("#saveProgram").click(download_sketch);
     $("#newProgram").click(function (e) {
-        if(confirm(i18n.t("confirm.saveCurrentProgram"))){
-            download_sketch();
-            Blockly.mainWorkspace.clear();
-        }
+        bootbox.confirm(i18n.t("confirm.saveCurrentProgram"), function(result){
+            if(result){
+                download_sketch();
+                Blockly.mainWorkspace.clear();
+            }
+        });
+
 
     });
 
@@ -186,17 +193,29 @@ function init() {
 
     $("#stopExecutionButton").click(function () {
 
-        window.clearInterval(robotSpriteMovingInterval);
-
         blocklyCodeManager.stopExecution();
+        $("#launchCodeButton").removeClass("btn-success").addClass("btn-primary");
 
-        $("#launchCodeButton").removeClass("btn-success");
-        $("#launchCodeButton").addClass("btn-primary");
-        $(".sensors").find("input[type = text]").val("");
+        //Clear sensors data a bit later to prevent last update
+        setTimeout(function() {
+            $(".sensors").find("input[type = text]").val("");
+        }, 3000);
     });
 
     $("#selectPortButton").click(requestPorts);
-
+    // Set current port as name of selectPortButton
+    $.ajax({
+        type: 'GET',
+        url: '/scratch/currentPort',
+        success: function(name) {
+            console.log("name = " + name);
+            if (name != "") {
+                $("#selectPortButton").text(name);
+            } else {
+                $("#selectPortButton").text("Порт не выбран");
+            }
+        }
+    });
 }
 
 var fileReader = new FileReader();
@@ -215,6 +234,17 @@ $(document).ready(
                 $(this).attr("name", i18n.t($(this).attr("name")));
             });
             init();
+        });
+
+        $("#programTab").click(function (e) {
+            $(".blocklyToolboxDiv").css({"display": "block"});
+            e.preventDefault();
+            $(this).tab('show')
+        });
+        $("#outputTab").click(function (e) {
+            $(".blocklyToolboxDiv").css({"display": "none"});
+            e.preventDefault();
+            $(this).tab('show')
         });
 
         $("#loadSketchInput").fileinput({

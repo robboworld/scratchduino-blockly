@@ -2,8 +2,6 @@
  * Created by Pais on 09.05.2015.
  */
 
-var robotSpriteMovingInterval = null;
-
 function sprite_interface() {
 
 }
@@ -12,7 +10,8 @@ sprite_interface.moveInterval = null;
 sprite_interface.SPEED = 5;
 sprite_interface.moveFunc = null;
 
-sprite_interface.setDirection = function(direction) {
+
+sprite_interface.setDirection = function (direction) {
     switch (direction) {
         case 1:
         {
@@ -51,25 +50,29 @@ sprite_interface.setDirection = function(direction) {
     }
 }
 
-sprite_interface.move = function (mode, stopTimeout) {
+var shadow_shown = false;
+var rb;
+var shadow;
+sprite_interface.move = function (mode) {
 
     clearInterval(sprite_interface.moveInterval);
 
     switch (mode) {
+        case "0":
+            clearInterval(sprite_interface.moveInterval);
+            break;
         case "5":
-            /*Move sprite*/
             sprite_interface.moveInterval = window.setInterval(function (e) {
-                var rb = easelStage.getChildByName("robotSprite");
+                rb = easelStage.getChildByName("robotSprite");
+                //shadow = easelStage.getChildByName("shadowSprite");
                 sprite_interface.moveFunc(rb);
+                var stageCanvas = document.getElementById("stageCanvas");
+                var w = stageCanvas.width;
+                var h = stageCanvas.height;
+                rb.x = (rb.x+ w)%w;
+                rb.y = (rb.y+ h)%h;
                 easelStage.update();
             }, 100);
-
-            /*If timeout to stop defined, set it*/
-            if (stopTimeout) {
-                setTimeout(function () {
-                    clearInterval(sprite_interface.moveInterval);
-                }, stopTimeout);
-            };
             break;
         default:
             break;
