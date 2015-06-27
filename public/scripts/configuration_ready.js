@@ -114,7 +114,5 @@ $(document).ready(
                 alert("Sorry, no local storage available");
             }
         });
-        // TODO: Add image map window resizing processing (see: https://github.com/stowball/jQuery-rwdImageMaps)
-        // TODO: Try to process image resizing with map
     }
 );

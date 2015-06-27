@@ -87,7 +87,6 @@ function successPort(json) {
         $portsList.append(li);
 
         $("#selectPortButton").text("Порт не выбран");
-        // TODO: send to server or cancel port selection
     }
 
     for (var i = 0; i < ports.length; i++) {
@@ -150,6 +149,26 @@ function getParameterByName(name) {
 function init() {
 
     var blocklyCodeManager = new BlocklyCodeManager();
+
+    // If port is open by this or another app, close it
+    $.ajax({
+            type: 'GET',
+            url: '/scratch/isPortOpen',
+            contentType: 'charset=utf-8',
+            async: false,
+            success: function(res) {
+                if (res.toString() == true.toString()) {
+                    $.ajax({
+                        type: 'GET',
+                        url: '/scratch/off',
+                        contentType: 'application/json; charset=utf-8'
+                    });
+                } else {
+                    // Nothing to do
+                }
+            }
+        }
+    );
 
     workspace = Blockly.inject(document.getElementById('blocklyDiv'),
         {toolbox: document.getElementById('toolbox')})

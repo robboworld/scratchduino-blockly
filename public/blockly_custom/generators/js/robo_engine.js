@@ -12,7 +12,6 @@ Blockly.JavaScript['engine_turn_on_sec'] = function(block) {
 };
 
 Blockly.JavaScript['engine_turn_on'] = function(block) {
-    // TODO: Assemble JavaScript into code variable.
     var code = "global_blockly.engine(\"5\");\n";
     return code;
 };

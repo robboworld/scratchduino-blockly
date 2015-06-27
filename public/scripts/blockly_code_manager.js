@@ -26,7 +26,6 @@ function BlocklyCodeManager() {
         return generated_code;
     };
 
-    // TODO: remove this function later (safety)
     this.getCode = function() {
         return generated_code;
     };
@@ -92,23 +91,25 @@ function BlocklyCodeManager() {
             return /*return message*/;
         };
 
-        global_blockly.engine("0");
-        //TODO: this code clears all timeouts been created during program execution, including already executed
+        //This code clears all timeouts been created during program execution, including already executed
         while (global_blockly.main_program_timeoutIDs.length) {
             clearInterval(global_blockly.main_program_timeoutIDs.pop());
         };
 
-        //TODO: close port if page is refreshed
+        // Stop robot and close port
+        global_blockly.engine("0");
         $.ajax({
             type: 'GET',
             url: '/scratch/off',
             contentType: 'application/json; charset=utf-8'
         });
 
+        //Delete all key listeners created in program
         global_blockly.addedEvListeners.forEach(function(elem) {
             document.removeEventListener(elem.type, elem.fun);
         });
 
+        //Long press controller cancel.
         for (var key in global_blockly.keys_state) {
             key = global_blockly.NOT_PRESSED;
         };

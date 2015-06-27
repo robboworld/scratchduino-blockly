@@ -32,6 +32,10 @@ router.get("/off", function(req, res) {
     robot.closeConn(res);
 });
 
+router.get("/isPortOpen", function(req, res) {
+    res.send(robot.isPortOpen());
+})
+
 router.get("/ports", function(req, res) {
     robot.findPorts(res);
 });

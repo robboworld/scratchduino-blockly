@@ -2,8 +2,6 @@
  * Created by xottab on 3/27/15.
  */
 
-// TODO: Key pressed for a long time (see: keyup event)
-
 Blockly.JavaScript['when_key_pressed'] = function (block) {
 
     var key = block.getFieldValue('key');

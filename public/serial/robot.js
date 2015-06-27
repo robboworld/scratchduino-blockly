@@ -2,7 +2,6 @@
  * Created by Pais on 27.03.2015.
  */
 
-//TODO: Logging
 
 var SerialFactory = require("serialport");
 var SerialPort = require("serialport").SerialPort;
@@ -28,7 +27,7 @@ exports.findPorts = function(res) {
         var ports = [];
         // Take only 'name' property of result
         for (var i = 0; i < list.length; i++) {
-            // TODO: selection by manufacturer?
+            // Selection by manufacturer don't work for bluetooth connection
             ports.push({name: list[i].comName});
         };
 
@@ -76,8 +75,11 @@ exports.openConn = function (res) {
     };
 
     if (serialport.isOpen()) {
-        sendErrorResponse(res, 500, "Port is already opened",
-            "Attempt to open currently opened port", ERR_SERIAL);
+        //sendErrorResponse(res, 500, "Port is already opened",
+        //    "Attempt to open currently opened port", ERR_SERIAL);
+
+        // If port is already open, then nothing to do
+        res.send("OK");
         return;
     };
 
@@ -92,12 +94,10 @@ exports.openConn = function (res) {
 
         serialport.on("close", function (err) {
             console.log("serialport.close emitted. Error: " + err);
-            // TODO: some response to client
         });
 
         serialport.on("error", function (err) {
             console.log("serialport.error emitted. Error: " + err);
-            //TODO: some response to client
         });
 
         serialport.on("data", onDataCallback);
@@ -110,6 +110,12 @@ exports.openConn = function (res) {
 
 };
 
+exports.isPortOpen = function() {
+    if (!serialport)
+        return false;
+    return serialport.isOpen();
+}
+
 function onDataCallback(data) {
 
     dataBuffer.data += data.toString("hex");
@@ -119,7 +125,7 @@ function onDataCallback(data) {
         return;
     };
 
-    //TODO: Find another method to check whether transaction completed
+    // It mat be a better method to check whether transaction completed
     // 14 received bytes (14*2 numbers in hex) means end of transaction of data from robot.
     if (dataBuffer.data.length >= 28 && response != null) {
         if (!checkFirmware(dataBuffer.data)) {
@@ -283,7 +289,6 @@ exports.data = function(res) {
 
 };
 
-// TODO: Try to reconnect?
 var DISCONNECTION_TIMEOUT = 5000;
 
 function watchDisconnection(res) {
@@ -291,10 +296,11 @@ function watchDisconnection(res) {
     setTimeout(function() {
         if (!res.headersSent) {
             sendErrorResponse(res, 500, "Disconnection", "Device disconnected", ERR_SERIAL);
-            // TODO: handle serialport not open
-            serialport.close(function () {
-                //
-            });
+            if (serialport.isOpen()) {
+                serialport.close(function () {
+                    //
+                });
+            }
         }
     }, DISCONNECTION_TIMEOUT);
 
