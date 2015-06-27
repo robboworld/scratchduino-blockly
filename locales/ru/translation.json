@@ -26,20 +26,12 @@
   },
   "blockly": {
     "toolbox": {
+      "math": {"title": "Математика"},
       "variables": {"title": "Переменные"},
-      "controls": {"title": "Контроль"},
-      "sensors": {
-        "title": "Сенсоры",
-        "sensor_value": {
-          "sensor_value": "значение сенсора"
-        },
-        "button_pushed": {
-          "button": "кнопка",
-          "is_pressed": "нажата"
-        }
-      },
-      "operators": {
-        "title": "Операторы",
+      "functions": {"title": "Функции"},
+      "text": {"title": "Текст"},
+      "lists": {"title": "Списки"},
+      "controls": {"title": "Контроль",
         "when_key_pressed": {
           "when_key": "когда клавиша",
           "arrow_up": "стрелка вверх",
@@ -54,6 +46,17 @@
           "while_program_is_running": "пока программа запущена"
         }
       },
+      "sensors": {
+        "title": "Сенсоры",
+        "sensor_value": {
+          "sensor_value": "значение сенсора"
+        },
+        "button_pushed": {
+          "button": "кнопка",
+          "is_pressed": "нажата"
+        }
+      },
+      "operators": {"title": "Логика"},
       "engine": {
         "title": "Мотор",
         "engine_turn_on_sec": {

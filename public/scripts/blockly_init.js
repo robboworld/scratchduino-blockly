@@ -99,7 +99,7 @@ function successPort(json) {
         var li = document.createElement("li");
         var a = document.createElement("a");
 
-        a.innerText = text;
+        a.innerHTML = text;
         a.onclick = onClickFunc;
         li.appendChild(a);
 
