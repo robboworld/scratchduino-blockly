@@ -80,6 +80,7 @@ exports.openConn = function (res) {
 
         // If port is already open, then nothing to do
         res.send("OK");
+        console.log("Port is already opened");
         return;
     };
 
@@ -107,6 +108,14 @@ exports.openConn = function (res) {
             res.send("OK");
         }, 2000);
     });
+
+    setTimeout(function() {
+        if (!res.headersSent) {
+            console.log("serial port is not response");
+            sendErrorResponse(res, 500, "Serial not response",
+                "Serial port is not response. Please try again.", ERR_SERIAL);
+        }
+    }, 5000);
 
 };
 

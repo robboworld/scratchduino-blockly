@@ -39,12 +39,10 @@ function BlocklyCodeManager() {
             self.stopExecution();
         };
 
-        var return_val = false;
-
         switch(mode) {
             case BlocklyCodeManager.RUN_MODES.SPRITE_ONLY:
                 evalBlockly(false, mode);
-                return_val = true;
+                is_code_running = true;
                 break;
             case BlocklyCodeManager.RUN_MODES.ROBOT_ONLY:
             case BlocklyCodeManager.RUN_MODES.ROBOT_PRIMARY:
@@ -57,7 +55,7 @@ function BlocklyCodeManager() {
                     async: false,
                     success: function() {
                         evalBlockly(true, mode);
-                        return_val = true;
+                        is_code_running = true;
                     },
                     error: function(mess) {
                         var err = JSON.parse(mess.responseText);
@@ -65,25 +63,24 @@ function BlocklyCodeManager() {
                         if (mode == BlocklyCodeManager.RUN_MODES.SPRITE_PRIMARY) {
                             alert("Cannot connect robot! Use virtual robot only.\nError description: " + err.user);
                             evalBlockly(false, mode);
-                            return_val = true;
+                            is_code_running = true;
                         } else if (mode == BlocklyCodeManager.RUN_MODES.RECONNECTION) {
                             alert("Cannot connect robot! Will try to reconnect.\nError description: " + err.user);
                             //TODO: send order to server to trying reconnection
                             evalBlockly(true, mode);
-                            return_val = true;
+                            is_code_running = true;
                         } else {
                             alert("Cannot connect robot!\n " + err.user);
-                            return_val = false;
                         }
                     }
                 });
                 break;
             default:
-                //return_val = false;
+                //is_code_running = false;
                 break;
         }
 
-        return return_val;
+        return is_code_running;
     };
 
     this.stopExecution = function() {
@@ -101,7 +98,8 @@ function BlocklyCodeManager() {
         $.ajax({
             type: 'GET',
             url: '/scratch/off',
-            contentType: 'application/json; charset=utf-8'
+            contentType: 'application/json; charset=utf-8',
+            async: false
         });
 
         //Delete all key listeners created in program
