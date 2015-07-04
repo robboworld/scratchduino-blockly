@@ -8,7 +8,7 @@ function global_blockly() {
 
 global_blockly.SENSORS_REQUSET_TIMEOUT = 100;
 global_blockly.MAIN_PROGRAM_TIMEOUT = 200;
-global_blockly.BUTTON_THRESHOLD = 1020;
+global_blockly.BUTTON_THRESHOLD = 1000;
 
 global_blockly.robot_accessible = false;    //Should be set before each running blockly program
 global_blockly.addedEvListeners = [];
@@ -24,7 +24,17 @@ global_blockly.keys_state = {
     37: global_blockly.NOT_PRESSED, //arrow left
     39: global_blockly.NOT_PRESSED, //arrow right
     32: global_blockly.NOT_PRESSED, //space
-    13: global_blockly.NOT_PRESSED  //enter
+    13: global_blockly.NOT_PRESSED, //enter
+    48: global_blockly.NOT_PRESSED, //0
+    49: global_blockly.NOT_PRESSED, //1
+    50: global_blockly.NOT_PRESSED, //2
+    51: global_blockly.NOT_PRESSED, //3
+    52: global_blockly.NOT_PRESSED, //4
+    53: global_blockly.NOT_PRESSED, //5
+    54: global_blockly.NOT_PRESSED, //6
+    55: global_blockly.NOT_PRESSED, //7
+    56: global_blockly.NOT_PRESSED, //8
+    57: global_blockly.NOT_PRESSED //9
 }
 
 global_blockly.wrappers = {
@@ -62,7 +72,7 @@ global_blockly.wrappers = {
     },
 
     while_until_loop_wraper: function (action, condition) {
-        var loopName = "loop" + global_blockly.wrappers.n++;
+        var loopName = "loop" + ++global_blockly.wrappers.n;
 
         return "function " + loopName + "() {\n" +
             "\tif (!{0}) {\n".format(condition) +

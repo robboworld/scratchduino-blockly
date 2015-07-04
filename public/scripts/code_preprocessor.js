@@ -17,6 +17,7 @@ function processCodeMacro(code) {
     code = loopMacroProcessing(code);
     return code;
 
+    // Replace macro with corresponding code
     function engineMacroProcessing(code) {
         var turnOnBlocksIndices;
 
@@ -69,6 +70,7 @@ function processCodeMacro(code) {
         return code;
     }
 
+    // Insert after loop code in setTimeout call
     function loopMacroProcessing(code) {
         var loopMacroIndices;
 
