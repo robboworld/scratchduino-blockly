@@ -61,7 +61,6 @@ Blockly.Blocks['when_key_pressed'] = {
             .appendField(t("is_pressed"));
         this.appendStatementInput("action");
         this.setInputsInline(true);
-        this.setNextStatement(true);
     }
 };
 
@@ -75,6 +74,5 @@ Blockly.Blocks['while_program_running'] = {
             .appendField(t("while_program_is_running"));
         this.appendStatementInput("action");
         this.setInputsInline(true);
-        this.setNextStatement(true);
     }
 };

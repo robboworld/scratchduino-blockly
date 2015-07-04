@@ -52,6 +52,7 @@ global_blockly.wrappers = {
 
     while_programm_loop_wrapper: function (action) {
         var loopName = "loop" + global_blockly.wrappers.n++;
+
         return "function " + loopName + "() {\n" +
             "\t" + action + ";\n" +
             "\tvar id = setTimeout(" + loopName + ", 100);\n" +
@@ -62,27 +63,31 @@ global_blockly.wrappers = {
 
     while_until_loop_wraper: function (action, condition) {
         var loopName = "loop" + global_blockly.wrappers.n++;
-        return "function " + loopName + "() {\n" +
-            "\t" + action + ";\n" +
-            "\tif ({0}) {\n".format(condition) +
-            "\t\tvar id = setTimeout(" + loopName + ", 100);\n" +
-            "\t\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
-            "\t};\n" +
-            "};\n" +
-            loopName + "();\n";
-    },
 
-    repeat_loop_wraper: function (action, repeats) {
-        var loopName = "loop" + global_blockly.wrappers.n++;
-        return "function " + loopName + "(repeats) {\n" +
-            "\tif (repeats-- <= 0) {\n" +
+        return "function " + loopName + "() {\n" +
+            "\tif (!{0}) {\n".format(condition) +
             "\t\treturn;" +
             "\t};\n" +
             "\t" + action + ";\n" +
-            "\tvar id = setTimeout(" + loopName + ", 100, repeats);\n" +
+            "\tvar id = setTimeout(" + loopName + ", 100);\n" +
             "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
             "};\n" +
-            loopName + "({0});\n".format(repeats);
+            "#" + loopName + "();\n";
+    },
+
+    repeat_loop_wraper: function (action, repeats) {
+        var loopName = "loop" + ++global_blockly.wrappers.n;
+        var argName = "repeats" + global_blockly.wrappers.n;
+
+        return "function " + loopName + "(" + argName + ") {\n" +
+            "\tif (" + argName + "-- <= 0) {\n" +
+            "\t\treturn;" +
+            "\t};\n" +
+            "\t" + action + ";\n" +
+            "\tvar id = setTimeout(" + loopName + ", 100, " + argName + ");\n" +
+            "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
+            "};\n" +
+            "#" + loopName + "({0});\n".format(repeats);
     }
 };
 
