@@ -38,6 +38,6 @@ junit*.properties
 
 #Custom directives
 node_modules
-installerWin
-!installerWin/install.nsi
-!installerWin/run.bat
+*.exe
+!installerWin/files/x64/node.exe
+!installerWin/files/x86/node.exe
