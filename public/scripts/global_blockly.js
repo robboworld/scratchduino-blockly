@@ -37,6 +37,7 @@ global_blockly.keys_state = {
     57: global_blockly.NOT_PRESSED //9
 }
 
+// Generate code for control blocks
 global_blockly.wrappers = {
 
     //Number of loops in program. Used in loop function names.

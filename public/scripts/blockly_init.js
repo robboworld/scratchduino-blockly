@@ -49,6 +49,7 @@ function uuid() {
     });
 }
 
+// Code executed after selectPort button clicked
 function requestPorts() {
     $("#portsList").empty();
 
@@ -68,11 +69,10 @@ function requestPorts() {
     var li = document.createElement("li");
     var span = document.createElement("span");
 
-    li.innerText = "Загрузка ";
+    li.innerText = i18n.t("main.loading");
     span.className = "glyphicon glyphicon-refresh glyphicon-refresh-animate";
     li.appendChild(span);
     $("#portsList").append(li);
-
 }
 
 function successPort(json) {
@@ -80,18 +80,20 @@ function successPort(json) {
     var ports = JSON.parse(json);
     var $portsList = $("#portsList");
 
+    // Delete waiting animation
     $portsList.empty();
 
+    // If no ports available
     if (!ports.length) {
-        var li = createListItem("Нет доступных портов", null);
+        var li = createListItem(i18n.t("main.noPorts"), null);
         $portsList.append(li);
 
-        $("#selectPortButton").text("Порт не выбран");
-    }
-
-    for (var i = 0; i < ports.length; i++) {
-        var li = createListItem(ports[i].name, onPortSelected);
-        $portsList.append(li);
+        $("#selectPortButton").text(i18n.t("main.portNotChosen"));
+    } else {
+        for (var i = 0; i < ports.length; i++) {
+            var li = createListItem(ports[i].name, onPortSelected);
+            $portsList.append(li);
+        }
     }
 
     function createListItem(text, onClickFunc) {
@@ -182,7 +184,9 @@ function init() {
     //workspace.addChangeListener(myUpdateFunction);
     Blockly.addChangeListener(myUpdateFunction);
 
+    // Save/Load logic
     $("#saveProgram").click(download_sketch);
+
     $("#newProgram").click(function (e) {
         bootbox.confirm(i18n.t("confirm.saveCurrentProgram"), function(result){
             if(result){
@@ -190,8 +194,6 @@ function init() {
                 Blockly.mainWorkspace.clear();
             }
         });
-
-
     });
 
     $("#loadProgram").click(function (e) {
@@ -199,10 +201,11 @@ function init() {
         modal.modal("toggle");
     });
 
+    // Configuration page link
     $("#configureRobot").click(to_configuration_page);
 
+    // Run/Stop logic
     $("#launchCodeButton").click(function () {
-
         if (blocklyCodeManager.runCode(BlocklyCodeManager.RUN_MODES.SPRITE_PRIMARY)) {
             $(this).removeClass("btn-primary");
             $(this).addClass("btn-success");
@@ -211,14 +214,12 @@ function init() {
     });
 
     $("#stopExecutionButton").click(function () {
-
         blocklyCodeManager.stopExecution();
         $("#launchCodeButton").removeClass("btn-success").addClass("btn-primary");
-
         //Clear sensors data a bit later to prevent last update
         setTimeout(function() {
             $(".sensors").find("input[type = text]").val("");
-        }, 3000);
+        }, 600);
     });
 
     $("#selectPortButton").click(requestPorts);
@@ -231,7 +232,7 @@ function init() {
             if (name != "") {
                 $("#selectPortButton").text(name);
             } else {
-                $("#selectPortButton").text("Порт не выбран");
+                $("#selectPortButton").text(i18n.t("main.portNotChosen"));
             }
         }
     });

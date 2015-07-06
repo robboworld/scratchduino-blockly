@@ -61,16 +61,16 @@ function BlocklyCodeManager() {
                         var err = JSON.parse(mess.responseText);
 
                         if (mode == BlocklyCodeManager.RUN_MODES.SPRITE_PRIMARY) {
-                            alert("Cannot connect robot! Use virtual robot only.\nError description: " + err.user);
+                            alert(i18n.t("alert.robot_conn_virtual") + "\nError description: " + err.user);
                             evalBlockly(false, mode);
                             is_code_running = true;
                         } else if (mode == BlocklyCodeManager.RUN_MODES.RECONNECTION) {
-                            alert("Cannot connect robot! Will try to reconnect.\nError description: " + err.user);
-                            //TODO: send order to server to trying reconnection
+                            alert(i18n.t("alert.robot_conn_rec") + "\nError description: " + err.user);
+                            // There will be reconnection code
                             evalBlockly(true, mode);
                             is_code_running = true;
                         } else {
-                            alert("Cannot connect robot!\n " + err.user);
+                            alert(i18n.t("alert.robot_conn") + err.user);
                         }
                     }
                 });
@@ -118,6 +118,7 @@ function BlocklyCodeManager() {
 
     function evalBlockly(robot_accessible, mode) {
 
+        // Listen for keyUp event to prevent problems caused by long-pressed key
         global_blockly.addedEvListeners.push({type: "keyup", fun: keyUpListener});
         document.addEventListener("keyup", keyUpListener);
 

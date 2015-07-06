@@ -94,6 +94,5 @@ function processEngineError(res) {
     if (err.tech == "Port is not open" || err.tech == "No serial port selected") {
         global_blockly.robot_accessible = false;
         return;
-
     }
 }

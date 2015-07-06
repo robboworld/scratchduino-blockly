@@ -4,8 +4,6 @@
  * This function searches for all occurrences of
  * macros calls in given code string and replaces
  * it with corresponding code.
- * It implements engine_on_sec block by adding setTimeout
- * function contains engine_stop call and all next statements.
  */
 
 var MACRO_TURN_ON_SEC_BLOCK = "#ENGINE_ON_SEC(";

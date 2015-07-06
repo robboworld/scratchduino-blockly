@@ -5,15 +5,22 @@
     "scene": "Scene",
     "program": "Program",
     "portNotChosen": "Port is not chosen",
+    "noPorts": "No ports available",
     "sensors": "Sensors",
     "sensorValues": "Sensors values",
-    "output": "Output"
+    "output": "Output",
+    "loading": "Loading"
   },
   "confirm":{
     "saveCurrentProgram": "Do you want to save current program?"
   },
   "prompt":{
     "sketch_name": "Please, write down the name of sketch"
+  },
+  "alert":{
+    "robot_conn": "Cannot connect robot!",
+    "robot_conn_rec": "Cannot connect robot! Will try to reconnect.",
+    "robot_conn_virtual": "Cannot connect robot! Use virtual robot only."
   },
   "settings": {
     "settings": "Settings",

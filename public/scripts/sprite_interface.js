@@ -50,9 +50,6 @@ sprite_interface.setDirection = function (direction) {
     }
 }
 
-var shadow_shown = false;
-var rb;
-var shadow;
 sprite_interface.move = function (mode) {
 
     clearInterval(sprite_interface.moveInterval);
@@ -62,17 +59,22 @@ sprite_interface.move = function (mode) {
             clearInterval(sprite_interface.moveInterval);
             break;
         case "5":
-            sprite_interface.moveInterval = window.setInterval(function (e) {
-                rb = easelStage.getChildByName("robotSprite");
-                //shadow = easelStage.getChildByName("shadowSprite");
-                sprite_interface.moveFunc(rb);
-                var stageCanvas = document.getElementById("stageCanvas");
-                var w = stageCanvas.width;
-                var h = stageCanvas.height;
-                rb.x = (rb.x+ w)%w;
-                rb.y = (rb.y+ h)%h;
-                easelStage.update();
-            }, 100);
+            sprite_interface.moveInterval = setInterval(
+                function (e) {
+                    // Move sprite
+                    var rb = easelStage.getChildByName("robotSprite");
+                    sprite_interface.moveFunc(rb);
+
+                    // Off-stage running logic
+                    var stageCanvas = document.getElementById("stageCanvas");
+                    var w = stageCanvas.width;
+                    var h = stageCanvas.height;
+                    rb.x = (rb.x + w) % w;
+                    rb.y = (rb.y + h) % h;
+
+                    // Paint changes
+                    easelStage.update();
+                }, 100);
             break;
         default:
             break;

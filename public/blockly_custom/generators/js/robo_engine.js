@@ -6,8 +6,7 @@ Blockly.JavaScript['engine_turn_on_sec'] = function(block) {
     var sec_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
     var time = sec_time*1000; // To milliseconds
 
-    var code =
-        "#ENGINE_ON_SEC({0})\n".format(time);
+    var code = "#ENGINE_ON_SEC({0})\n".format(time);
     return code;
 };
 

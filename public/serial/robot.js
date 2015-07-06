@@ -58,6 +58,7 @@ exports.setPort = function (name) {
     }, false);
 };
 
+// Collects response data from controller
 var dataBuffer = {
     data: "",
     lastByte: "\x00", //Default value
