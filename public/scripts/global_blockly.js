@@ -66,7 +66,7 @@ global_blockly.wrappers = {
 
         return "function " + loopName + "() {\n" +
             "\t" + action + ";\n" +
-            "\tvar id = setTimeout(" + loopName + ", 100);\n" +
+            "\tvar id = setTimeout(" + loopName + ", 50);\n" +
             "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
             "};\n" +
             loopName + "();\n";
@@ -80,7 +80,7 @@ global_blockly.wrappers = {
             "\t\treturn;" +
             "\t};\n" +
             "\t" + action + ";\n" +
-            "\tvar id = setTimeout(" + loopName + ", 100);\n" +
+            "\tvar id = setTimeout(" + loopName + ", 50);\n" +
             "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
             "};\n" +
             "#" + loopName + "();\n";
@@ -95,7 +95,7 @@ global_blockly.wrappers = {
             "\t\treturn;" +
             "\t};\n" +
             "\t" + action + ";\n" +
-            "\tvar id = setTimeout(" + loopName + ", 100, " + argName + ");\n" +
+            "\tvar id = setTimeout(" + loopName + ", 50, " + argName + ");\n" +
             "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
             "};\n" +
             "#" + loopName + "({0});\n".format(repeats);

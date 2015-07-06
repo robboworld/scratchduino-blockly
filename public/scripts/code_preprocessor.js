@@ -54,10 +54,12 @@ function processCodeMacro(code) {
 
             generatedCode =
                 "global_blockly.engine(\"5\");\n" +
-                "setTimeout(function(){\n" +
+                "var id = setTimeout(function(){\n" +
                 "\tglobal_blockly.engine(\"0\");\n" +
                 "\t{0}\n".format(innerCode) +
-                "}, {0});\n".format(time) + outerCode;
+                "}, {0});\n".format(time) +
+                "global_blockly.main_program_timeoutIDs.push(id)\n" +
+                outerCode;
 
             // Take part that wasn't change
             code = code.slice(0, lastOccurrence);
