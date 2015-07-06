@@ -176,19 +176,18 @@ function init() {
         {toolbox: document.getElementById('toolbox')})
 
     function myUpdateFunction() {
-        //blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode(workspace));
-        blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode());
+        blocklyCodeManager.generateCode(Blockly.JavaScript.workspaceToCode(workspace));
         document.getElementById('jsOutput').value = blocklyCodeManager.getCode();
     }
 
-    //workspace.addChangeListener(myUpdateFunction);
+    workspace.addChangeListener(myUpdateFunction);
     Blockly.addChangeListener(myUpdateFunction);
 
     // Save/Load logic
     $("#saveProgram").click(download_sketch);
 
     $("#newProgram").click(function (e) {
-        bootbox.confirm(i18n.t("confirm.saveCurrentProgram"), function(result){
+        bootbox.confirm(i18n.t("confirm.closeCurrentProgram"), function(result){
             if(result){
                 download_sketch();
                 Blockly.mainWorkspace.clear();

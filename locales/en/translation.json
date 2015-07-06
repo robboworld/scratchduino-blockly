@@ -12,10 +12,10 @@
     "loading": "Loading"
   },
   "confirm":{
-    "saveCurrentProgram": "Do you want to save current program?"
+    "closeCurrentProgram": "Do you want to close current program?"
   },
   "prompt":{
-    "sketch_name": "Please, write down the name of sketch"
+    "sketch_name": "Write down the name of sketch you want to save"
   },
   "alert":{
     "robot_conn": "Cannot connect robot!",
