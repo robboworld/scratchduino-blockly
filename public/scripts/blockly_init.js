@@ -190,8 +190,8 @@ function init() {
         bootbox.confirm(i18n.t("confirm.closeCurrentProgram"), function(result){
             if(result){
                 download_sketch();
-                Blockly.mainWorkspace.clear();
             }
+            Blockly.mainWorkspace.clear();
         });
     });
 
