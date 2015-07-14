@@ -1,3 +1,3 @@
-#!/usr/bin/env bash
-./node/bin/npm rebuild
-./node/bin/node ./bin/www
+#!/bin/sh
+./node/bin/node ./bin/www &
+xdg-open localhost:3000
