@@ -337,6 +337,10 @@ var ERR_SERIAL = "serialport";
 var ERR_USER = "user";
 function sendErrorResponse(response, status, tech, user, type) {
 
+    if (response.headersSent) {
+        return;
+    }
+
     var error = {
         tech: tech,
         user: user,
