@@ -108,14 +108,14 @@ function successPort(json) {
     }
 
     function onPortSelected() {
-        var self = this;
+        var portName = this.innerHTML;
 
-        $("#selectPortButton").text(this.innerText);
+        $("#selectPortButton").text(portName);
         $.ajax({
                 type: "GET",
                 url: "scratch/set_port",
                 data: {
-                    port: self.innerText
+                    port: portName
                 }
             }
         );
