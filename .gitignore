@@ -41,3 +41,7 @@ node_modules
 *.exe
 !installerWin/files/x64/node.exe
 !installerWin/files/x86/node.exe
+installerMac/build
+installerMac/*.dmg
+installerLinux/build
+installerLinux/*.tar.gz
