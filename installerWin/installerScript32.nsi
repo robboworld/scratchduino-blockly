@@ -8,7 +8,7 @@ OutFile "ScratchDuinoBlocklyInstaller32.exe"
 name "ScratchDuino-Blockly"
  
 # define installation directory
-InstallDir $DESKTOP
+InstallDir "C:\Program Files"
  
 # For removing Start Menu shortcut in Windows 7
 RequestExecutionLevel user
@@ -63,8 +63,6 @@ Section
 
     SetOutPath "$INSTDIR\routes"
     File /a /r "..\routes\"
-    SetOutPath "$INSTDIR\thrash"
-    File /a /r "..\thrash\"
     SetOutPath "$INSTDIR\views"
     File /a /r "..\views\"
     SetOutPath $INSTDIR
@@ -105,7 +103,6 @@ Section "un.Uninstaller"
     RMDir /r "\\?\$INSTDIR\node_modules\"
     RMDir /r "$INSTDIR\public\"
     RMDir /r "$INSTDIR\routes\"
-    RMDir /r "$INSTDIR\thrash\"
     RMDir /r "$INSTDIR\views\"
     Delete "$INSTDIR\app.js"
     Delete "$INSTDIR\run.bat"
