@@ -11,7 +11,7 @@ name "ScratchDuino-Blockly"
 InstallDir "C:\Program Files"
  
 # For removing Start Menu shortcut in Windows 7
-RequestExecutionLevel user
+RequestExecutionLevel admin
 
 #Page components
 Page directory
