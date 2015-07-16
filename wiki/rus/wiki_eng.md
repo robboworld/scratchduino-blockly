@@ -8,7 +8,9 @@ right from your web browser using Blockly programming language.
 Before we get started, you should follow some simple steps to install necessary software:
 
 === Windows ===
-# Download and install robot drivers (//ссылка на статью http://wiki.scratchduino.ru/wiki/%D0%A0%D0%BE%D0%B1%D0%BE%D1%82%D0%BE%D1%82%D0%B5%D1%85%D0%BD%D0%B8%D0%BA%D0%B0_%D1%81_%D0%BF%D0%B5%D0%BB%D0%B5%D0%BD%D0%BE%D0%BA/%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0_%D0%9F%D0%9E) для Arduino (если они еще не установлены).
+# Download and install robot drivers (//ссылка на статью
+http://wiki.scratchduino.ru/wiki/%D0%A0%D0%BE%D0%B1%D0%BE%D1%82%D0%BE%D1%82%D0%B5%D1%85%D0%BD%D0%B8%D0%BA%D0%B0_%D1%81_%D0%BF%D0%B5%D0%BB%D0%B5%D0%BD%D0%BE%D0%BA/%D0%A3%D1%81%D1%82%D0%B0%D0%BD%D0%BE%D0%B2%D0%BA%D0%B0_%D0%9F%D0%9E)
+for Arduino (if they are didnt installed yet).
 # Download and run installer (//ссылка) Scratchduino-Blockly.
 # Ifter installation - click on ScratchDuino-Blockly shortcut on your desktip.
 === Linux ===
@@ -43,7 +45,7 @@ or Bluetooth, and then click the grey button says "Port is not chosen". Then, li
 COM-ports should appear (It may contain more than one port) (//картинка Ports RUS). After selecting port,
 click "Run" button. If selected port is not the one robot is connected, there are warning should appear (//картинка Port Error RUS)
 - in that case, repeat all previous actions, but select another port. If selection was made right, no warnings appear,
-and values from robot sensors at the Sensor panel should start changing. Now you can stop executing using "Step execution"
+and values from robot sensors at the Sensor panel should start changing. Now you can stop executing using "Stop execution"
 button and follow to the next step.
 
 === Blockly language ===
