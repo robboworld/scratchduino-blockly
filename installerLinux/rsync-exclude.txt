@@ -1,0 +1,7 @@
++ /public/flags/flags/1x1/ru.svg
++ /public/flags/flags/1x1/en.svg
++ /public/flags/flags/4x3/ru.svg
++ /public/flags/flags/4x3/en.svg
+- /public/flags/flags/4x3/*.svg
+- /public/flags/flags/1x1/*.svg
+- /public/blockly/.git
