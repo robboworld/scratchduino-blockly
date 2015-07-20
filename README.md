@@ -96,3 +96,13 @@ You can determine if program is runnning by green color of "Run" button. After c
 "Program" in the top right corner gives you the ability to save sketches (Blockly programs) on your local
  computer in ".blocks" extencion and load previously saved programs. "New" button will clear current editor window,
  advising you to save current sketch first.
+
+## Setting sensors update time ##
+
+One can change sensors update speed manualy in the code:
+
+> /public/scripts/global_blockly.js
+
+> line 9: global_blockly.SENSORS_REQUSET_TIMEOUT = 100;
+
+100ms is default update timeout. Data from robot can not come faster than each 3ms. Decreasing of that parameter can cause perfomance problems, but allows better sensors accuracy.
