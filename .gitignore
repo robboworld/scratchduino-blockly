@@ -37,7 +37,7 @@ build.properties
 junit*.properties
 
 #Custom directives
-node_modules
+#node_modules  # sorry, but i need to do this 
 *.exe
 !installerWin/files/x64/node.exe
 !installerWin/files/x86/node.exe
