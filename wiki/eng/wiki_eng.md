@@ -57,7 +57,7 @@ math operations etc. But Blockly has some particular qualities that must be cons
 * Block`s order matters! Blocks are executing consequentially top-to-bottom, so, for example, you should program
 button event handlers primarily.
 * Control signal to robot engine discards effect of previous such signal so
-you should make cycles? conditional operators and, especially, their combinations very carefully.
+you should make cycles, conditional operators and, especially, their combinations very carefully.
 * Block "while program is running" cyclically repeats action placed inside until user press stop button.
 User must ensure that actions inside this block don`t interrupt other robot controlling signal inside a program.
 
