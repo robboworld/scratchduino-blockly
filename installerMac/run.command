@@ -1,5 +1,6 @@
 #!/bin/sh
 echo Welcome to ScratchDuino-Blockly
+cd "$(dirname "$0")"
 ./nodeJS/node ./bin/www & pid=$!
 PID_LIST+=" $pid";
 open http://localhost:3000 & pid=$!
