@@ -12,9 +12,9 @@ var response = null;
 var portName = "";
 var serialport;
 
-//process.on('uncaughtException', function (err) {
-//    console.log('uncaught exception: ' + err);
-//});
+process.on('uncaughtException', function (err) {
+    console.log('uncaught exception: ' + err);
+});
 
 exports.findPorts = function(res) {
 

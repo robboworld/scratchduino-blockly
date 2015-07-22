@@ -7,6 +7,7 @@ function global_blockly() {
 };
 
 global_blockly.SENSORS_REQUSET_TIMEOUT = 100;
+global_blockly.LOOP_TIMEOUT = 100;
 global_blockly.MAIN_PROGRAM_TIMEOUT = 200;
 global_blockly.BUTTON_THRESHOLD = 1000;
 
@@ -62,11 +63,11 @@ global_blockly.wrappers = {
     },
 
     while_programm_loop_wrapper: function (action) {
-        var loopName = "loop" + global_blockly.wrappers.n++;
+        var loopName = "loop" + ++global_blockly.wrappers.n;
 
         return "function " + loopName + "() {\n" +
             "\t" + action + ";\n" +
-            "\tvar id = setTimeout(" + loopName + ", 50);\n" +
+            "\tvar id = setTimeout(" + loopName + ", " + global_blockly.LOOP_TIMEOUT + ");\n" +
             "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
             "};\n" +
             loopName + "();\n";
@@ -80,7 +81,7 @@ global_blockly.wrappers = {
             "\t\treturn;" +
             "\t};\n" +
             "\t" + action + ";\n" +
-            "\tvar id = setTimeout(" + loopName + ", 50);\n" +
+            "\tvar id = setTimeout(" + loopName + ", " + global_blockly.LOOP_TIMEOUT + ");\n" +
             "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
             "};\n" +
             "#" + loopName + "();\n";
@@ -95,7 +96,7 @@ global_blockly.wrappers = {
             "\t\treturn;" +
             "\t};\n" +
             "\t" + action + ";\n" +
-            "\tvar id = setTimeout(" + loopName + ", 50, " + argName + ");\n" +
+            "\tvar id = setTimeout(" + loopName + ", " + global_blockly.LOOP_TIMEOUT + ", " + argName + ");\n" +
             "\tglobal_blockly.main_program_timeoutIDs.push(id);\n" +
             "};\n" +
             "#" + loopName + "({0});\n".format(repeats);
