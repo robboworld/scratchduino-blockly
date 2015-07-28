@@ -12,6 +12,8 @@ var response = null;
 var portName = "";
 var serialport;
 
+var DISCONNECTION_TIMEOUT = 5000;
+
 process.on('uncaughtException', function (err) {
     console.log('uncaught exception: ' + err);
 });
@@ -106,17 +108,19 @@ exports.openConn = function (res) {
 
         // Arduino need some time to think about... something important, i suppose.
         setTimeout(function () {
-            res.send("OK");
+            if (!res.headersSent) {
+                res.send("OK");
+            }
         }, 2000);
     });
 
     setTimeout(function() {
         if (!res.headersSent) {
-            console.log("serial port is not response");
             sendErrorResponse(res, 500, "Serial not response",
                 "Serial port is not response. Please try again.", ERR_SERIAL);
+            console.log("serial port is not response");
         }
-    }, 5000);
+    }, DISCONNECTION_TIMEOUT);
 
 };
 
@@ -298,8 +302,6 @@ exports.data = function(res) {
     });
 
 };
-
-var DISCONNECTION_TIMEOUT = 5000;
 
 function watchDisconnection(res) {
 
