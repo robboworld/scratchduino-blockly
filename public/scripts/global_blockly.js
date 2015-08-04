@@ -6,8 +6,8 @@ function global_blockly() {
 
 };
 
-global_blockly.SENSORS_REQUSET_TIMEOUT = 100;
-global_blockly.LOOP_TIMEOUT = 100;
+global_blockly.SENSORS_REQUSET_TIMEOUT = 10;
+global_blockly.LOOP_TIMEOUT = 50;
 global_blockly.MAIN_PROGRAM_TIMEOUT = 200;
 global_blockly.BUTTON_THRESHOLD = 1000;
 
