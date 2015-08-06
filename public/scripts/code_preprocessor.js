@@ -133,9 +133,6 @@ function processCodeMacro(code) {
 
     // Insert afterIF code in setTimeout call
     function ifStatementProcessing(code) {
-        var ifIndices;
-
-        ifIndices = searchOccurrences(code, IF_STATEMENT);
 
         var firstOccurrence;
         var outerCode;
@@ -143,13 +140,15 @@ function processCodeMacro(code) {
         var ifEndBracket;
         var elseEndBracket;
 
-        while (ifIndices.length) {
-            firstOccurrence = ifIndices.shift();
+        var ifOpenBracket = 0;
+        var elseOpenBracket;
+
+        while ((firstOccurrence = code.indexOf('if (', ifOpenBracket)) != -1) {
 
             // Find end of 'else' statement
-            var ifOpenBracket = code.indexOf('{', firstOccurrence);
+            ifOpenBracket = code.indexOf('{', firstOccurrence);
             ifEndBracket = indexOfClosingBracket(code.substring(ifOpenBracket + 1)) + ifOpenBracket + 1;
-            var elseOpenBracket = code.indexOf('{', ifEndBracket);
+            elseOpenBracket = code.indexOf('{', ifEndBracket);
             elseEndBracket = indexOfClosingBracket(code.substring(elseOpenBracket + 1)) + elseOpenBracket + 1;
 
             innerCode = "";
@@ -164,6 +163,7 @@ function processCodeMacro(code) {
             else {
                 // If there is no parent block
                 innerCode = outerCode;
+                outerCode = "";
             }
 
             // Insert innerCode to end of 'if' and 'else'
@@ -176,8 +176,6 @@ function processCodeMacro(code) {
             code = code.slice(0, ifEndBracket - 1);
             code = code.concat(innerCode);
             code = code.concat(codeAfterIf);
-
-            //ifIndices = searchOccurrences(code, IF_STATEMENT);
         }
 
         return code;
