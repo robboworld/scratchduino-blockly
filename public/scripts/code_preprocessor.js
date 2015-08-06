@@ -8,12 +8,13 @@
 
 var MACRO_TURN_ON_SEC_BLOCK = "#ENGINE_ON_SEC(";
 var MACRO_LOOP_REPEAT = "#loop";
-var IF_STATEMENT = "if (";
+var MACRO_PAUSE = "#PAUSE(";
 
 function processCodeMacro(code) {
 
     code = loopMacroProcessing(code);
     code = ifStatementProcessing(code);
+    code = pauseMacroProcessing(code);
     code = engineMacroProcessing(code);
     return code;
 
@@ -176,6 +177,58 @@ function processCodeMacro(code) {
             code = code.slice(0, ifEndBracket - 1);
             code = code.concat(innerCode);
             code = code.concat(codeAfterIf);
+        }
+
+        return code;
+    }
+
+    function pauseMacroProcessing(code) {
+        var pauseIndices;
+
+        pauseIndices = searchOccurrences(code, MACRO_PAUSE);
+
+        var lastOccurrence;
+        var time;
+        var innerCode;
+        var outerCode;
+        var closingBracket;
+        var generatedCode;
+
+        while (pauseIndices.length) {
+            // Take indices of first and last symbol of current macro name
+            lastOccurrence = pauseIndices.pop();
+            closingBracket = code.indexOf(')', lastOccurrence + MACRO_PAUSE.length);
+
+            // Take macro argument
+            time = code.substring(lastOccurrence + MACRO_PAUSE.length, closingBracket);
+            // Take code after macro
+            outerCode = code.substring(closingBracket + 1);
+            // Code that will be executed after engine_on_sec
+            innerCode = "";
+
+            //Processing code may be defined in if statement or function
+            var bracketIndex;
+            if (~(bracketIndex = indexOfClosingBracket(outerCode))) {
+                // If macro is in parent block
+                innerCode = outerCode.slice(0, bracketIndex);
+                outerCode = outerCode.substring(bracketIndex);
+            } else {
+                // If there is no parent block
+                innerCode = outerCode;
+                outerCode = "";
+            }
+
+            generatedCode =
+                "var id = setTimeout(function(){\n" +
+                "\t{0}\n".format(innerCode) +
+                "}, {0});\n".format(time) +
+                "global_blockly.main_program_timeoutIDs.push(id)\n" +
+                outerCode;
+
+            // Take part that wasn't change
+            code = code.slice(0, lastOccurrence);
+            // And add generated part
+            code = code.concat(generatedCode);
         }
 
         return code;

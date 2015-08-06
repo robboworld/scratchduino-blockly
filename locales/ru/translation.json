@@ -51,6 +51,10 @@
         },
         "while_program_running": {
           "while_program_is_running": "пока программа запущена"
+        },
+        "pause": {
+          "pause_on": "ждать",
+          "sec": "сек"
         }
       },
       "sensors": {

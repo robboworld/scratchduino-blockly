@@ -20,6 +20,13 @@ Blockly.JavaScript['while_program_running'] = function (block) {
     return code;
 };
 
+Blockly.JavaScript['pause'] = function(block) {
+    var value_time = Blockly.JavaScript.valueToCode(block, 'time', Blockly.JavaScript.ORDER_ATOMIC);
+
+    var code = '#PAUSE(' + value_time*1000 + ')\n';
+    return code;
+};
+
 /*Reimplemented default loop blocks. setTimeout() function used instead of while() loop.*/
 Blockly.JavaScript['controls_whileUntil'] = function (block) {
 

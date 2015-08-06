@@ -77,6 +77,24 @@ Blockly.Blocks['while_program_running'] = {
     }
 };
 
+Blockly.Blocks['pause'] = {
+    init: function() {
+        this.appendDummyInput()
+            .appendField(i18n.t("blockly.toolbox.controls.pause.pause_on"));
+        this.appendValueInput("time")
+            .setCheck("Number")
+            .setAlign(Blockly.ALIGN_RIGHT);
+        this.appendDummyInput()
+            .appendField(i18n.t("blockly.toolbox.controls.pause.sec"));
+        this.setInputsInline(true);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+        this.setColour(65);
+        this.setTooltip('');
+        this.setHelpUrl("https://blockly-demo.appspot.com/static/demos/blockfactory/index.html#e7tpgk");
+    }
+};
+
 /* Code of IF block corrected to exclude else-if mutator in case of simplicity
 * of processed JS code*/
 Blockly.Blocks['controls_if'] = {
