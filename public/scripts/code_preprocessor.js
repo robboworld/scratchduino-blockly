@@ -8,11 +8,13 @@
 
 var MACRO_TURN_ON_SEC_BLOCK = "#ENGINE_ON_SEC(";
 var MACRO_LOOP_REPEAT = "#loop";
+var IF_STATEMENT = "if (";
 
 function processCodeMacro(code) {
 
-    code = engineMacroProcessing(code);
     code = loopMacroProcessing(code);
+    code = ifStatementProcessing(code);
+    code = engineMacroProcessing(code);
     return code;
 
     // Replace macro with corresponding code
@@ -70,7 +72,7 @@ function processCodeMacro(code) {
         return code;
     }
 
-    // Insert after loop code in setTimeout call
+    // Insert afterloop code in setTimeout call
     function loopMacroProcessing(code) {
         var loopMacroIndices;
 
@@ -124,6 +126,58 @@ function processCodeMacro(code) {
             code = code.concat(tempString);
 
             loopMacroIndices = searchOccurrences(code, MACRO_LOOP_REPEAT);
+        }
+
+        return code;
+    }
+
+    // Insert afterIF code in setTimeout call
+    function ifStatementProcessing(code) {
+        var ifIndices;
+
+        ifIndices = searchOccurrences(code, IF_STATEMENT);
+
+        var firstOccurrence;
+        var outerCode;
+        var innerCode;
+        var ifEndBracket;
+        var elseEndBracket;
+
+        while (ifIndices.length) {
+            firstOccurrence = ifIndices.shift();
+
+            // Find end of 'else' statement
+            var ifOpenBracket = code.indexOf('{', firstOccurrence);
+            ifEndBracket = indexOfClosingBracket(code.substring(ifOpenBracket + 1)) + ifOpenBracket + 1;
+            var elseOpenBracket = code.indexOf('{', ifEndBracket);
+            elseEndBracket = indexOfClosingBracket(code.substring(elseOpenBracket + 1)) + elseOpenBracket + 1;
+
+            innerCode = "";
+            //Processing code may be defined in if statement or function
+            var bracketIndex;
+            outerCode = code.substring(elseEndBracket + 1);
+            if (~(bracketIndex = indexOfClosingBracket(outerCode))) {
+                // If macro is in parent block
+                innerCode = outerCode.slice(0, bracketIndex);
+                outerCode = outerCode.substring(bracketIndex);
+            }
+            else {
+                // If there is no parent block
+                innerCode = outerCode;
+            }
+
+            // Insert innerCode to end of 'if' and 'else'
+            // Insert in ELSE
+            code = code.slice(0, elseEndBracket - 1);
+            code = code.concat(innerCode) + '}\n';
+            code = code.concat(outerCode);
+            // Insert in ELSE
+            var codeAfterIf = code.substring(ifEndBracket);
+            code = code.slice(0, ifEndBracket - 1);
+            code = code.concat(innerCode);
+            code = code.concat(codeAfterIf);
+
+            //ifIndices = searchOccurrences(code, IF_STATEMENT);
         }
 
         return code;
