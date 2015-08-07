@@ -27,8 +27,6 @@ Section
 
     SetOutPath "${NODEJS_FOLDER}"
     File /a /r "files\x64\"
-	#SetOutPath "$INSTDIR\node_modules"
-    #File /a /r "\\?\C:\Users\Xottab\IdeaProjects\scratchduino-blockly\installerWin\files\node_modules\"
 
     SetOutPath "$INSTDIR\bin"
     File /a /r "..\bin\"
