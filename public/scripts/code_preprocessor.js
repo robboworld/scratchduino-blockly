@@ -9,6 +9,7 @@
 var MACRO_TURN_ON_SEC_BLOCK = "#ENGINE_ON_SEC(";
 var MACRO_LOOP_REPEAT = "#loop";
 var MACRO_PAUSE = "#PAUSE(";
+var MACRO_IF = "#if (";
 
 function processCodeMacro(code) {
 
@@ -144,7 +145,10 @@ function processCodeMacro(code) {
         var ifOpenBracket = 0;
         var elseOpenBracket;
 
-        while ((firstOccurrence = code.indexOf('if (', ifOpenBracket)) != -1) {
+        while ((firstOccurrence = code.indexOf(MACRO_IF, ifOpenBracket)) != -1) {
+
+            // Delete macro sign '#'
+            code = (code.slice(0, firstOccurrence)).concat(code.substring(firstOccurrence + 1));
 
             // Find end of 'else' statement
             ifOpenBracket = code.indexOf('{', firstOccurrence);

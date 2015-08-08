@@ -56,7 +56,7 @@ Blockly.JavaScript['controls_if'] = function(block) {
     var argument = Blockly.JavaScript.valueToCode(block, 'IF' + n,
             Blockly.JavaScript.ORDER_NONE) || 'false';
     var branch = Blockly.JavaScript.statementToCode(block, 'DO' + n);
-    var code = 'if (' + argument + ') {\n' + branch + '}';
+    var code = '#if (' + argument + ') {\n' + branch + '}';
     for (n = 1; n <= block.elseifCount_; n++) {
         argument = Blockly.JavaScript.valueToCode(block, 'IF' + n,
             Blockly.JavaScript.ORDER_NONE) || 'false';
