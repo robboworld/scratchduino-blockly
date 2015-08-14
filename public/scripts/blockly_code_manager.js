@@ -95,12 +95,14 @@ function BlocklyCodeManager() {
 
         // Stop robot and close port
         global_blockly.engine("0");
-        $.ajax({
-            type: 'GET',
-            url: '/scratch/off',
-            contentType: 'application/json; charset=utf-8',
-            async: false
-        });
+        setTimeout(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/scratch/off',
+                contentType: 'application/json; charset=utf-8',
+                async: true
+            })
+        }, 200);
 
         //Delete all key listeners created in program
         global_blockly.addedEvListeners.forEach(function(elem) {

@@ -205,6 +205,9 @@ function init() {
 
     // Run/Stop logic
     $("#launchCodeButton").click(function () {
+        if ($("#launchCodeButton").hasClass("btn-success")) {
+            return;
+        }
         if (blocklyCodeManager.runCode(BlocklyCodeManager.RUN_MODES.SPRITE_PRIMARY)) {
             $(this).removeClass("btn-primary");
             $(this).addClass("btn-success");
